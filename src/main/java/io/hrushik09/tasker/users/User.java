@@ -12,7 +12,9 @@ public class User {
     private Integer id;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
+    @Column(nullable = false, insertable = false, updatable = false)
     private Instant updatedAt;
 
     public Integer getId() {
@@ -45,14 +47,5 @@ public class User {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @PrePersist
-    @PreUpdate
-    void updateTimestamps() {
-        if (createdAt == null) {
-            createdAt = Instant.now();
-        }
-        updatedAt = Instant.now();
     }
 }
