@@ -1,7 +1,6 @@
 package io.hrushik09.tasker.users;
 
-public class UserRepository {
-    public User save(User user) {
-        return null;
-    }
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
 }
