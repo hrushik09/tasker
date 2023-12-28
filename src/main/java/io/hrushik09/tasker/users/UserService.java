@@ -21,6 +21,8 @@ public class UserService {
     }
 
     public UserDTO getById(int id) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserDoesNotExistException(id));
+        return UserDTO.from(user);
     }
 }
