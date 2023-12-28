@@ -1,5 +1,6 @@
 package io.hrushik09.tasker.lists;
 
+import io.hrushik09.tasker.users.User;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -12,8 +13,8 @@ public class List {
     private int id;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
-    private int userId;
+    @ManyToOne
+    private User user;
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -35,12 +36,12 @@ public class List {
         this.title = title;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Instant getCreatedAt() {

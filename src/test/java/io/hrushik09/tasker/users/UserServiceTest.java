@@ -46,7 +46,7 @@ class UserServiceTest {
         Optional<User> optional = Optional.of(aUser().withId(1).withName("user 2").build());
         when(userRepository.findById(1)).thenReturn(optional);
 
-        UserDTO userDTO = userService.findById(1);
+        UserDTO userDTO = userService.findDTOById(1);
 
         assertThat(userDTO.id()).isEqualTo(1);
         assertThat(userDTO.name()).isEqualTo("user 2");
@@ -59,7 +59,7 @@ class UserServiceTest {
         int nonExistingId = 100;
         when(userRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.findById(nonExistingId))
+        assertThatThrownBy(() -> userService.findDTOById(nonExistingId))
                 .isInstanceOf(UserDoesNotExistException.class)
                 .hasMessage("User with id=" + nonExistingId + " does not exist");
     }
