@@ -21,11 +21,11 @@ public class UserService {
     }
 
     public UserDTO findDTOById(int id) {
-        User user = findById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException(id));
         return UserDTO.from(user);
     }
 
-    public User findById(int id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException(id));
+    public User getReferenceById(int id) {
+        return userRepository.getReferenceById(id);
     }
 }

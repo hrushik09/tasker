@@ -7,9 +7,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,5 +39,22 @@ public class ListControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("To Do")));
+    }
+
+    @Test
+    void shouldFetchAllListsForGivenUser() throws Exception {
+        int userId = 1;
+        AllListDTO allListDTO = new AllListDTO(List.of(
+                new ListDTO(1, "To Do"),
+                new ListDTO(2, "Completed"),
+                new ListDTO(3, "Deployed")
+        ));
+        when(listService.fetchAllFor(userId)).thenReturn(allListDTO);
+
+        mockMvc.perform(get("/api/lists?userId={userId}", userId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lists", hasSize(3)))
+                .andExpect(jsonPath("$.lists[*].id", containsInAnyOrder(1, 2, 3)))
+                .andExpect(jsonPath("$.lists[*].title", containsInAnyOrder("To Do", "Completed", "Deployed")));
     }
 }
