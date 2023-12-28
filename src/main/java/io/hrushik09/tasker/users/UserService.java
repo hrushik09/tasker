@@ -1,8 +1,10 @@
 package io.hrushik09.tasker.users;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
 
@@ -10,6 +12,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public UserDTO create(CreateUserCommand cmd) {
         User user = new User();
         user.setName(cmd.name());
