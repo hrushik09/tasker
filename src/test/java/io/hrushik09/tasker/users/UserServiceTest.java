@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -25,10 +26,7 @@ class UserServiceTest {
 
     @Test
     void shouldCreateUserSuccessfully() {
-        User user = new User();
-        user.setId(1);
-        user.setName("user 1");
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.save(any())).thenReturn(aUser().withName("user 1").build());
 
         UserDTO userDTO = userService.create(new CreateUserCommand("user 1"));
 
