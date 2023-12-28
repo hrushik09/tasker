@@ -1,7 +1,9 @@
 List of current testcases
 
 [ ] add list
-    [ ] name, userId
+    [ ] title, userId
+[ ] update list
+    [ ] update title
 [ ] add card
     [ ] title, description, listId, userId
 [ ] fetch all cards for a user - only title
