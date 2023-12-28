@@ -42,11 +42,11 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldGetUserSuccessfully() {
+    void shouldFindUserSuccessfully() {
         Optional<User> optional = Optional.of(aUser().withId(1).withName("user 2").build());
         when(userRepository.findById(1)).thenReturn(optional);
 
-        UserDTO userDTO = userService.getById(1);
+        UserDTO userDTO = userService.findById(1);
 
         assertThat(userDTO.id()).isEqualTo(1);
         assertThat(userDTO.name()).isEqualTo("user 2");
@@ -55,11 +55,11 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldThrowWhenGettingNonExistingUser() {
+    void shouldThrowWhenFindingNonExistingUser() {
         int nonExistingId = 100;
         when(userRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.getById(nonExistingId))
+        assertThatThrownBy(() -> userService.findById(nonExistingId))
                 .isInstanceOf(UserDoesNotExistException.class)
                 .hasMessage("User with id=" + nonExistingId + " does not exist");
     }

@@ -20,7 +20,7 @@ public class UserService {
         return UserDTO.from(savedUser);
     }
 
-    public UserDTO getById(int id) {
+    public UserDTO findById(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserDoesNotExistException(id));
         return UserDTO.from(user);

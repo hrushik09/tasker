@@ -42,7 +42,7 @@ public class UserEndToEndTest {
     }
 
     @Test
-    void shouldGetUserSuccessfully() {
+    void shouldFindUserSuccessfully() {
         UserDTO userDTO = userService.create(new CreateUserCommand("user 2"));
 
         given()
