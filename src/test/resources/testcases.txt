@@ -1,7 +1,9 @@
 List of current testcases
 
-[ ] add list
-    [ ] title, userId
+[x] add list
+    [x] title, userId
+[ ] in List entity, remove userId field and create Many-to-One mapping with User class
+[ ] fetch all lists for a user - only title
 [ ] update list
     [ ] update title
 [ ] add card
