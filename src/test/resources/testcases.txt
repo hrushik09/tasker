@@ -1,0 +1,15 @@
+List of current testcases
+
+[ ] add list
+    [ ] name, userId
+[ ] add card
+    [ ] title, description, listId, userId
+[ ] fetch all cards for a user - only title
+[ ] fetch card by id - all fields
+[ ] update card
+    [ ] update title
+    [ ] update description
+[ ] move card to different list
+[ ] store activity for a card such as
+    [ ] added to list
+    [ ] moved from list to list
