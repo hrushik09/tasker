@@ -8,7 +8,7 @@ public record UserDTO(
         Instant createdAt,
         Instant updatedAt
 ) {
-    static UserDTO from(User savedUser) {
-        return new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getCreatedAt(), savedUser.getUpdatedAt());
+    static UserDTO from(User user) {
+        return new UserDTO(user.getId(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }
