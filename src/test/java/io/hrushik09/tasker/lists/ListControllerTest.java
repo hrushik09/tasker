@@ -23,7 +23,7 @@ public class ListControllerTest {
 
     @Test
     void shouldCreateListSuccessfully() throws Exception {
-        when(listService.create(new CreateListCommand("To Do", 1))).thenReturn(new ListDTO(1, "To Do", 1));
+        when(listService.create(new CreateListCommand("To Do", 1))).thenReturn(new ListDTO(1, "To Do"));
 
         mockMvc.perform(post("/api/lists")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -36,7 +36,6 @@ public class ListControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
-                .andExpect(jsonPath("$.title", equalTo("To Do")))
-                .andExpect(jsonPath("$.userId", equalTo(1)));
+                .andExpect(jsonPath("$.title", equalTo("To Do")));
     }
 }
