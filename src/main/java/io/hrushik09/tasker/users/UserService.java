@@ -17,6 +17,12 @@ public class UserService {
         User user = new User();
         user.setName(cmd.name());
         User savedUser = userRepository.save(user);
-        return new UserDTO(savedUser.getId(), savedUser.getName());
+        return UserDTO.from(savedUser);
+    }
+
+    public UserDTO findById(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserDoesNotExistException(id));
+        return UserDTO.from(user);
     }
 }

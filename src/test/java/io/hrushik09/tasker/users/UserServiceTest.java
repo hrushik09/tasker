@@ -7,8 +7,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,5 +39,28 @@ class UserServiceTest {
         verify(userRepository).save(userArgumentCaptor.capture());
         User captorValue = userArgumentCaptor.getValue();
         assertThat(captorValue.getName()).isEqualTo("user 1");
+    }
+
+    @Test
+    void shouldFindUserSuccessfully() {
+        Optional<User> optional = Optional.of(aUser().withId(1).withName("user 2").build());
+        when(userRepository.findById(1)).thenReturn(optional);
+
+        UserDTO userDTO = userService.findById(1);
+
+        assertThat(userDTO.id()).isEqualTo(1);
+        assertThat(userDTO.name()).isEqualTo("user 2");
+        assertThat(userDTO.createdAt()).isNotNull();
+        assertThat(userDTO.updatedAt()).isNotNull();
+    }
+
+    @Test
+    void shouldThrowWhenFindingNonExistingUser() {
+        int nonExistingId = 100;
+        when(userRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.findById(nonExistingId))
+                .isInstanceOf(UserDoesNotExistException.class)
+                .hasMessage("User with id=" + nonExistingId + " does not exist");
     }
 }
