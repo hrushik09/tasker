@@ -52,4 +52,14 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
     }
+
+    @Test
+    void shouldThrowWhenGettingNonExistingUser() throws Exception {
+        int nonExistingId = 100;
+        when(userService.getById(nonExistingId)).thenThrow(new UserDoesNotExistException(nonExistingId));
+
+        mockMvc.perform(get("/api/users/{id}", nonExistingId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("User with id=" + nonExistingId + " does not exist")));
+    }
 }
