@@ -13,17 +13,19 @@ List of current testcases
     [x] update title
     [x] throw exception for invalid listId
 [ ] add Card
-    [ ] title, description, List
+    [ ] title, List
+[ ] PUT description to card
+    [ ] this will be used for adding description for the first time to a card
+    [ ] as well as for future updates
 [ ] fetch all cards for a Board
     [ ] title, listId, listTitle
 [ ] fetch card by id
     [ ] title, description
-[ ] add fields to Card, these might be optional
+[ ] add fields to Card, these are optional
     [ ] Start date
     [ ] Due date
 [ ] update card
     [ ] title
-    [ ] description
     [ ] start, end dates
 [ ] mark card as archived
 [ ] mark card as unarchived
