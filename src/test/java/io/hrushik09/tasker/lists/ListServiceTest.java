@@ -50,7 +50,7 @@ class ListServiceTest {
 
     @Test
     void shouldFetchAllListsForGivenUser() {
-        int userId = 1;
+        Integer userId = 1;
         java.util.List<ListDTO> dtos = java.util.List.of(
                 new ListDTO(1, "To Do"),
                 new ListDTO(2, "Completed"),

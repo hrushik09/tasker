@@ -15,7 +15,7 @@ public class BoardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BoardDTO create(@RequestParam int userId, @RequestBody @Valid CreateBoardRequest request) {
+    public BoardDTO create(@RequestParam Integer userId, @RequestBody @Valid CreateBoardRequest request) {
         return boardService.create(new CreateBoardCommand(request.title(), userId));
     }
 }

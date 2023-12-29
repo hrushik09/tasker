@@ -20,12 +20,12 @@ public class UserService {
         return UserDTO.from(savedUser);
     }
 
-    public UserDTO findDTOById(int id) {
+    public UserDTO findDTOById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException(id));
         return UserDTO.from(user);
     }
 
-    public User getReferenceById(int id) {
+    public User getReferenceById(Integer id) {
         return userRepository.getReferenceById(id);
     }
 }

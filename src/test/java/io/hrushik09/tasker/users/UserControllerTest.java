@@ -55,7 +55,7 @@ public class UserControllerTest {
 
     @Test
     void shouldThrowWhenFindingNonExistingUser() throws Exception {
-        int nonExistingId = 100;
+        Integer nonExistingId = 100;
         when(userService.findDTOById(nonExistingId)).thenThrow(new UserDoesNotExistException(nonExistingId));
 
         mockMvc.perform(get("/api/users/{id}", nonExistingId))
