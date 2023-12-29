@@ -9,9 +9,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,10 +42,10 @@ class ListServiceTest {
                 .build();
         when(listRepository.save(any())).thenReturn(list);
 
-        ListDTO listDTO = listService.create(new CreateListCommand("To Do", 1));
+        ListDTO created = listService.create(new CreateListCommand("To Do", 1));
 
-        assertThat(listDTO.id()).isNotNull();
-        assertThat(listDTO.title()).isEqualTo("To Do");
+        assertThat(created.id()).isNotNull();
+        assertThat(created.title()).isEqualTo("To Do");
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(listRepository).save(listArgumentCaptor.capture());
         List captorValue = listArgumentCaptor.getValue();
@@ -65,5 +68,27 @@ class ListServiceTest {
         assertThat(fetched.lists()).hasSize(3);
         assertThat(fetched.lists()).extracting("id").containsExactlyInAnyOrder(1, 2, 3);
         assertThat(fetched.lists()).extracting("title").containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
+    }
+
+    @Test
+    void shouldUpdateListTitleSuccessfully() {
+        Optional<List> optional = Optional.of(aList().withId(1).build());
+        when(listRepository.findById(1)).thenReturn(optional);
+        when(listRepository.save(any())).thenReturn(aList().withId(1).withTitle("Updated title").build());
+
+        ListDTO updated = listService.update(new UpdateListCommand(1, "Updated title"));
+
+        assertThat(updated.id()).isEqualTo(1);
+        assertThat(updated.title()).isEqualTo("Updated title");
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingTitleForNonExistingList() {
+        Integer nonExistingId = 100;
+        when(listRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> listService.update(new UpdateListCommand(nonExistingId, "Not important")))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingId + " does not exist");
     }
 }

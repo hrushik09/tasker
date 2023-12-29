@@ -39,10 +39,10 @@ class BoardServiceTest {
                 .build();
         when(boardRepository.save(any())).thenReturn(board);
 
-        BoardDTO createdBoard = boardService.create(new CreateBoardCommand("My Board", 2));
+        BoardDTO created = boardService.create(new CreateBoardCommand("My Board", 2));
 
-        assertThat(createdBoard.id()).isNotNull();
-        assertThat(createdBoard.title()).isEqualTo("My Board");
+        assertThat(created.id()).isNotNull();
+        assertThat(created.title()).isEqualTo("My Board");
         ArgumentCaptor<Board> boardArgumentCaptor = ArgumentCaptor.forClass(Board.class);
         verify(boardRepository).save(boardArgumentCaptor.capture());
         Board captorValue = boardArgumentCaptor.getValue();

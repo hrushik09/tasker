@@ -31,10 +31,10 @@ class UserServiceTest {
     void shouldCreateUserSuccessfully() {
         when(userRepository.save(any())).thenReturn(aUser().withName("user 1").build());
 
-        UserDTO userDTO = userService.create(new CreateUserCommand("user 1"));
+        UserDTO created = userService.create(new CreateUserCommand("user 1"));
 
-        assertThat(userDTO.id()).isNotNull();
-        assertThat(userDTO.name()).isEqualTo("user 1");
+        assertThat(created.id()).isNotNull();
+        assertThat(created.name()).isEqualTo("user 1");
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userArgumentCaptor.capture());
         User captorValue = userArgumentCaptor.getValue();
@@ -46,12 +46,12 @@ class UserServiceTest {
         Optional<User> optional = Optional.of(aUser().withId(1).withName("user 2").build());
         when(userRepository.findById(1)).thenReturn(optional);
 
-        UserDTO userDTO = userService.findDTOById(1);
+        UserDTO fetched = userService.findDTOById(1);
 
-        assertThat(userDTO.id()).isEqualTo(1);
-        assertThat(userDTO.name()).isEqualTo("user 2");
-        assertThat(userDTO.createdAt()).isNotNull();
-        assertThat(userDTO.updatedAt()).isNotNull();
+        assertThat(fetched.id()).isEqualTo(1);
+        assertThat(fetched.name()).isEqualTo("user 2");
+        assertThat(fetched.createdAt()).isNotNull();
+        assertThat(fetched.updatedAt()).isNotNull();
     }
 
     @Test
