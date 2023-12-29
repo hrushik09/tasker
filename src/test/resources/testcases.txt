@@ -6,8 +6,8 @@ List of current testcases
 [x] fetch all lists for a user - only title
 [x] add Board entity
     [x] fields - title, User
-[ ] in List entity, change data type of id from int to Integer
-[ ] in List entity, replace User mapping with Board mapping
+[x] in List entity, change data type of id from int to Integer
+[x] in List entity, replace User mapping with Board mapping
 [ ] modify POST, GET /lists to use Board instead of User
 [ ] update list
     [ ] update title

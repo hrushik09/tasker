@@ -33,7 +33,10 @@ class BoardServiceTest {
     void shouldCreateBoardSuccessfully() {
         UserBuilder userBuilder = aUser().withId(2);
         when(userService.getReferenceById(2)).thenReturn(userBuilder.build());
-        Board board = aBoard().withId(1).withTitle("My Board").with(userBuilder).build();
+        Board board = aBoard().withId(1)
+                .withTitle("My Board")
+                .with(userBuilder)
+                .build();
         when(boardRepository.save(any())).thenReturn(board);
 
         BoardDTO createdBoard = boardService.create(new CreateBoardCommand("My Board", 2));

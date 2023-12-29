@@ -1,15 +1,15 @@
 package io.hrushik09.tasker.lists;
 
-import io.hrushik09.tasker.users.UserBuilder;
+import io.hrushik09.tasker.boards.BoardBuilder;
 
 import java.time.Instant;
 
-import static io.hrushik09.tasker.users.UserBuilder.aUser;
+import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
 
 public class ListBuilder {
     private Integer id = 1;
     private String title = "Not important";
-    private UserBuilder userBuilder = aUser();
+    private BoardBuilder boardBuilder = aBoard();
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
 
@@ -19,7 +19,7 @@ public class ListBuilder {
     private ListBuilder(ListBuilder copy) {
         id = copy.id;
         title = copy.title;
-        userBuilder = copy.userBuilder;
+        boardBuilder = copy.boardBuilder;
         createdAt = copy.createdAt;
         updatedAt = copy.updatedAt;
     }
@@ -42,8 +42,8 @@ public class ListBuilder {
         return this;
     }
 
-    public ListBuilder with(UserBuilder userBuilder) {
-        this.userBuilder = userBuilder;
+    public ListBuilder with(BoardBuilder boardBuilder) {
+        this.boardBuilder = boardBuilder;
         return this;
     }
 
@@ -51,7 +51,7 @@ public class ListBuilder {
         List list = new List();
         list.setId(id);
         list.setTitle(title);
-        list.setUser(userBuilder.build());
+        list.setBoard(boardBuilder.build());
         list.setCreatedAt(createdAt);
         list.setUpdatedAt(updatedAt);
         return list;

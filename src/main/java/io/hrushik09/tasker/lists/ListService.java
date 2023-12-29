@@ -1,6 +1,6 @@
 package io.hrushik09.tasker.lists;
 
-import io.hrushik09.tasker.users.UserService;
+import io.hrushik09.tasker.boards.BoardService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,23 +8,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ListService {
     private final ListRepository listRepository;
-    private final UserService userService;
+    private final BoardService boardService;
 
-    public ListService(ListRepository listRepository, UserService userService) {
+    public ListService(ListRepository listRepository, BoardService boardService) {
         this.listRepository = listRepository;
-        this.userService = userService;
+        this.boardService = boardService;
     }
 
     @Transactional
     public ListDTO create(CreateListCommand cmd) {
         List list = new List();
         list.setTitle(cmd.title());
-        list.setUser(userService.getReferenceById(cmd.userId()));
+        list.setBoard(boardService.getReferenceById(cmd.boardId()));
         List saved = listRepository.save(list);
         return ListDTO.from(saved);
     }
 
-    public AllListDTO fetchAllFor(Integer userId) {
-        return new AllListDTO(listRepository.fetchAllFor(userId));
+    public AllListDTO fetchAllFor(Integer boardId) {
+        return new AllListDTO(listRepository.fetchAllFor(boardId));
     }
 }

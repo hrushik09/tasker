@@ -28,8 +28,8 @@ public class BoardControllerTest {
                 .thenReturn(new BoardDTO(1, "Development Board"));
 
         mockMvc.perform(post("/api/boards")
-                        .queryParam("userId", String.valueOf(userId))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .queryParam("userId", String.valueOf(userId))
                         .content("""
                                 {
                                 "title": "Development Board"

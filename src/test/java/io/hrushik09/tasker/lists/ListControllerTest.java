@@ -29,10 +29,10 @@ public class ListControllerTest {
 
         mockMvc.perform(post("/api/lists")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .queryParam("boardId", String.valueOf(1))
                         .content("""
                                 {
-                                "title": "To Do",
-                                "userId": 1
+                                "title": "To Do"
                                 }
                                 """)
                 )
@@ -42,16 +42,18 @@ public class ListControllerTest {
     }
 
     @Test
-    void shouldFetchAllListsForGivenUser() throws Exception {
-        Integer userId = 1;
+    void shouldFetchAllListsForGivenBoard() throws Exception {
+        Integer boardId = 1;
         AllListDTO allListDTO = new AllListDTO(List.of(
                 new ListDTO(1, "To Do"),
                 new ListDTO(2, "Completed"),
                 new ListDTO(3, "Deployed")
         ));
-        when(listService.fetchAllFor(userId)).thenReturn(allListDTO);
+        when(listService.fetchAllFor(boardId)).thenReturn(allListDTO);
 
-        mockMvc.perform(get("/api/lists?userId={userId}", userId))
+        mockMvc.perform(get("/api/lists")
+                        .queryParam("boardId", String.valueOf(boardId))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lists", hasSize(3)))
                 .andExpect(jsonPath("$.lists[*].id", containsInAnyOrder(1, 2, 3)))

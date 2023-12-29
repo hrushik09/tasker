@@ -1,6 +1,9 @@
 package io.hrushik09.tasker.lists;
 
 import io.hrushik09.tasker.EndToEndTest;
+import io.hrushik09.tasker.boards.BoardDTO;
+import io.hrushik09.tasker.boards.BoardService;
+import io.hrushik09.tasker.boards.CreateBoardCommand;
 import io.hrushik09.tasker.users.CreateUserCommand;
 import io.hrushik09.tasker.users.UserDTO;
 import io.hrushik09.tasker.users.UserService;
@@ -22,6 +25,8 @@ public class ListEndToEndTest {
     private ListService listService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BoardService boardService;
 
     @BeforeEach
     void setUp() {
@@ -32,20 +37,25 @@ public class ListEndToEndTest {
         return userService.create(new CreateUserCommand("Not important"));
     }
 
-    private ListDTO havingPersistedList(String title, Integer userId) {
-        return listService.create(new CreateListCommand(title, userId));
+    private BoardDTO havingPersistedBoard(Integer userId) {
+        return boardService.create(new CreateBoardCommand("Not important", userId));
+    }
+
+    private ListDTO havingPersistedList(String title, Integer boardId) {
+        return listService.create(new CreateListCommand(title, boardId));
     }
 
     @Test
     void shouldCreateListSuccessfully() {
-        havingPersistedUser();
+        UserDTO userDTO = havingPersistedUser();
+        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("boardId", boardDTO.id())
                 .body("""
                         {
-                        "title": "To Do",
-                        "userId": 1
+                        "title": "To Do"
                         }
                         """)
                 .when()
@@ -57,15 +67,16 @@ public class ListEndToEndTest {
     }
 
     @Test
-    void shouldFetchAllListsForGivenUser() {
+    void shouldFetchAllListsForGivenBoard() {
         UserDTO userDTO = havingPersistedUser();
-        ListDTO toDo = havingPersistedList("To Do", userDTO.id());
-        ListDTO completed = havingPersistedList("Completed", userDTO.id());
-        ListDTO deployed = havingPersistedList("Deployed", userDTO.id());
+        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
+        ListDTO toDo = havingPersistedList("To Do", boardDTO.id());
+        ListDTO completed = havingPersistedList("Completed", boardDTO.id());
+        ListDTO deployed = havingPersistedList("Deployed", boardDTO.id());
 
         given()
                 .contentType(ContentType.JSON)
-                .param("userId", userDTO.id())
+                .param("boardId", boardDTO.id())
                 .when()
                 .get("/api/lists")
                 .then()
