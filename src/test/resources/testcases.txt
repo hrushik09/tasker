@@ -8,7 +8,7 @@ List of current testcases
     [x] fields - title, User
 [x] in List entity, change data type of id from int to Integer
 [x] in List entity, replace User mapping with Board mapping
-[ ] modify POST, GET /lists to use Board instead of User
+[x] modify POST, GET /lists to use Board instead of User
 [ ] update list
     [ ] update title
 [ ] add card
