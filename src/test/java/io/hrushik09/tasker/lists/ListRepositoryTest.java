@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.lists;
 
 import io.hrushik09.tasker.RepositoryTest;
+import io.hrushik09.tasker.boards.Board;
 import io.hrushik09.tasker.users.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,26 +22,34 @@ class ListRepositoryTest {
         return entityManager.persist(user);
     }
 
-    private List havingPersistedList(String title, User user) {
+    private Board havingPersistedBoard(String title, User user) {
+        Board board = new Board();
+        board.setTitle(title);
+        board.setUser(user);
+        return entityManager.persist(board);
+    }
+
+    private List havingPersistedList(String title, Board board) {
         List list = new List();
         list.setTitle(title);
-        list.setUser(user);
+        list.setBoard(board);
         return entityManager.persist(list);
     }
 
     @Test
     void validateFetchForAll() {
         User user = havingPersistedUser("user 1");
-        List todo = havingPersistedList("To Do", user);
-        List completed = havingPersistedList("Completed", user);
-        List deployed = havingPersistedList("Deployed", user);
-        List futureWorks = havingPersistedList("Future Works", user);
-        User extraUser = havingPersistedUser("user 2");
-        List extraList = havingPersistedList("Not important", extraUser);
+        Board board = havingPersistedBoard("Board 1", user);
+        List todo = havingPersistedList("To Do", board);
+        List completed = havingPersistedList("Completed", board);
+        List deployed = havingPersistedList("Deployed", board);
+        List futureWorks = havingPersistedList("Future Works", board);
+        Board extraBoard = havingPersistedBoard("Extra Board", user);
+        List extraList = havingPersistedList("Not important", extraBoard);
         entityManager.flush();
         entityManager.clear();
 
-        java.util.List<ListDTO> fetched = listRepository.fetchAllFor(user.getId());
+        java.util.List<ListDTO> fetched = listRepository.fetchAllFor(board.getId());
 
         assertThat(fetched).hasSize(4);
         assertThat(fetched).extracting("id")

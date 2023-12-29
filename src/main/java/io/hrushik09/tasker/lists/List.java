@@ -1,6 +1,6 @@
 package io.hrushik09.tasker.lists;
 
-import io.hrushik09.tasker.users.User;
+import io.hrushik09.tasker.boards.Board;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -14,7 +14,7 @@ public class List {
     @Column(nullable = false)
     private String title;
     @ManyToOne
-    private User user;
+    private Board board;
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -36,12 +36,12 @@ public class List {
         this.title = title;
     }
 
-    public User getUser() {
-        return user;
+    public Board getBoard() {
+        return board;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public Instant getCreatedAt() {

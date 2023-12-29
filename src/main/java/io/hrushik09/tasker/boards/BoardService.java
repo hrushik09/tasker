@@ -23,4 +23,8 @@ public class BoardService {
         Board savedBoard = boardRepository.save(board);
         return BoardDTO.from(savedBoard);
     }
+
+    public Board getReferenceById(Integer id) {
+        return boardRepository.getReferenceById(id);
+    }
 }

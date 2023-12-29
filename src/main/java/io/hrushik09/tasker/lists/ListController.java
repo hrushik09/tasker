@@ -15,13 +15,13 @@ public class ListController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ListDTO create(@RequestBody @Valid CreateListRequest request) {
-        CreateListCommand cmd = new CreateListCommand(request.title(), request.userId());
+    public ListDTO create(@RequestParam Integer boardId, @RequestBody @Valid CreateListRequest request) {
+        CreateListCommand cmd = new CreateListCommand(request.title(), boardId);
         return listService.create(cmd);
     }
 
     @GetMapping
-    public AllListDTO fetchAllFor(@RequestParam(value = "userId") Integer userId) {
-        return listService.fetchAllFor(userId);
+    public AllListDTO fetchAllFor(@RequestParam Integer boardId) {
+        return listService.fetchAllFor(boardId);
     }
 }
