@@ -17,11 +17,11 @@ public class ListBuilder {
     }
 
     private ListBuilder(ListBuilder copy) {
-        this.id = copy.id;
-        this.title = copy.title;
-        this.userBuilder = copy.userBuilder;
-        this.createdAt = copy.createdAt;
-        this.updatedAt = copy.updatedAt;
+        id = copy.id;
+        title = copy.title;
+        userBuilder = copy.userBuilder;
+        createdAt = copy.createdAt;
+        updatedAt = copy.updatedAt;
     }
 
     public static ListBuilder aList() {

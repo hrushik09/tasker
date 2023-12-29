@@ -12,10 +12,10 @@ public class UserBuilder {
     }
 
     private UserBuilder(UserBuilder copy) {
-        this.id = copy.id;
-        this.name = copy.name;
-        this.createdAt = copy.createdAt;
-        this.updatedAt = copy.updatedAt;
+        id = copy.id;
+        name = copy.name;
+        createdAt = copy.createdAt;
+        updatedAt = copy.updatedAt;
     }
 
     public static UserBuilder aUser() {

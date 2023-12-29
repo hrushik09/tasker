@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
 import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,10 +33,7 @@ class BoardServiceTest {
     void shouldCreateBoardSuccessfully() {
         UserBuilder userBuilder = aUser().withId(2);
         when(userService.getReferenceById(2)).thenReturn(userBuilder.build());
-        Board board = new Board();
-        board.setId(1);
-        board.setTitle("My Board");
-        board.setUser(userBuilder.build());
+        Board board = aBoard().withId(1).withTitle("My Board").with(userBuilder).build();
         when(boardRepository.save(any())).thenReturn(board);
 
         BoardDTO createdBoard = boardService.create(new CreateBoardCommand("My Board", 2));
