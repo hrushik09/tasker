@@ -29,7 +29,7 @@ public class ListService {
     }
 
     public ListDTO update(UpdateListCommand cmd) {
-        List fetched = listRepository.findById(cmd.id()).get();
+        List fetched = listRepository.findById(cmd.id()).orElseThrow(() -> new ListDoesNotExistException(cmd.id()));
         fetched.setTitle(cmd.title());
         List updated = listRepository.save(fetched);
         return ListDTO.from(updated);

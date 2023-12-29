@@ -87,7 +87,7 @@ public class ListEndToEndTest {
     }
 
     @Test
-    void shouldUpdateListTitle() {
+    void shouldUpdateListTitleSuccessfully() {
         UserDTO userDTO = havingPersistedUser();
         BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
         ListDTO listDTO = havingPersistedList("Original List title", boardDTO.id());

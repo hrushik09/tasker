@@ -14,6 +14,7 @@ import java.util.Optional;
 import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,7 +71,7 @@ class ListServiceTest {
     }
 
     @Test
-    void shouldUpdateListTitle() {
+    void shouldUpdateListTitleSuccessfully() {
         Optional<List> optional = Optional.of(aList().withId(1).build());
         when(listRepository.findById(1)).thenReturn(optional);
         when(listRepository.save(any())).thenReturn(aList().withId(1).withTitle("Updated title").build());
@@ -79,5 +80,15 @@ class ListServiceTest {
 
         assertThat(updated.id()).isEqualTo(1);
         assertThat(updated.title()).isEqualTo("Updated title");
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingTitleForNonExistingList() {
+        Integer nonExistingId = 100;
+        when(listRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> listService.update(new UpdateListCommand(nonExistingId, "Not important")))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingId + " does not exist");
     }
 }
