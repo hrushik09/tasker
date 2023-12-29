@@ -27,4 +27,11 @@ public class ListService {
     public AllListDTO fetchAllFor(Integer boardId) {
         return new AllListDTO(listRepository.fetchAllFor(boardId));
     }
+
+    public ListDTO update(UpdateListCommand cmd) {
+        List fetched = listRepository.findById(cmd.id()).get();
+        fetched.setTitle(cmd.title());
+        List updated = listRepository.save(fetched);
+        return ListDTO.from(updated);
+    }
 }

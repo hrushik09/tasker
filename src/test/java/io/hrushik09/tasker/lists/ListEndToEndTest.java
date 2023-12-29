@@ -85,4 +85,25 @@ public class ListEndToEndTest {
                 .body("lists.id", containsInAnyOrder(toDo.id(), completed.id(), deployed.id()))
                 .body("lists.title", containsInAnyOrder(toDo.title(), completed.title(), deployed.title()));
     }
+
+    @Test
+    void shouldUpdateListTitle() {
+        UserDTO userDTO = havingPersistedUser();
+        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
+        ListDTO listDTO = havingPersistedList("Original List title", boardDTO.id());
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                        "title": "New List title"
+                        }
+                        """)
+                .when()
+                .put("/api/lists/{id}", listDTO.id())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(listDTO.id()))
+                .body("title", equalTo("New List title"));
+    }
 }

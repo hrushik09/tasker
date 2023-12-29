@@ -24,4 +24,9 @@ public class ListController {
     public AllListDTO fetchAllFor(@RequestParam Integer boardId) {
         return listService.fetchAllFor(boardId);
     }
+
+    @PutMapping("/{id}")
+    public ListDTO update(@PathVariable Integer id, @RequestBody @Valid UpdateListRequest request) {
+        return listService.update(new UpdateListCommand(id, request.title()));
+    }
 }
