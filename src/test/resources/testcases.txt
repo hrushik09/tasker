@@ -4,10 +4,14 @@ List of current testcases
     [x] title, userId
 [x] in List entity, remove userId field and create Many-to-One mapping with User class
 [x] fetch all lists for a user - only title
+[ ] add Board entity
+    [ ] fields - title, User
+[ ] in List entity, replace User mapping with Board mapping
+[ ] modify POST, GET /lists to use Board instead of User
 [ ] update list
     [ ] update title
 [ ] add card
-    [ ] title, description, listId, userId
+    [ ] title, description, List
 [ ] fetch all cards for a user - only title
 [ ] fetch card by id - all fields
 [ ] update card
