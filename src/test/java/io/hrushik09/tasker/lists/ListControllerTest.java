@@ -43,7 +43,7 @@ public class ListControllerTest {
 
     @Test
     void shouldFetchAllListsForGivenUser() throws Exception {
-        int userId = 1;
+        Integer userId = 1;
         AllListDTO allListDTO = new AllListDTO(List.of(
                 new ListDTO(1, "To Do"),
                 new ListDTO(2, "Completed"),

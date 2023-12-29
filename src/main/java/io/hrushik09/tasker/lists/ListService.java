@@ -24,7 +24,7 @@ public class ListService {
         return ListDTO.from(saved);
     }
 
-    public AllListDTO fetchAllFor(int userId) {
+    public AllListDTO fetchAllFor(Integer userId) {
         return new AllListDTO(listRepository.fetchAllFor(userId));
     }
 }

@@ -1,7 +1,7 @@
 package io.hrushik09.tasker.boards;
 
 public record BoardDTO(
-        int id,
+        Integer id,
         String title
 ) {
     public static BoardDTO from(Board board) {

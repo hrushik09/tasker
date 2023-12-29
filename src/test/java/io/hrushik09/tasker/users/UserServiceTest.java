@@ -56,7 +56,7 @@ class UserServiceTest {
 
     @Test
     void shouldThrowWhenFindingNonExistingUser() {
-        int nonExistingId = 100;
+        Integer nonExistingId = 100;
         when(userRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.findDTOById(nonExistingId))

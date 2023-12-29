@@ -7,7 +7,7 @@ import java.time.Instant;
 import static io.hrushik09.tasker.users.UserBuilder.aUser;
 
 public class ListBuilder {
-    private int id = 1;
+    private Integer id = 1;
     private String title = "Not important";
     private UserBuilder userBuilder = aUser();
     private Instant createdAt = Instant.now();
@@ -32,7 +32,7 @@ public class ListBuilder {
         return new ListBuilder(this);
     }
 
-    public ListBuilder withId(int id) {
+    public ListBuilder withId(Integer id) {
         this.id = id;
         return this;
     }

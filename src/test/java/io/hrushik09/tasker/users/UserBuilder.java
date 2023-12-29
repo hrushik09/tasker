@@ -26,7 +26,7 @@ public class UserBuilder {
         return new UserBuilder(this);
     }
 
-    public UserBuilder withId(int id) {
+    public UserBuilder withId(Integer id) {
         this.id = id;
         return this;
     }

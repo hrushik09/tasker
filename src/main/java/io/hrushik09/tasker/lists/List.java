@@ -10,7 +10,7 @@ import java.time.Instant;
 public class List {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(nullable = false)
     private String title;
     @ManyToOne
@@ -20,11 +20,11 @@ public class List {
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant updatedAt;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

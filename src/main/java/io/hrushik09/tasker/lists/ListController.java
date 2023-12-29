@@ -21,7 +21,7 @@ public class ListController {
     }
 
     @GetMapping
-    public AllListDTO fetchAllFor(@RequestParam(value = "userId") int userId) {
+    public AllListDTO fetchAllFor(@RequestParam(value = "userId") Integer userId) {
         return listService.fetchAllFor(userId);
     }
 }

@@ -32,7 +32,7 @@ public class ListEndToEndTest {
         return userService.create(new CreateUserCommand("Not important"));
     }
 
-    private ListDTO havingPersistedList(String title, int userId) {
+    private ListDTO havingPersistedList(String title, Integer userId) {
         return listService.create(new CreateListCommand(title, userId));
     }
 

@@ -23,7 +23,7 @@ public class BoardControllerTest {
 
     @Test
     void shouldCreateBoardSuccessfully() throws Exception {
-        int userId = 1;
+        Integer userId = 1;
         when(boardService.create(new CreateBoardCommand("Development Board", userId)))
                 .thenReturn(new BoardDTO(1, "Development Board"));
 
