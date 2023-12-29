@@ -12,13 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 @EndToEndTest
 public class ListEndToEndTest {
     @LocalServerPort
     private Integer port;
+    @Autowired
+    private ListService listService;
     @Autowired
     private UserService userService;
 
@@ -27,13 +28,17 @@ public class ListEndToEndTest {
         RestAssured.port = port;
     }
 
-    private UserDTO havingPersistedUser(String name) {
-        return userService.create(new CreateUserCommand(name));
+    private UserDTO havingPersistedUser() {
+        return userService.create(new CreateUserCommand("Not important"));
+    }
+
+    private ListDTO havingPersistedList(String title, int userId) {
+        return listService.create(new CreateListCommand(title, userId));
     }
 
     @Test
     void shouldCreateListSuccessfully() {
-        UserDTO userDTO = havingPersistedUser("user 1");
+        havingPersistedUser();
 
         given()
                 .contentType(ContentType.JSON)
@@ -49,5 +54,24 @@ public class ListEndToEndTest {
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("title", equalTo("To Do"));
+    }
+
+    @Test
+    void shouldFetchAllListsForGivenUser() {
+        UserDTO userDTO = havingPersistedUser();
+        ListDTO toDo = havingPersistedList("To Do", userDTO.id());
+        ListDTO completed = havingPersistedList("Completed", userDTO.id());
+        ListDTO deployed = havingPersistedList("Deployed", userDTO.id());
+
+        given()
+                .contentType(ContentType.JSON)
+                .param("userId", userDTO.id())
+                .when()
+                .get("/api/lists")
+                .then()
+                .statusCode(200)
+                .body("lists", hasSize(3))
+                .body("lists.id", containsInAnyOrder(toDo.id(), completed.id(), deployed.id()))
+                .body("lists.title", containsInAnyOrder(toDo.title(), completed.title(), deployed.title()));
     }
 }

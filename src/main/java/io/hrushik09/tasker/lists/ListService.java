@@ -19,8 +19,12 @@ public class ListService {
     public ListDTO create(CreateListCommand cmd) {
         List list = new List();
         list.setTitle(cmd.title());
-        list.setUser(userService.findById(cmd.userId()));
+        list.setUser(userService.getReferenceById(cmd.userId()));
         List saved = listRepository.save(list);
         return ListDTO.from(saved);
+    }
+
+    public AllListDTO fetchAllFor(int userId) {
+        return new AllListDTO(listRepository.fetchAllFor(userId));
     }
 }

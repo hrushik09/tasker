@@ -19,4 +19,9 @@ public class ListController {
         CreateListCommand cmd = new CreateListCommand(request.title(), request.userId());
         return listService.create(cmd);
     }
+
+    @GetMapping
+    public AllListDTO fetchAllFor(@RequestParam(value = "userId") int userId) {
+        return listService.fetchAllFor(userId);
+    }
 }

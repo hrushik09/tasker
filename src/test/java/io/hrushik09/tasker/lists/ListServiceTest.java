@@ -35,7 +35,7 @@ class ListServiceTest {
                 .with(aUser().withId(1))
                 .build();
         when(listRepository.save(any())).thenReturn(list);
-        when(userService.findById(1)).thenReturn(aUser().withId(1).build());
+        when(userService.getReferenceById(1)).thenReturn(aUser().withId(1).build());
 
         ListDTO listDTO = listService.create(new CreateListCommand("To Do", 1));
 
@@ -46,5 +46,22 @@ class ListServiceTest {
         List captorValue = listArgumentCaptor.getValue();
         assertThat(captorValue.getTitle()).isEqualTo("To Do");
         assertThat(captorValue.getUser().getId()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldFetchAllListsForGivenUser() {
+        int userId = 1;
+        java.util.List<ListDTO> dtos = java.util.List.of(
+                new ListDTO(1, "To Do"),
+                new ListDTO(2, "Completed"),
+                new ListDTO(3, "Deployed")
+        );
+        when(listRepository.fetchAllFor(userId)).thenReturn(dtos);
+
+        AllListDTO fetched = listService.fetchAllFor(userId);
+
+        assertThat(fetched.lists()).hasSize(3);
+        assertThat(fetched.lists()).extracting("id").containsExactlyInAnyOrder(1, 2, 3);
+        assertThat(fetched.lists()).extracting("title").containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
     }
 }
