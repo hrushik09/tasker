@@ -1,7 +1,8 @@
-package io.hrushik09.tasker.users;
+package io.hrushik09.tasker.cards;
 
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
+import io.hrushik09.tasker.lists.ListDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @EndToEndTest
-public class UserEndToEndTest {
+public class CardEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
@@ -26,35 +27,23 @@ public class UserEndToEndTest {
     }
 
     @Test
-    void shouldCreateUserSuccessfully() {
+    void shouldCreateCardSuccessfully() {
+        ListDTO listDTO = dataPersister.havingPersistedList();
+
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("listId", listDTO.id())
                 .body("""
                         {
-                        "name": "user 1"
+                        "title": "Card 1"
                         }
                         """)
                 .when()
-                .post("/api/users")
+                .post("/api/cards")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
-                .body("name", equalTo("user 1"));
-    }
-
-    @Test
-    void shouldFindUserSuccessfully() {
-        UserDTO userDTO = dataPersister.havingPersistedUser("user 2");
-
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/users/{id}", userDTO.id())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(userDTO.id()))
-                .body("name", equalTo("user 2"))
-                .body("createdAt", notNullValue())
-                .body("updatedAt", notNullValue());
+                .body("title", equalTo("Card 1"))
+                .body("listId", equalTo(listDTO.id()));
     }
 }

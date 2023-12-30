@@ -12,8 +12,8 @@ List of current testcases
 [x] update list
     [x] update title
     [x] throw exception for invalid listId
-[ ] add Card
-    [ ] title, List
+[x] add Card
+    [x] title, List
 [ ] PUT description to card
     [ ] this will be used for adding description for the first time to a card
     [ ] as well as for future updates

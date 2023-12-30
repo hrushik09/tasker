@@ -31,22 +31,25 @@ class BoardServiceTest {
 
     @Test
     void shouldCreateBoardSuccessfully() {
-        UserBuilder userBuilder = aUser().withId(2);
-        when(userService.getReferenceById(2)).thenReturn(userBuilder.build());
-        Board board = aBoard().withId(1)
-                .withTitle("My Board")
+        Integer userId = 2;
+        UserBuilder userBuilder = aUser().withId(userId);
+        when(userService.getReferenceById(userId)).thenReturn(userBuilder.build());
+        Integer boardId = 1;
+        String title = "My Board";
+        Board board = aBoard().withId(boardId)
+                .withTitle(title)
                 .with(userBuilder)
                 .build();
         when(boardRepository.save(any())).thenReturn(board);
 
-        BoardDTO created = boardService.create(new CreateBoardCommand("My Board", 2));
+        BoardDTO created = boardService.create(new CreateBoardCommand(title, userId));
 
-        assertThat(created.id()).isNotNull();
-        assertThat(created.title()).isEqualTo("My Board");
+        assertThat(created.id()).isEqualTo(boardId);
+        assertThat(created.title()).isEqualTo(title);
         ArgumentCaptor<Board> boardArgumentCaptor = ArgumentCaptor.forClass(Board.class);
         verify(boardRepository).save(boardArgumentCaptor.capture());
         Board captorValue = boardArgumentCaptor.getValue();
-        assertThat(captorValue.getTitle()).isEqualTo("My Board");
-        assertThat(captorValue.getUser().getId()).isEqualTo(2);
+        assertThat(captorValue.getTitle()).isEqualTo(title);
+        assertThat(captorValue.getUser().getId()).isEqualTo(userId);
     }
 }

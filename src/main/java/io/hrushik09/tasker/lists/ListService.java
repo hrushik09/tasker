@@ -34,4 +34,8 @@ public class ListService {
         List updated = listRepository.save(fetched);
         return ListDTO.from(updated);
     }
+
+    public List getReferenceById(int id) {
+        return listRepository.getReferenceById(id);
+    }
 }
