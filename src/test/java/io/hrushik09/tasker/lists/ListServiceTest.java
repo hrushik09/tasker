@@ -34,23 +34,26 @@ class ListServiceTest {
 
     @Test
     void shouldCreateListSuccessfully() {
-        BoardBuilder boardBuilder = aBoard().withId(1);
-        when(boardService.getReferenceById(1)).thenReturn(boardBuilder.build());
-        List list = aList().withId(1)
-                .withTitle("To Do")
+        Integer boardId = 1;
+        BoardBuilder boardBuilder = aBoard().withId(boardId);
+        when(boardService.getReferenceById(boardId)).thenReturn(boardBuilder.build());
+        Integer listId = 1;
+        String title = "To Do";
+        List list = aList().withId(listId)
+                .withTitle(title)
                 .with(boardBuilder)
                 .build();
         when(listRepository.save(any())).thenReturn(list);
 
-        ListDTO created = listService.create(new CreateListCommand("To Do", 1));
+        ListDTO created = listService.create(new CreateListCommand(title, boardId));
 
-        assertThat(created.id()).isNotNull();
-        assertThat(created.title()).isEqualTo("To Do");
+        assertThat(created.id()).isEqualTo(listId);
+        assertThat(created.title()).isEqualTo(title);
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(listRepository).save(listArgumentCaptor.capture());
         List captorValue = listArgumentCaptor.getValue();
-        assertThat(captorValue.getTitle()).isEqualTo("To Do");
-        assertThat(captorValue.getBoard().getId()).isEqualTo(1);
+        assertThat(captorValue.getTitle()).isEqualTo(title);
+        assertThat(captorValue.getBoard().getId()).isEqualTo(boardId);
     }
 
     @Test

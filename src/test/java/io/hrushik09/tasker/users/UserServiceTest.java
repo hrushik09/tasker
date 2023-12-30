@@ -29,16 +29,18 @@ class UserServiceTest {
 
     @Test
     void shouldCreateUserSuccessfully() {
-        when(userRepository.save(any())).thenReturn(aUser().withName("user 1").build());
+        String name = "user 1";
+        Integer id = 1;
+        when(userRepository.save(any())).thenReturn(aUser().withId(id).withName(name).build());
 
-        UserDTO created = userService.create(new CreateUserCommand("user 1"));
+        UserDTO created = userService.create(new CreateUserCommand(name));
 
-        assertThat(created.id()).isNotNull();
-        assertThat(created.name()).isEqualTo("user 1");
+        assertThat(created.id()).isEqualTo(id);
+        assertThat(created.name()).isEqualTo(name);
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userArgumentCaptor.capture());
         User captorValue = userArgumentCaptor.getValue();
-        assertThat(captorValue.getName()).isEqualTo("user 1");
+        assertThat(captorValue.getName()).isEqualTo(name);
     }
 
     @Test
