@@ -36,4 +36,10 @@ public class EndToEndTestDataPersister {
     public ListDTO havingPersistedList(String title, Integer boardId) {
         return listService.create(new CreateListCommand(title, boardId));
     }
+
+    public ListDTO havingPersistedList() {
+        UserDTO userDTO = havingPersistedUser();
+        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
+        return havingPersistedList("Not important", boardDTO.id());
+    }
 }
