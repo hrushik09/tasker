@@ -17,8 +17,9 @@ List of current testcases
 [ ] PUT description to card
     [ ] this will be used for adding description for the first time to a card
     [ ] as well as for future updates
-[ ] fetch all cards for a Board
-    [ ] title, listId, listTitle
+[ ] fetch all data for a Board at GET /api/boards/{id}
+    [ ] key `lists` contains id, title, boardId for each list for given board
+    [ ] key `cards` contains id, title, listId for each card in each list for given board
 [ ] fetch card by id
     [ ] title, description
 [ ] add fields to Card, these are optional
