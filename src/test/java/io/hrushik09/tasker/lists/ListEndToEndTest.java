@@ -1,12 +1,9 @@
 package io.hrushik09.tasker.lists;
 
 import io.hrushik09.tasker.EndToEndTest;
+import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.boards.BoardDTO;
-import io.hrushik09.tasker.boards.BoardService;
-import io.hrushik09.tasker.boards.CreateBoardCommand;
-import io.hrushik09.tasker.users.CreateUserCommand;
 import io.hrushik09.tasker.users.UserDTO;
-import io.hrushik09.tasker.users.UserService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,33 +19,17 @@ public class ListEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private ListService listService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private BoardService boardService;
+    private EndToEndTestDataPersister dataPersister;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
     }
 
-    private UserDTO havingPersistedUser() {
-        return userService.create(new CreateUserCommand("Not important"));
-    }
-
-    private BoardDTO havingPersistedBoard(Integer userId) {
-        return boardService.create(new CreateBoardCommand("Not important", userId));
-    }
-
-    private ListDTO havingPersistedList(String title, Integer boardId) {
-        return listService.create(new CreateListCommand(title, boardId));
-    }
-
     @Test
     void shouldCreateListSuccessfully() {
-        UserDTO userDTO = havingPersistedUser();
-        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
+        UserDTO userDTO = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -68,11 +49,11 @@ public class ListEndToEndTest {
 
     @Test
     void shouldFetchAllListsForGivenBoard() {
-        UserDTO userDTO = havingPersistedUser();
-        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
-        ListDTO toDo = havingPersistedList("To Do", boardDTO.id());
-        ListDTO completed = havingPersistedList("Completed", boardDTO.id());
-        ListDTO deployed = havingPersistedList("Deployed", boardDTO.id());
+        UserDTO userDTO = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
+        ListDTO toDo = dataPersister.havingPersistedList("To Do", boardDTO.id());
+        ListDTO completed = dataPersister.havingPersistedList("Completed", boardDTO.id());
+        ListDTO deployed = dataPersister.havingPersistedList("Deployed", boardDTO.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -88,9 +69,9 @@ public class ListEndToEndTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        UserDTO userDTO = havingPersistedUser();
-        BoardDTO boardDTO = havingPersistedBoard(userDTO.id());
-        ListDTO listDTO = havingPersistedList("Original List title", boardDTO.id());
+        UserDTO userDTO = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
+        ListDTO listDTO = dataPersister.havingPersistedList("Original List title", boardDTO.id());
 
         given()
                 .contentType(ContentType.JSON)

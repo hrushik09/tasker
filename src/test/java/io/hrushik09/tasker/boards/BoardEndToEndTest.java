@@ -1,9 +1,8 @@
 package io.hrushik09.tasker.boards;
 
 import io.hrushik09.tasker.EndToEndTest;
-import io.hrushik09.tasker.users.CreateUserCommand;
+import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.users.UserDTO;
-import io.hrushik09.tasker.users.UserService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,20 +19,16 @@ public class BoardEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private UserService userService;
+    private EndToEndTestDataPersister dataPersister;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
     }
 
-    private UserDTO havingPersistedUser() {
-        return userService.create(new CreateUserCommand("Not important"));
-    }
-
     @Test
     void shouldCreateBoardSuccessfully() {
-        UserDTO savedUser = havingPersistedUser();
+        UserDTO savedUser = dataPersister.havingPersistedUser();
 
         given()
                 .contentType(ContentType.JSON)

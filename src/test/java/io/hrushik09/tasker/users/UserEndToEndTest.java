@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.users;
 
 import io.hrushik09.tasker.EndToEndTest;
+import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ public class UserEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private UserService userService;
+    private EndToEndTestDataPersister dataPersister;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +44,7 @@ public class UserEndToEndTest {
 
     @Test
     void shouldFindUserSuccessfully() {
-        UserDTO userDTO = userService.create(new CreateUserCommand("user 2"));
+        UserDTO userDTO = dataPersister.havingPersistedUser("user 2");
 
         given()
                 .contentType(ContentType.JSON)
