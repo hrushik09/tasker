@@ -23,7 +23,7 @@ public class CardControllerTest {
 
     @Test
     void shouldCreateCardSuccessfully() throws Exception {
-        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CardDTO(1, "Card 1", 1));
+        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CardDTO(1, "Card 1", 1, null));
 
         mockMvc.perform(post("/api/cards")
                         .contentType(MediaType.APPLICATION_JSON)

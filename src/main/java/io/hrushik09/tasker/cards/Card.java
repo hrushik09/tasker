@@ -13,6 +13,7 @@ public class Card {
     private Integer id;
     @Column(nullable = false)
     private String title;
+    private String description;
     @ManyToOne
     private List list;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -34,6 +35,14 @@ public class Card {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List getList() {

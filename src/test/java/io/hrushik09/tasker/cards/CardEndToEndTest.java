@@ -46,4 +46,25 @@ public class CardEndToEndTest {
                 .body("title", equalTo("Card 1"))
                 .body("listId", equalTo(listDTO.id()));
     }
+
+    @Test
+    void shouldUpdateDescriptionSuccessfully() {
+        CardDTO cardDTO = dataPersister.havingPersistedCard();
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                        "description": "This is updated description"
+                        }
+                        """)
+                .when()
+                .put("/api/cards/{id}", cardDTO.id())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(cardDTO.id()))
+                .body("title", equalTo(cardDTO.title()))
+                .body("listId", equalTo(cardDTO.listId()))
+                .body("description", equalTo(cardDTO.description()));
+    }
 }
