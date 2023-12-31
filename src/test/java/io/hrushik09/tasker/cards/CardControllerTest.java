@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,5 +39,28 @@ public class CardControllerTest {
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("Card 1")))
                 .andExpect(jsonPath("$.listId", equalTo(1)));
+    }
+
+    @Test
+    void shouldUpdateDescriptionSuccessfully() throws Exception {
+        Integer id = 1;
+        String title = "Not important";
+        Integer listId = 1;
+        String updatedDescription = "Description after update";
+        when(cardService.updateDescription(new UpdateDescriptionCommand(id, updatedDescription))).thenReturn(new CardDTO(id, title, listId, updatedDescription));
+
+        mockMvc.perform(put("/api/cards/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "description": "Description after update"
+                                }
+                                """)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description", equalTo(updatedDescription)))
+                .andExpect(jsonPath("$.id", equalTo(id)))
+                .andExpect(jsonPath("$.title", equalTo(title)))
+                .andExpect(jsonPath("$.listId", equalTo(listId)));
     }
 }

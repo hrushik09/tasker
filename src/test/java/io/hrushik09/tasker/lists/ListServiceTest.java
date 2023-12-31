@@ -83,6 +83,10 @@ class ListServiceTest {
 
         assertThat(updated.id()).isEqualTo(1);
         assertThat(updated.title()).isEqualTo("Updated title");
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(listRepository).save(listArgumentCaptor.capture());
+        List captorValue = listArgumentCaptor.getValue();
+        assertThat(captorValue.getTitle()).isEqualTo("Updated title");
     }
 
     @Test

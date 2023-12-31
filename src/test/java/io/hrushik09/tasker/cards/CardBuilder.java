@@ -9,6 +9,7 @@ import static io.hrushik09.tasker.lists.ListBuilder.aList;
 public class CardBuilder {
     private Integer id = 1;
     private String title = "Not important";
+    private String description = "Not important";
     private ListBuilder listBuilder = aList();
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
@@ -19,6 +20,7 @@ public class CardBuilder {
     private CardBuilder(CardBuilder copy) {
         id = copy.id;
         title = copy.title;
+        description = copy.description;
         listBuilder = copy.listBuilder;
         createdAt = copy.createdAt;
         updatedAt = copy.updatedAt;
@@ -42,6 +44,11 @@ public class CardBuilder {
         return this;
     }
 
+    public CardBuilder withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public CardBuilder with(ListBuilder listBuilder) {
         this.listBuilder = listBuilder;
         return this;
@@ -51,6 +58,7 @@ public class CardBuilder {
         Card card = new Card();
         card.setId(id);
         card.setTitle(title);
+        card.setDescription(description);
         card.setList(listBuilder.build());
         card.setCreatedAt(createdAt);
         card.setUpdatedAt(updatedAt);

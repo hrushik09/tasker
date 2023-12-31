@@ -62,9 +62,9 @@ public class CardEndToEndTest {
                 .put("/api/cards/{id}", cardDTO.id())
                 .then()
                 .statusCode(200)
+                .body("description", equalTo("This is updated description"))
                 .body("id", equalTo(cardDTO.id()))
                 .body("title", equalTo(cardDTO.title()))
-                .body("listId", equalTo(cardDTO.listId()))
-                .body("description", equalTo(cardDTO.description()));
+                .body("listId", equalTo(cardDTO.listId()));
     }
 }
