@@ -18,4 +18,9 @@ public class CardController {
     public CardDTO create(@RequestParam Integer listId, @RequestBody @Valid CreateCardRequest request) {
         return cardService.create(new CreateCardCommand(listId, request.title()));
     }
+
+    @PutMapping("/{id}")
+    public CardDTO updateDescription(@PathVariable Integer id, @RequestBody @Valid UpdateDescriptionRequest request) {
+        return cardService.updateDescription(new UpdateDescriptionCommand(id, request.description()));
+    }
 }

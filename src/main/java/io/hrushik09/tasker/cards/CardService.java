@@ -23,4 +23,11 @@ public class CardService {
         Card saved = cardRepository.save(card);
         return CardDTO.from(saved);
     }
+
+    public CardDTO updateDescription(UpdateDescriptionCommand cmd) {
+        Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
+        fetched.setDescription(cmd.description());
+        Card updated = cardRepository.save(fetched);
+        return CardDTO.from(updated);
+    }
 }
