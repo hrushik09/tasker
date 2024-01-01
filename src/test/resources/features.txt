@@ -18,7 +18,7 @@ List of current testcases
     [x] this will be used for adding description for the first time to a card
     [x] as well as for future updates
 [ ] fetch all data for a Board at GET /api/boards/{id}
-    [ ] key `lists` contains id, title, boardId for each list for given board
+    [ ] key `lists` contains id, title for each list for given board
     [ ] key `cards` contains id, title, listId for each card in each list for given board
 [ ] fetch card by id
     [ ] title, description

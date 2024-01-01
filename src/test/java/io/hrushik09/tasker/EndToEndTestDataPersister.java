@@ -34,6 +34,11 @@ public class EndToEndTestDataPersister {
         return userService.create(new CreateUserCommand("Not important"));
     }
 
+    public BoardDTO havingPersistedBoard() {
+        UserDTO userDTO = havingPersistedUser();
+        return boardService.create(new CreateBoardCommand("Not important", userDTO.id()));
+    }
+
     public BoardDTO havingPersistedBoard(Integer userId) {
         return boardService.create(new CreateBoardCommand("Not important", userId));
     }

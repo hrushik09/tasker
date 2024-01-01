@@ -18,4 +18,9 @@ public class BoardController {
     public BoardDTO create(@RequestParam Integer userId, @RequestBody @Valid CreateBoardRequest request) {
         return boardService.create(new CreateBoardCommand(request.title(), userId));
     }
+
+    @GetMapping("/{id}")
+    public BoardDataDTO fetchAllData(@PathVariable Integer id) {
+        return boardService.fetchAllData(new FetchBoardDataQuery(id));
+    }
 }

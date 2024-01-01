@@ -27,4 +27,8 @@ public class BoardService {
     public Board getReferenceById(Integer id) {
         return boardRepository.getReferenceById(id);
     }
+
+    public BoardDataDTO fetchAllData(FetchBoardDataQuery query) {
+        return null;
+    }
 }
