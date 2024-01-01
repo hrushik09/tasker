@@ -48,7 +48,7 @@ public class BoardEndToEndTest {
     }
 
     @Test
-    void shouldFetchAllDataForGivenBoard() {
+    void shouldFetchAllDataForGivenBoardSuccessfully() {
         BoardDTO boardDTO = dataPersister.havingPersistedBoard();
         ListDTO working = dataPersister.havingPersistedList("Working", boardDTO.id());
         ListDTO completed = dataPersister.havingPersistedList("Completed", boardDTO.id());
@@ -66,7 +66,7 @@ public class BoardEndToEndTest {
                 .body("lists", hasSize(2))
                 .body("lists.id", containsInAnyOrder(working.id(), completed.id()))
                 .body("lists.title", containsInAnyOrder(working.title(), completed.title()))
-                .body("cards", hasSize(7))
+                .body("cards", hasSize(3))
                 .body("cards.id", containsInAnyOrder(card.id(), documentation.id(), formatting.id()))
                 .body("cards.title", containsInAnyOrder(card.title(), documentation.title(), formatting.title()))
                 .body("cards.listId", containsInAnyOrder(card.listId(), documentation.listId(), formatting.listId()));

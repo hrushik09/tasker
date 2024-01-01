@@ -24,6 +24,8 @@ public class BoardControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private BoardService boardService;
+    @MockBean
+    private BoardDataService boardDataService;
 
     @Test
     void shouldCreateBoardSuccessfully() throws Exception {
@@ -46,7 +48,17 @@ public class BoardControllerTest {
     }
 
     @Test
-    void shouldFetchAllDataForGivenBoard() throws Exception {
+    void shouldThrowWhenFetchingAllDataForNonExistingBoard() throws Exception {
+        Integer nonExistingId = 1;
+        when(boardDataService.fetchAllData(new FetchBoardDataQuery(nonExistingId))).thenThrow(new BoardDoesNotExistException(nonExistingId));
+
+        mockMvc.perform(get("/api/boards/{id}", nonExistingId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("Board with id=" + nonExistingId + " does not exist")));
+    }
+
+    @Test
+    void shouldFetchAllDataForGivenBoardSuccessfully() throws Exception {
         Integer boardId = 1;
         List<ListDTO> lists = List.of(
                 new ListDTO(1, "Future Works"),
@@ -64,7 +76,7 @@ public class BoardControllerTest {
                 new CardMinDTO(7, "Refactoring", 3)
         );
         BoardDataDTO boardDataDTO = new BoardDataDTO(boardId, lists, cards);
-        when(boardService.fetchAllData(new FetchBoardDataQuery(boardId))).thenReturn(boardDataDTO);
+        when(boardDataService.fetchAllData(new FetchBoardDataQuery(boardId))).thenReturn(boardDataDTO);
 
         mockMvc.perform(get("/api/boards/{id}", boardId))
                 .andExpect(status().isOk())

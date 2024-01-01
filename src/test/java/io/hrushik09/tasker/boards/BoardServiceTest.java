@@ -1,5 +1,7 @@
 package io.hrushik09.tasker.boards;
 
+import io.hrushik09.tasker.cards.CardService;
+import io.hrushik09.tasker.lists.ListService;
 import io.hrushik09.tasker.users.UserBuilder;
 import io.hrushik09.tasker.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +20,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
+    private BoardService boardService;
     @Mock
     private BoardRepository boardRepository;
     @Mock
     private UserService userService;
-    private BoardService boardService;
+    @Mock
+    private ListService listService;
+    @Mock
+    private CardService cardService;
 
     @BeforeEach
     void setUp() {

@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/boards")
 public class BoardController {
     private final BoardService boardService;
+    private final BoardDataService boardDataService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, BoardDataService boardDataService) {
         this.boardService = boardService;
+        this.boardDataService = boardDataService;
     }
 
     @PostMapping
@@ -21,6 +23,6 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public BoardDataDTO fetchAllData(@PathVariable Integer id) {
-        return boardService.fetchAllData(new FetchBoardDataQuery(id));
+        return boardDataService.fetchAllData(new FetchBoardDataQuery(id));
     }
 }
