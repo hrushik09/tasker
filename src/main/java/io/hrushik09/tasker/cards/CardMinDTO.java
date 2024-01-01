@@ -1,4 +1,4 @@
-package io.hrushik09.tasker.boards;
+package io.hrushik09.tasker.cards;
 
 public record CardMinDTO(
         Integer id,

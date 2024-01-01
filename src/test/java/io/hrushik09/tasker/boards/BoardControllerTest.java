@@ -1,5 +1,6 @@
 package io.hrushik09.tasker.boards;
 
+import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.lists.ListDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
