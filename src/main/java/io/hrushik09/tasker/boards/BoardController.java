@@ -8,14 +8,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/boards")
 public class BoardController {
     private final BoardService boardService;
+    private final BoardDataService boardDataService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, BoardDataService boardDataService) {
         this.boardService = boardService;
+        this.boardDataService = boardDataService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BoardDTO create(@RequestParam Integer userId, @RequestBody @Valid CreateBoardRequest request) {
         return boardService.create(new CreateBoardCommand(request.title(), userId));
+    }
+
+    @GetMapping("/{id}")
+    public BoardDataDTO fetchAllData(@PathVariable Integer id) {
+        return boardDataService.fetchAllData(new FetchBoardDataQuery(id));
     }
 }

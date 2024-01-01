@@ -37,6 +37,6 @@ class ListRepositoryTest {
         assertThat(fetched).extracting("id")
                 .containsExactlyInAnyOrder(todo.getId(), completed.getId(), deployed.getId(), futureWorks.getId());
         assertThat(fetched).extracting("title")
-                .containsExactlyInAnyOrder("To Do", "Completed", "Deployed", "Future Works");
+                .containsExactlyInAnyOrder(todo.getTitle(), completed.getTitle(), deployed.getTitle(), futureWorks.getTitle());
     }
 }

@@ -30,4 +30,8 @@ public class CardService {
         Card updated = cardRepository.save(fetched);
         return CardDTO.from(updated);
     }
+
+    public AllCardMinDTO fetchAllFor(Integer boardId) {
+        return new AllCardMinDTO(cardRepository.fetchForAll(boardId));
+    }
 }

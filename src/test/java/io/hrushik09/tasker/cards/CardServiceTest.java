@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
@@ -80,5 +81,25 @@ class CardServiceTest {
         verify(cardRepository).save(cardArgumentCaptor.capture());
         Card captorValue = cardArgumentCaptor.getValue();
         assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
+    }
+
+    @Test
+    void shouldFetchAllCardsForGivenBoard() {
+        Integer boardId = 1;
+        List<CardMinDTO> cards = List.of(
+                new CardMinDTO(1, "Card 1", 1),
+                new CardMinDTO(2, "Card 2", 2),
+                new CardMinDTO(3, "Card 3", 1),
+                new CardMinDTO(4, "Card 4", 2),
+                new CardMinDTO(5, "Card 5", 3)
+        );
+        when(cardRepository.fetchForAll(boardId)).thenReturn(cards);
+
+        AllCardMinDTO fetched = cardService.fetchAllFor(boardId);
+
+        assertThat(fetched.cards()).hasSize(5);
+        assertThat(fetched.cards()).extracting("id").containsExactlyInAnyOrder(1, 2, 3, 4, 5);
+        assertThat(fetched.cards()).extracting("title").containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
+        assertThat(fetched.cards()).extracting("listId").containsExactlyInAnyOrder(1, 2, 1, 2, 3);
     }
 }

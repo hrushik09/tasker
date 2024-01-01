@@ -75,9 +75,9 @@ class ListServiceTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        Optional<List> optional = Optional.of(aList().withId(1).build());
-        when(listRepository.findById(1)).thenReturn(optional);
-        when(listRepository.save(any())).thenReturn(aList().withId(1).withTitle("Updated title").build());
+        ListBuilder listBuilder = aList().withId(1);
+        when(listRepository.findById(1)).thenReturn(Optional.of(listBuilder.build()));
+        when(listRepository.save(any())).thenReturn(listBuilder.but().withTitle("Updated title").build());
 
         ListDTO updated = listService.update(new UpdateListCommand(1, "Updated title"));
 
