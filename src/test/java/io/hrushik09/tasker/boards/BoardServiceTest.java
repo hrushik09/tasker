@@ -1,7 +1,5 @@
 package io.hrushik09.tasker.boards;
 
-import io.hrushik09.tasker.cards.CardService;
-import io.hrushik09.tasker.lists.ListService;
 import io.hrushik09.tasker.users.UserBuilder;
 import io.hrushik09.tasker.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,10 +23,6 @@ class BoardServiceTest {
     private BoardRepository boardRepository;
     @Mock
     private UserService userService;
-    @Mock
-    private ListService listService;
-    @Mock
-    private CardService cardService;
 
     @BeforeEach
     void setUp() {
@@ -42,10 +36,7 @@ class BoardServiceTest {
         when(userService.getReferenceById(userId)).thenReturn(userBuilder.build());
         Integer boardId = 1;
         String title = "My Board";
-        Board board = aBoard().withId(boardId)
-                .withTitle(title)
-                .with(userBuilder)
-                .build();
+        Board board = aBoard().withId(boardId).withTitle(title).with(userBuilder).build();
         when(boardRepository.save(any())).thenReturn(board);
 
         BoardDTO created = boardService.create(new CreateBoardCommand(title, userId));

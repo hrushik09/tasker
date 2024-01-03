@@ -21,7 +21,6 @@ class UpdateListRequestTest {
         Set<ConstraintViolation<UpdateListRequest>> violations = validator.validate(request);
 
         assertThat(violations).hasSize(1);
-        assertThat(violations).extracting("message")
-                .containsExactly("title should be non-empty");
+        assertThat(violations).extracting("message").containsExactly("title should be non-empty");
     }
 }

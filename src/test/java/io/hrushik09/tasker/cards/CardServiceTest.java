@@ -43,7 +43,7 @@ class CardServiceTest {
         Card card = aCard().withId(cardId).withTitle(title).with(listBuilder).build();
         when(cardRepository.save(any())).thenReturn(card);
 
-        CardDTO created = cardService.create(new CreateCardCommand(listId, title));
+        CardMinDTO created = cardService.create(new CreateCardCommand(listId, title));
 
         assertThat(created.id()).isEqualTo(cardId);
         assertThat(created.title()).isEqualTo(title);

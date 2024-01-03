@@ -24,7 +24,7 @@ public class CardControllerTest {
 
     @Test
     void shouldCreateCardSuccessfully() throws Exception {
-        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CardDTO(1, "Card 1", 1, null));
+        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CardMinDTO(1, "Card 1", 1));
 
         mockMvc.perform(post("/api/cards")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -43,13 +43,9 @@ public class CardControllerTest {
 
     @Test
     void shouldUpdateDescriptionSuccessfully() throws Exception {
-        Integer id = 1;
-        String title = "Not important";
-        Integer listId = 1;
-        String updatedDescription = "Description after update";
-        when(cardService.updateDescription(new UpdateDescriptionCommand(id, updatedDescription))).thenReturn(new CardDTO(id, title, listId, updatedDescription));
+        when(cardService.updateDescription(new UpdateDescriptionCommand(1, "Description after update"))).thenReturn(new CardDTO(1, "Not important", 1, "Description after update"));
 
-        mockMvc.perform(put("/api/cards/{id}", id)
+        mockMvc.perform(put("/api/cards/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -58,9 +54,9 @@ public class CardControllerTest {
                                 """)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description", equalTo(updatedDescription)))
-                .andExpect(jsonPath("$.id", equalTo(id)))
-                .andExpect(jsonPath("$.title", equalTo(title)))
-                .andExpect(jsonPath("$.listId", equalTo(listId)));
+                .andExpect(jsonPath("$.description", equalTo("Description after update")))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.title", equalTo("Not important")))
+                .andExpect(jsonPath("$.listId", equalTo(1)));
     }
 }

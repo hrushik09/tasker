@@ -49,7 +49,7 @@ public class CardEndToEndTest {
 
     @Test
     void shouldUpdateDescriptionSuccessfully() {
-        CardDTO cardDTO = dataPersister.havingPersistedCard();
+        CardMinDTO cardDTO = dataPersister.havingPersistedCard();
 
         given()
                 .contentType(ContentType.JSON)

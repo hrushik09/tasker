@@ -5,4 +5,7 @@ public record CardMinDTO(
         String title,
         Integer listId
 ) {
+    public static CardMinDTO from(Card card) {
+        return new CardMinDTO(card.getId(), card.getTitle(), card.getList().getId());
+    }
 }

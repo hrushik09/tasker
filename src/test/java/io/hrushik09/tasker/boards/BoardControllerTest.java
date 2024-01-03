@@ -29,13 +29,12 @@ public class BoardControllerTest {
 
     @Test
     void shouldCreateBoardSuccessfully() throws Exception {
-        Integer userId = 1;
-        when(boardService.create(new CreateBoardCommand("Development Board", userId)))
+        when(boardService.create(new CreateBoardCommand("Development Board", 1)))
                 .thenReturn(new BoardDTO(1, "Development Board"));
 
         mockMvc.perform(post("/api/boards")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .queryParam("userId", String.valueOf(userId))
+                        .queryParam("userId", String.valueOf(1))
                         .content("""
                                 {
                                 "title": "Development Board"

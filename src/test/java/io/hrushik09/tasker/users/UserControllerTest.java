@@ -42,18 +42,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldFindUserSuccessfully() throws Exception {
-        when(userService.findDTOById(1)).thenReturn(new UserDTO(1, "user 2", Instant.now(), Instant.now()));
-
-        mockMvc.perform(get("/api/users/{id}", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.name", equalTo("user 2")))
-                .andExpect(jsonPath("$.createdAt", notNullValue()))
-                .andExpect(jsonPath("$.updatedAt", notNullValue()));
-    }
-
-    @Test
     void shouldThrowWhenFindingNonExistingUser() throws Exception {
         Integer nonExistingId = 100;
         when(userService.findDTOById(nonExistingId)).thenThrow(new UserDoesNotExistException(nonExistingId));
@@ -61,5 +49,18 @@ public class UserControllerTest {
         mockMvc.perform(get("/api/users/{id}", nonExistingId))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", equalTo("User with id=" + nonExistingId + " does not exist")));
+    }
+
+    @Test
+    void shouldFindUserSuccessfully() throws Exception {
+        String name = "user 2";
+        when(userService.findDTOById(1)).thenReturn(new UserDTO(1, name, Instant.now(), Instant.now()));
+
+        mockMvc.perform(get("/api/users/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.name", equalTo(name)))
+                .andExpect(jsonPath("$.createdAt", notNullValue()))
+                .andExpect(jsonPath("$.updatedAt", notNullValue()));
     }
 }

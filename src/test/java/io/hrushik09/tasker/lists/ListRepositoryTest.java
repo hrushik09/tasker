@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ListRepositoryTest {
     private final RepositoryTestDataPersister dataPersister = new RepositoryTestDataPersister();
     @Autowired
-    public TestEntityManager entityManager;
+    private TestEntityManager entityManager;
     @Autowired
     private ListRepository listRepository;
 

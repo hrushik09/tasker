@@ -16,12 +16,12 @@ public class CardService {
     }
 
     @Transactional
-    public CardDTO create(CreateCardCommand cmd) {
+    public CardMinDTO create(CreateCardCommand cmd) {
         Card card = new Card();
         card.setTitle(cmd.title());
         card.setList(listService.getReferenceById(cmd.listId()));
         Card saved = cardRepository.save(card);
-        return CardDTO.from(saved);
+        return CardMinDTO.from(saved);
     }
 
     public CardDTO updateDescription(UpdateDescriptionCommand cmd) {

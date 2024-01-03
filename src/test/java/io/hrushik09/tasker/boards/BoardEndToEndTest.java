@@ -2,7 +2,7 @@ package io.hrushik09.tasker.boards;
 
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
-import io.hrushik09.tasker.cards.CardDTO;
+import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.lists.ListDTO;
 import io.hrushik09.tasker.users.UserDTO;
 import io.restassured.RestAssured;
@@ -52,9 +52,9 @@ public class BoardEndToEndTest {
         BoardDTO boardDTO = dataPersister.havingPersistedBoard();
         ListDTO working = dataPersister.havingPersistedList("Working", boardDTO.id());
         ListDTO completed = dataPersister.havingPersistedList("Completed", boardDTO.id());
-        CardDTO card = dataPersister.havingPersistedCard("Card 1", working.id());
-        CardDTO documentation = dataPersister.havingPersistedCard("Documentation", completed.id());
-        CardDTO formatting = dataPersister.havingPersistedCard("Formatting", working.id());
+        CardMinDTO card = dataPersister.havingPersistedCard("Card 1", working.id());
+        CardMinDTO documentation = dataPersister.havingPersistedCard("Documentation", completed.id());
+        CardMinDTO formatting = dataPersister.havingPersistedCard("Formatting", working.id());
 
         given()
                 .contentType(ContentType.JSON)
