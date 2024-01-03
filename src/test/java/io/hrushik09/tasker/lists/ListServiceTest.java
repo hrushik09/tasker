@@ -21,11 +21,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ListServiceTest {
+    private ListService listService;
     @Mock
     private ListRepository listRepository;
     @Mock
     private BoardService boardService;
-    private ListService listService;
 
     @BeforeEach
     void setUp() {
@@ -39,10 +39,7 @@ class ListServiceTest {
         when(boardService.getReferenceById(boardId)).thenReturn(boardBuilder.build());
         Integer listId = 1;
         String title = "To Do";
-        List list = aList().withId(listId)
-                .withTitle(title)
-                .with(boardBuilder)
-                .build();
+        List list = aList().withId(listId).withTitle(title).with(boardBuilder).build();
         when(listRepository.save(any())).thenReturn(list);
 
         ListDTO created = listService.create(new CreateListCommand(title, boardId));
@@ -75,18 +72,20 @@ class ListServiceTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        ListBuilder listBuilder = aList().withId(1);
-        when(listRepository.findById(1)).thenReturn(Optional.of(listBuilder.build()));
-        when(listRepository.save(any())).thenReturn(listBuilder.but().withTitle("Updated title").build());
+        int id = 1;
+        ListBuilder listBuilder = aList().withId(id);
+        when(listRepository.findById(id)).thenReturn(Optional.of(listBuilder.build()));
+        String updatedTitle = "Updated title";
+        when(listRepository.save(any())).thenReturn(listBuilder.but().withTitle(updatedTitle).build());
 
-        ListDTO updated = listService.update(new UpdateListCommand(1, "Updated title"));
+        ListDTO updated = listService.update(new UpdateListCommand(id, updatedTitle));
 
-        assertThat(updated.id()).isEqualTo(1);
-        assertThat(updated.title()).isEqualTo("Updated title");
+        assertThat(updated.id()).isEqualTo(id);
+        assertThat(updated.title()).isEqualTo(updatedTitle);
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(listRepository).save(listArgumentCaptor.capture());
         List captorValue = listArgumentCaptor.getValue();
-        assertThat(captorValue.getTitle()).isEqualTo("Updated title");
+        assertThat(captorValue.getTitle()).isEqualTo(updatedTitle);
     }
 
     @Test

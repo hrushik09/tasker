@@ -77,7 +77,7 @@ public class ListControllerTest {
     }
 
     @Test
-    void shouldThrownWhenUpdatingTitleForNonExistingList() throws Exception {
+    void shouldThrowWhenUpdatingTitleForNonExistingList() throws Exception {
         Integer nonExistingId = 100;
         when(listService.update(new UpdateListCommand(nonExistingId, "Not important"))).thenThrow(new ListDoesNotExistException(nonExistingId));
 

@@ -18,9 +18,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+    private UserService userService;
     @Mock
     private UserRepository userRepository;
-    private UserService userService;
 
     @BeforeEach
     void setUp() {
@@ -44,19 +44,6 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldFindUserSuccessfully() {
-        Optional<User> optional = Optional.of(aUser().withId(1).withName("user 2").build());
-        when(userRepository.findById(1)).thenReturn(optional);
-
-        UserDTO fetched = userService.findDTOById(1);
-
-        assertThat(fetched.id()).isEqualTo(1);
-        assertThat(fetched.name()).isEqualTo("user 2");
-        assertThat(fetched.createdAt()).isNotNull();
-        assertThat(fetched.updatedAt()).isNotNull();
-    }
-
-    @Test
     void shouldThrowWhenFindingNonExistingUser() {
         Integer nonExistingId = 100;
         when(userRepository.findById(nonExistingId)).thenReturn(Optional.empty());
@@ -64,5 +51,20 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.findDTOById(nonExistingId))
                 .isInstanceOf(UserDoesNotExistException.class)
                 .hasMessage("User with id=" + nonExistingId + " does not exist");
+    }
+
+    @Test
+    void shouldFindUserSuccessfully() {
+        String name = "user 2";
+        int id = 1;
+        Optional<User> optional = Optional.of(aUser().withId(id).withName(name).build());
+        when(userRepository.findById(id)).thenReturn(optional);
+
+        UserDTO fetched = userService.findDTOById(id);
+
+        assertThat(fetched.id()).isEqualTo(id);
+        assertThat(fetched.name()).isEqualTo(name);
+        assertThat(fetched.createdAt()).isNotNull();
+        assertThat(fetched.updatedAt()).isNotNull();
     }
 }
