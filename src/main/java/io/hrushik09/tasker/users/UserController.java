@@ -15,13 +15,13 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO create(@RequestBody @Valid CreateUserRequest request) {
+    CreateUserResponse create(@RequestBody @Valid CreateUserRequest request) {
         CreateUserCommand cmd = new CreateUserCommand(request.name());
         return userService.create(cmd);
     }
 
     @GetMapping("/{id}")
-    UserDTO findById(@PathVariable Integer id) {
+    UserDetailsDTO findById(@PathVariable Integer id) {
         return userService.findDTOById(id);
     }
 }

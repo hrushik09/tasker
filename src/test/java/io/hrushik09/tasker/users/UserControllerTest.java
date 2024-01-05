@@ -26,7 +26,7 @@ public class UserControllerTest {
 
     @Test
     void shouldCreateUserSuccessfully() throws Exception {
-        when(userService.create(new CreateUserCommand("user 1"))).thenReturn(new UserDTO(1, "user 1", null, null));
+        when(userService.create(new CreateUserCommand("user 1"))).thenReturn(new CreateUserResponse(1, "user 1"));
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,7 +54,7 @@ public class UserControllerTest {
     @Test
     void shouldFindUserSuccessfully() throws Exception {
         String name = "user 2";
-        when(userService.findDTOById(1)).thenReturn(new UserDTO(1, name, Instant.now(), Instant.now()));
+        when(userService.findDTOById(1)).thenReturn(new UserDetailsDTO(1, name, Instant.now(), Instant.now()));
 
         mockMvc.perform(get("/api/users/{id}", 1))
                 .andExpect(status().isOk())

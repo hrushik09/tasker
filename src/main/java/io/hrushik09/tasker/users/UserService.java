@@ -13,16 +13,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO create(CreateUserCommand cmd) {
+    public CreateUserResponse create(CreateUserCommand cmd) {
         User user = new User();
         user.setName(cmd.name());
         User savedUser = userRepository.save(user);
-        return UserDTO.from(savedUser);
+        return CreateUserResponse.from(savedUser);
     }
 
-    public UserDTO findDTOById(Integer id) {
+    public UserDetailsDTO findDTOById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException(id));
-        return UserDTO.from(user);
+        return UserDetailsDTO.from(user);
     }
 
     public User getReferenceById(Integer id) {

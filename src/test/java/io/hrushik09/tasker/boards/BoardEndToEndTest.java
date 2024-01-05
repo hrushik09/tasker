@@ -4,7 +4,7 @@ import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.lists.ListDTO;
-import io.hrushik09.tasker.users.UserDTO;
+import io.hrushik09.tasker.users.CreateUserResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public class BoardEndToEndTest {
 
     @Test
     void shouldCreateBoardSuccessfully() {
-        UserDTO savedUser = dataPersister.havingPersistedUser();
+        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
 
         given()
                 .contentType(ContentType.JSON)

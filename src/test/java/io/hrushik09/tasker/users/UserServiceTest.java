@@ -33,7 +33,7 @@ class UserServiceTest {
         Integer id = 1;
         when(userRepository.save(any())).thenReturn(aUser().withId(id).withName(name).build());
 
-        UserDTO created = userService.create(new CreateUserCommand(name));
+        CreateUserResponse created = userService.create(new CreateUserCommand(name));
 
         assertThat(created.id()).isEqualTo(id);
         assertThat(created.name()).isEqualTo(name);
@@ -60,7 +60,7 @@ class UserServiceTest {
         Optional<User> optional = Optional.of(aUser().withId(id).withName(name).build());
         when(userRepository.findById(id)).thenReturn(optional);
 
-        UserDTO fetched = userService.findDTOById(id);
+        UserDetailsDTO fetched = userService.findDTOById(id);
 
         assertThat(fetched.id()).isEqualTo(id);
         assertThat(fetched.name()).isEqualTo(name);

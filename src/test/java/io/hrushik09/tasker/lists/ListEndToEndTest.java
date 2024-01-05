@@ -3,7 +3,7 @@ package io.hrushik09.tasker.lists;
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.boards.BoardDTO;
-import io.hrushik09.tasker.users.UserDTO;
+import io.hrushik09.tasker.users.CreateUserResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +28,8 @@ public class ListEndToEndTest {
 
     @Test
     void shouldCreateListSuccessfully() {
-        UserDTO userDTO = dataPersister.havingPersistedUser();
-        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
+        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(savedUser.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -49,8 +49,8 @@ public class ListEndToEndTest {
 
     @Test
     void shouldFetchAllListsForGivenBoard() {
-        UserDTO userDTO = dataPersister.havingPersistedUser();
-        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
+        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(savedUser.id());
         ListDTO toDo = dataPersister.havingPersistedList("To Do", boardDTO.id());
         ListDTO completed = dataPersister.havingPersistedList("Completed", boardDTO.id());
         ListDTO deployed = dataPersister.havingPersistedList("Deployed", boardDTO.id());
@@ -69,8 +69,8 @@ public class ListEndToEndTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        UserDTO userDTO = dataPersister.havingPersistedUser();
-        BoardDTO boardDTO = dataPersister.havingPersistedBoard(userDTO.id());
+        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
+        BoardDTO boardDTO = dataPersister.havingPersistedBoard(savedUser.id());
         ListDTO listDTO = dataPersister.havingPersistedList("Original List title", boardDTO.id());
 
         given()
