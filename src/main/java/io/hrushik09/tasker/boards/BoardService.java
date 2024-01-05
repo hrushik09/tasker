@@ -16,12 +16,12 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDTO create(CreateBoardCommand cmd) {
+    public CreateBoardResponse create(CreateBoardCommand cmd) {
         Board board = new Board();
         board.setTitle(cmd.title());
         board.setUser(userService.getReferenceById(cmd.userId()));
         Board savedBoard = boardRepository.save(board);
-        return BoardDTO.from(savedBoard);
+        return CreateBoardResponse.from(savedBoard);
     }
 
     public Board getReferenceById(Integer id) {

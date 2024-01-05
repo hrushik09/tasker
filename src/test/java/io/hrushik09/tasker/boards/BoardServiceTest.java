@@ -39,7 +39,7 @@ class BoardServiceTest {
         Board board = aBoard().withId(boardId).withTitle(title).with(userBuilder).build();
         when(boardRepository.save(any())).thenReturn(board);
 
-        BoardDTO created = boardService.create(new CreateBoardCommand(title, userId));
+        CreateBoardResponse created = boardService.create(new CreateBoardCommand(title, userId));
 
         assertThat(created.id()).isEqualTo(boardId);
         assertThat(created.title()).isEqualTo(title);

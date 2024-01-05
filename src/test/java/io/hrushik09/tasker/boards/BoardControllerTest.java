@@ -30,7 +30,7 @@ public class BoardControllerTest {
     @Test
     void shouldCreateBoardSuccessfully() throws Exception {
         when(boardService.create(new CreateBoardCommand("Development Board", 1)))
-                .thenReturn(new BoardDTO(1, "Development Board"));
+                .thenReturn(new CreateBoardResponse(1, "Development Board"));
 
         mockMvc.perform(post("/api/boards")
                         .contentType(MediaType.APPLICATION_JSON)

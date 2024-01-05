@@ -49,9 +49,9 @@ public class BoardEndToEndTest {
 
     @Test
     void shouldFetchAllDataForGivenBoardSuccessfully() {
-        BoardDTO boardDTO = dataPersister.havingPersistedBoard();
-        ListDTO working = dataPersister.havingPersistedList("Working", boardDTO.id());
-        ListDTO completed = dataPersister.havingPersistedList("Completed", boardDTO.id());
+        CreateBoardResponse board = dataPersister.havingPersistedBoard();
+        ListDTO working = dataPersister.havingPersistedList("Working", board.id());
+        ListDTO completed = dataPersister.havingPersistedList("Completed", board.id());
         CardMinDTO card = dataPersister.havingPersistedCard("Card 1", working.id());
         CardMinDTO documentation = dataPersister.havingPersistedCard("Documentation", completed.id());
         CardMinDTO formatting = dataPersister.havingPersistedCard("Formatting", working.id());
@@ -59,10 +59,10 @@ public class BoardEndToEndTest {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/api/boards/{id}", boardDTO.id())
+                .get("/api/boards/{id}", board.id())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(boardDTO.id()))
+                .body("id", equalTo(board.id()))
                 .body("lists", hasSize(2))
                 .body("lists.id", containsInAnyOrder(working.id(), completed.id()))
                 .body("lists.title", containsInAnyOrder(working.title(), completed.title()))

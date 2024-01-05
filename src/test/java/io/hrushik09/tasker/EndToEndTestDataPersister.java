@@ -1,8 +1,8 @@
 package io.hrushik09.tasker;
 
-import io.hrushik09.tasker.boards.BoardDTO;
 import io.hrushik09.tasker.boards.BoardService;
 import io.hrushik09.tasker.boards.CreateBoardCommand;
+import io.hrushik09.tasker.boards.CreateBoardResponse;
 import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.cards.CardService;
 import io.hrushik09.tasker.cards.CreateCardCommand;
@@ -34,12 +34,12 @@ public class EndToEndTestDataPersister {
         return userService.create(new CreateUserCommand("Not important"));
     }
 
-    public BoardDTO havingPersistedBoard() {
+    public CreateBoardResponse havingPersistedBoard() {
         CreateUserResponse createUserResponse = havingPersistedUser();
         return boardService.create(new CreateBoardCommand("Not important", createUserResponse.id()));
     }
 
-    public BoardDTO havingPersistedBoard(Integer userId) {
+    public CreateBoardResponse havingPersistedBoard(Integer userId) {
         return boardService.create(new CreateBoardCommand("Not important", userId));
     }
 
@@ -49,8 +49,8 @@ public class EndToEndTestDataPersister {
 
     public ListDTO havingPersistedList() {
         CreateUserResponse createUserResponse = havingPersistedUser();
-        BoardDTO boardDTO = havingPersistedBoard(createUserResponse.id());
-        return havingPersistedList("Not important", boardDTO.id());
+        CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
+        return havingPersistedList("Not important", createBoardResponse.id());
     }
 
     public CardMinDTO havingPersistedCard(String title, Integer listId) {
@@ -59,8 +59,8 @@ public class EndToEndTestDataPersister {
 
     public CardMinDTO havingPersistedCard() {
         CreateUserResponse createUserResponse = havingPersistedUser();
-        BoardDTO boardDTO = havingPersistedBoard(createUserResponse.id());
-        ListDTO listDTO = havingPersistedList("Not important", boardDTO.id());
+        CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
+        ListDTO listDTO = havingPersistedList("Not important", createBoardResponse.id());
         return havingPersistedCard("No important", listDTO.id());
     }
 }
