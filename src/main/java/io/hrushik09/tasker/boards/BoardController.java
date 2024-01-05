@@ -22,7 +22,7 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    BoardDataDTO fetchAllData(@PathVariable Integer id) {
+    BoardDetailsDTO fetchAllData(@PathVariable Integer id) {
         return boardDataService.fetchAllData(new FetchBoardDataQuery(id));
     }
 }

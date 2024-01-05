@@ -1,6 +1,6 @@
 package io.hrushik09.tasker.boards;
 
-import io.hrushik09.tasker.cards.AllCardMinDTO;
+import io.hrushik09.tasker.cards.AllCardMinDetailsDTO;
 import io.hrushik09.tasker.cards.CardService;
 import io.hrushik09.tasker.lists.AllListDetailsDTO;
 import io.hrushik09.tasker.lists.ListService;
@@ -20,10 +20,10 @@ public class BoardDataService {
         this.cardService = cardService;
     }
 
-    public BoardDataDTO fetchAllData(FetchBoardDataQuery query) {
+    public BoardDetailsDTO fetchAllData(FetchBoardDataQuery query) {
         boardRepository.findById(query.id()).orElseThrow(() -> new BoardDoesNotExistException(query.id()));
         AllListDetailsDTO allListDetailsDTO = listService.fetchAllFor(query.id());
-        AllCardMinDTO allCardMinDTO = cardService.fetchAllFor(query.id());
-        return new BoardDataDTO(query.id(), allListDetailsDTO.lists(), allCardMinDTO.cards());
+        AllCardMinDetailsDTO allCardMinDetailsDTO = cardService.fetchAllFor(query.id());
+        return new BoardDetailsDTO(query.id(), allListDetailsDTO.lists(), allCardMinDetailsDTO.cards());
     }
 }

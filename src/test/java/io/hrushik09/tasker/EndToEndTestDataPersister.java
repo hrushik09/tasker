@@ -3,9 +3,9 @@ package io.hrushik09.tasker;
 import io.hrushik09.tasker.boards.BoardService;
 import io.hrushik09.tasker.boards.CreateBoardCommand;
 import io.hrushik09.tasker.boards.CreateBoardResponse;
-import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.cards.CardService;
 import io.hrushik09.tasker.cards.CreateCardCommand;
+import io.hrushik09.tasker.cards.CreateCardResponse;
 import io.hrushik09.tasker.lists.CreateListCommand;
 import io.hrushik09.tasker.lists.CreateListResponse;
 import io.hrushik09.tasker.lists.ListService;
@@ -53,11 +53,11 @@ public class EndToEndTestDataPersister {
         return havingPersistedList("Not important", createBoardResponse.id());
     }
 
-    public CardMinDTO havingPersistedCard(String title, Integer listId) {
+    public CreateCardResponse havingPersistedCard(String title, Integer listId) {
         return cardService.create(new CreateCardCommand(listId, title));
     }
 
-    public CardMinDTO havingPersistedCard() {
+    public CreateCardResponse havingPersistedCard() {
         CreateUserResponse createUserResponse = havingPersistedUser();
         CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
         CreateListResponse createListResponse = havingPersistedList("Not important", createBoardResponse.id());

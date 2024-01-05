@@ -15,12 +15,12 @@ public class CardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    CardMinDTO create(@RequestParam Integer listId, @RequestBody @Valid CreateCardRequest request) {
+    CreateCardResponse create(@RequestParam Integer listId, @RequestBody @Valid CreateCardRequest request) {
         return cardService.create(new CreateCardCommand(listId, request.title()));
     }
 
     @PutMapping("/{id}")
-    CardDTO updateDescription(@PathVariable Integer id, @RequestBody @Valid UpdateDescriptionRequest request) {
+    UpdateCardDescriptionResponse updateDescription(@PathVariable Integer id, @RequestBody @Valid UpdateDescriptionRequest request) {
         return cardService.updateDescription(new UpdateDescriptionCommand(id, request.description()));
     }
 }

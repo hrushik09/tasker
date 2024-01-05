@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Integer> {
-    @Query("SELECT new io.hrushik09.tasker.cards.CardMinDTO(c.id, c.title, c.list.id) FROM Card c WHERE c.list.board.id = :boardId")
-    List<CardMinDTO> fetchForAll(Integer boardId);
+    @Query("SELECT new io.hrushik09.tasker.cards.CardMinDetailsDTO(c.id, c.title, c.list.id) FROM Card c WHERE c.list.board.id = :boardId")
+    List<CardMinDetailsDTO> fetchForAll(Integer boardId);
 }

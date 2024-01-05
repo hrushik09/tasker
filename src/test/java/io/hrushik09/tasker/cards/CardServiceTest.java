@@ -43,7 +43,7 @@ class CardServiceTest {
         Card card = aCard().withId(cardId).withTitle(title).with(listBuilder).build();
         when(cardRepository.save(any())).thenReturn(card);
 
-        CardMinDTO created = cardService.create(new CreateCardCommand(listId, title));
+        CreateCardResponse created = cardService.create(new CreateCardCommand(listId, title));
 
         assertThat(created.id()).isEqualTo(cardId);
         assertThat(created.title()).isEqualTo(title);
@@ -71,12 +71,12 @@ class CardServiceTest {
         when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
         when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
 
-        CardDTO cardDTO = cardService.updateDescription(new UpdateDescriptionCommand(id, updatedDescription));
+        UpdateCardDescriptionResponse updated = cardService.updateDescription(new UpdateDescriptionCommand(id, updatedDescription));
 
-        assertThat(cardDTO.description()).isEqualTo(updatedDescription);
-        assertThat(cardDTO.id()).isEqualTo(id);
-        assertThat(cardDTO.title()).isNotNull();
-        assertThat(cardDTO.listId()).isNotNull();
+        assertThat(updated.description()).isEqualTo(updatedDescription);
+        assertThat(updated.id()).isEqualTo(id);
+        assertThat(updated.title()).isNotNull();
+        assertThat(updated.listId()).isNotNull();
         ArgumentCaptor<Card> cardArgumentCaptor = ArgumentCaptor.forClass(Card.class);
         verify(cardRepository).save(cardArgumentCaptor.capture());
         Card captorValue = cardArgumentCaptor.getValue();
@@ -86,16 +86,16 @@ class CardServiceTest {
     @Test
     void shouldFetchAllCardsForGivenBoard() {
         Integer boardId = 1;
-        List<CardMinDTO> cards = List.of(
-                new CardMinDTO(1, "Card 1", 1),
-                new CardMinDTO(2, "Card 2", 2),
-                new CardMinDTO(3, "Card 3", 1),
-                new CardMinDTO(4, "Card 4", 2),
-                new CardMinDTO(5, "Card 5", 3)
+        List<CardMinDetailsDTO> cards = List.of(
+                new CardMinDetailsDTO(1, "Card 1", 1),
+                new CardMinDetailsDTO(2, "Card 2", 2),
+                new CardMinDetailsDTO(3, "Card 3", 1),
+                new CardMinDetailsDTO(4, "Card 4", 2),
+                new CardMinDetailsDTO(5, "Card 5", 3)
         );
         when(cardRepository.fetchForAll(boardId)).thenReturn(cards);
 
-        AllCardMinDTO fetched = cardService.fetchAllFor(boardId);
+        AllCardMinDetailsDTO fetched = cardService.fetchAllFor(boardId);
 
         assertThat(fetched.cards()).hasSize(5);
         assertThat(fetched.cards()).extracting("id").containsExactlyInAnyOrder(1, 2, 3, 4, 5);

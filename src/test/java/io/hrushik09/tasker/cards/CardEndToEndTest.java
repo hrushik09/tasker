@@ -49,7 +49,7 @@ public class CardEndToEndTest {
 
     @Test
     void shouldUpdateDescriptionSuccessfully() {
-        CardMinDTO cardDTO = dataPersister.havingPersistedCard();
+        CreateCardResponse card = dataPersister.havingPersistedCard();
 
         given()
                 .contentType(ContentType.JSON)
@@ -59,12 +59,12 @@ public class CardEndToEndTest {
                         }
                         """)
                 .when()
-                .put("/api/cards/{id}", cardDTO.id())
+                .put("/api/cards/{id}", card.id())
                 .then()
                 .statusCode(200)
                 .body("description", equalTo("This is updated description"))
-                .body("id", equalTo(cardDTO.id()))
-                .body("title", equalTo(cardDTO.title()))
-                .body("listId", equalTo(cardDTO.listId()));
+                .body("id", equalTo(card.id()))
+                .body("title", equalTo(card.title()))
+                .body("listId", equalTo(card.listId()));
     }
 }
