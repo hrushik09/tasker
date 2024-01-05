@@ -2,7 +2,7 @@ package io.hrushik09.tasker.cards;
 
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
-import io.hrushik09.tasker.lists.ListDTO;
+import io.hrushik09.tasker.lists.CreateListResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,11 +28,11 @@ public class CardEndToEndTest {
 
     @Test
     void shouldCreateCardSuccessfully() {
-        ListDTO listDTO = dataPersister.havingPersistedList();
+        CreateListResponse savedList = dataPersister.havingPersistedList();
 
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("listId", listDTO.id())
+                .queryParam("listId", savedList.id())
                 .body("""
                         {
                         "title": "Card 1"
@@ -44,12 +44,12 @@ public class CardEndToEndTest {
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("title", equalTo("Card 1"))
-                .body("listId", equalTo(listDTO.id()));
+                .body("listId", equalTo(savedList.id()));
     }
 
     @Test
     void shouldUpdateDescriptionSuccessfully() {
-        CardMinDTO cardDTO = dataPersister.havingPersistedCard();
+        CreateCardResponse card = dataPersister.havingPersistedCard();
 
         given()
                 .contentType(ContentType.JSON)
@@ -59,12 +59,12 @@ public class CardEndToEndTest {
                         }
                         """)
                 .when()
-                .put("/api/cards/{id}", cardDTO.id())
+                .put("/api/cards/{id}", card.id())
                 .then()
                 .statusCode(200)
                 .body("description", equalTo("This is updated description"))
-                .body("id", equalTo(cardDTO.id()))
-                .body("title", equalTo(cardDTO.title()))
-                .body("listId", equalTo(cardDTO.listId()));
+                .body("id", equalTo(card.id()))
+                .body("title", equalTo(card.title()))
+                .body("listId", equalTo(card.listId()));
     }
 }

@@ -24,7 +24,7 @@ public class CardControllerTest {
 
     @Test
     void shouldCreateCardSuccessfully() throws Exception {
-        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CardMinDTO(1, "Card 1", 1));
+        when(cardService.create(new CreateCardCommand(1, "Card 1"))).thenReturn(new CreateCardResponse(1, "Card 1", 1));
 
         mockMvc.perform(post("/api/cards")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -43,7 +43,7 @@ public class CardControllerTest {
 
     @Test
     void shouldUpdateDescriptionSuccessfully() throws Exception {
-        when(cardService.updateDescription(new UpdateDescriptionCommand(1, "Description after update"))).thenReturn(new CardDTO(1, "Not important", 1, "Description after update"));
+        when(cardService.updateDescription(new UpdateDescriptionCommand(1, "Description after update"))).thenReturn(new UpdateCardDescriptionResponse(1, "Not important", 1, "Description after update"));
 
         mockMvc.perform(put("/api/cards/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)

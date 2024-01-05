@@ -24,7 +24,7 @@ public class ListControllerTest {
 
     @Test
     void shouldCreateListSuccessfully() throws Exception {
-        when(listService.create(new CreateListCommand("To Do", 1))).thenReturn(new ListDTO(1, "To Do"));
+        when(listService.create(new CreateListCommand("To Do", 1))).thenReturn(new CreateListResponse(1, "To Do"));
 
         mockMvc.perform(post("/api/lists")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -43,12 +43,12 @@ public class ListControllerTest {
     @Test
     void shouldFetchAllListsForGivenBoard() throws Exception {
         Integer boardId = 1;
-        AllListDTO allListDTO = new AllListDTO(List.of(
-                new ListDTO(1, "To Do"),
-                new ListDTO(2, "Completed"),
-                new ListDTO(3, "Deployed")
+        AllListDetailsDTO allListDetailsDTO = new AllListDetailsDTO(List.of(
+                new ListDetailsDTO(1, "To Do"),
+                new ListDetailsDTO(2, "Completed"),
+                new ListDetailsDTO(3, "Deployed")
         ));
-        when(listService.fetchAllFor(boardId)).thenReturn(allListDTO);
+        when(listService.fetchAllFor(boardId)).thenReturn(allListDetailsDTO);
 
         mockMvc.perform(get("/api/lists")
                         .queryParam("boardId", String.valueOf(boardId))
@@ -61,7 +61,7 @@ public class ListControllerTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() throws Exception {
-        when(listService.update(new UpdateListCommand(1, "New List title"))).thenReturn(new ListDTO(1, "New List title"));
+        when(listService.update(new UpdateListCommand(1, "New List title"))).thenReturn(new UpdateListResponse(1, "New List title"));
 
         mockMvc.perform(put("/api/lists/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)

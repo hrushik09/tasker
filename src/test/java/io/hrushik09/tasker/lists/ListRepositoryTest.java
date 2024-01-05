@@ -31,7 +31,7 @@ class ListRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        java.util.List<ListDTO> fetched = listRepository.fetchAllFor(board.getId());
+        java.util.List<ListDetailsDTO> fetched = listRepository.fetchAllFor(board.getId());
 
         assertThat(fetched).hasSize(4);
         assertThat(fetched).extracting("id")

@@ -44,15 +44,15 @@ public class UserEndToEndTest {
 
     @Test
     void shouldFindUserSuccessfully() {
-        UserDTO userDTO = dataPersister.havingPersistedUser("user 2");
+        CreateUserResponse savedUser = dataPersister.havingPersistedUser("user 2");
 
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/api/users/{id}", userDTO.id())
+                .get("/api/users/{id}", savedUser.id())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(userDTO.id()))
+                .body("id", equalTo(savedUser.id()))
                 .body("name", equalTo("user 2"))
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());

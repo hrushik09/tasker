@@ -16,22 +16,22 @@ public class CardService {
     }
 
     @Transactional
-    public CardMinDTO create(CreateCardCommand cmd) {
+    public CreateCardResponse create(CreateCardCommand cmd) {
         Card card = new Card();
         card.setTitle(cmd.title());
         card.setList(listService.getReferenceById(cmd.listId()));
         Card saved = cardRepository.save(card);
-        return CardMinDTO.from(saved);
+        return CreateCardResponse.from(saved);
     }
 
-    public CardDTO updateDescription(UpdateDescriptionCommand cmd) {
+    public UpdateCardDescriptionResponse updateDescription(UpdateDescriptionCommand cmd) {
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
         fetched.setDescription(cmd.description());
         Card updated = cardRepository.save(fetched);
-        return CardDTO.from(updated);
+        return UpdateCardDescriptionResponse.from(updated);
     }
 
-    public AllCardMinDTO fetchAllFor(Integer boardId) {
-        return new AllCardMinDTO(cardRepository.fetchForAll(boardId));
+    public AllCardMinDetailsDTO fetchAllFor(Integer boardId) {
+        return new AllCardMinDetailsDTO(cardRepository.fetchForAll(boardId));
     }
 }

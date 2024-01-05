@@ -17,12 +17,12 @@ public class BoardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    BoardDTO create(@RequestParam Integer userId, @RequestBody @Valid CreateBoardRequest request) {
+    CreateBoardResponse create(@RequestParam Integer userId, @RequestBody @Valid CreateBoardRequest request) {
         return boardService.create(new CreateBoardCommand(request.title(), userId));
     }
 
     @GetMapping("/{id}")
-    BoardDataDTO fetchAllData(@PathVariable Integer id) {
+    BoardDetailsDTO fetchAllData(@PathVariable Integer id) {
         return boardDataService.fetchAllData(new FetchBoardDataQuery(id));
     }
 }

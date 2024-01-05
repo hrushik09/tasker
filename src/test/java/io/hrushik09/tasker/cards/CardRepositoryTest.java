@@ -38,7 +38,7 @@ class CardRepositoryTest {
         List extraList = dataPersister.havingPersistedList(entityManager, "Extra List", extraBoard);
         Card extraCard = dataPersister.havingPersistedCard(entityManager, "Extra Card", extraList);
 
-        java.util.List<CardMinDTO> cards = cardRepository.fetchForAll(board.getId());
+        java.util.List<CardMinDetailsDTO> cards = cardRepository.fetchForAll(board.getId());
 
         assertThat(cards).hasSize(6);
         assertThat(cards).extracting("id").containsExactlyInAnyOrder(card1.getId(), card2.getId(), card3.getId(), card4.getId(), card5.getId(), card6.getId());
