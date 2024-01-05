@@ -3,7 +3,7 @@ package io.hrushik09.tasker.boards;
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.cards.CardMinDTO;
-import io.hrushik09.tasker.lists.ListDTO;
+import io.hrushik09.tasker.lists.CreateListResponse;
 import io.hrushik09.tasker.users.CreateUserResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -50,8 +50,8 @@ public class BoardEndToEndTest {
     @Test
     void shouldFetchAllDataForGivenBoardSuccessfully() {
         CreateBoardResponse board = dataPersister.havingPersistedBoard();
-        ListDTO working = dataPersister.havingPersistedList("Working", board.id());
-        ListDTO completed = dataPersister.havingPersistedList("Completed", board.id());
+        CreateListResponse working = dataPersister.havingPersistedList("Working", board.id());
+        CreateListResponse completed = dataPersister.havingPersistedList("Completed", board.id());
         CardMinDTO card = dataPersister.havingPersistedCard("Card 1", working.id());
         CardMinDTO documentation = dataPersister.havingPersistedCard("Documentation", completed.id());
         CardMinDTO formatting = dataPersister.havingPersistedCard("Formatting", working.id());

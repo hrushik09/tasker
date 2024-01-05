@@ -16,23 +16,23 @@ public class ListService {
     }
 
     @Transactional
-    public ListDTO create(CreateListCommand cmd) {
+    public CreateListResponse create(CreateListCommand cmd) {
         List list = new List();
         list.setTitle(cmd.title());
         list.setBoard(boardService.getReferenceById(cmd.boardId()));
         List saved = listRepository.save(list);
-        return ListDTO.from(saved);
+        return CreateListResponse.from(saved);
     }
 
-    public AllListDTO fetchAllFor(Integer boardId) {
-        return new AllListDTO(listRepository.fetchAllFor(boardId));
+    public AllListDetailsDTO fetchAllFor(Integer boardId) {
+        return new AllListDetailsDTO(listRepository.fetchAllFor(boardId));
     }
 
-    public ListDTO update(UpdateListCommand cmd) {
+    public UpdateListResponse update(UpdateListCommand cmd) {
         List fetched = listRepository.findById(cmd.id()).orElseThrow(() -> new ListDoesNotExistException(cmd.id()));
         fetched.setTitle(cmd.title());
         List updated = listRepository.save(fetched);
-        return ListDTO.from(updated);
+        return UpdateListResponse.from(updated);
     }
 
     public List getReferenceById(int id) {

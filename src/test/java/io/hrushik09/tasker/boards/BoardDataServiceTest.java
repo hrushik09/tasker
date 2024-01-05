@@ -3,8 +3,8 @@ package io.hrushik09.tasker.boards;
 import io.hrushik09.tasker.cards.AllCardMinDTO;
 import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.cards.CardService;
-import io.hrushik09.tasker.lists.AllListDTO;
-import io.hrushik09.tasker.lists.ListDTO;
+import io.hrushik09.tasker.lists.AllListDetailsDTO;
+import io.hrushik09.tasker.lists.ListDetailsDTO;
 import io.hrushik09.tasker.lists.ListService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +47,12 @@ class BoardDataServiceTest {
     void shouldFetchAllDataForGivenBoardSuccessfully() {
         Integer boardId = 1;
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(aBoard().withId(1).build()));
-        List<ListDTO> lists = List.of(
-                new ListDTO(1, "To Do"),
-                new ListDTO(2, "Completed"),
-                new ListDTO(3, "Deployed")
+        List<ListDetailsDTO> lists = List.of(
+                new ListDetailsDTO(1, "To Do"),
+                new ListDetailsDTO(2, "Completed"),
+                new ListDetailsDTO(3, "Deployed")
         );
-        when(listService.fetchAllFor(boardId)).thenReturn(new AllListDTO(lists));
+        when(listService.fetchAllFor(boardId)).thenReturn(new AllListDetailsDTO(lists));
         List<CardMinDTO> cards = List.of(
                 new CardMinDTO(1, "Card 1", 1),
                 new CardMinDTO(2, "Card 2", 2),

@@ -1,7 +1,7 @@
 package io.hrushik09.tasker.boards;
 
 import io.hrushik09.tasker.cards.CardMinDTO;
-import io.hrushik09.tasker.lists.ListDTO;
+import io.hrushik09.tasker.lists.ListDetailsDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -59,11 +59,11 @@ public class BoardControllerTest {
     @Test
     void shouldFetchAllDataForGivenBoardSuccessfully() throws Exception {
         Integer boardId = 1;
-        List<ListDTO> lists = List.of(
-                new ListDTO(1, "Future Works"),
-                new ListDTO(2, "Working"),
-                new ListDTO(3, "Completed"),
-                new ListDTO(4, "Deployed")
+        List<ListDetailsDTO> lists = List.of(
+                new ListDetailsDTO(1, "Future Works"),
+                new ListDetailsDTO(2, "Working"),
+                new ListDetailsDTO(3, "Completed"),
+                new ListDetailsDTO(4, "Deployed")
         );
         List<CardMinDTO> cards = List.of(
                 new CardMinDTO(1, "Card 1", 1),

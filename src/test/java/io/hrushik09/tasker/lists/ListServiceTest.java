@@ -42,7 +42,7 @@ class ListServiceTest {
         List list = aList().withId(listId).withTitle(title).with(boardBuilder).build();
         when(listRepository.save(any())).thenReturn(list);
 
-        ListDTO created = listService.create(new CreateListCommand(title, boardId));
+        CreateListResponse created = listService.create(new CreateListCommand(title, boardId));
 
         assertThat(created.id()).isEqualTo(listId);
         assertThat(created.title()).isEqualTo(title);
@@ -56,14 +56,14 @@ class ListServiceTest {
     @Test
     void shouldFetchAllListsForGivenBoard() {
         Integer boardId = 1;
-        java.util.List<ListDTO> dtos = java.util.List.of(
-                new ListDTO(1, "To Do"),
-                new ListDTO(2, "Completed"),
-                new ListDTO(3, "Deployed")
+        java.util.List<ListDetailsDTO> listDetailsDTOS = java.util.List.of(
+                new ListDetailsDTO(1, "To Do"),
+                new ListDetailsDTO(2, "Completed"),
+                new ListDetailsDTO(3, "Deployed")
         );
-        when(listRepository.fetchAllFor(boardId)).thenReturn(dtos);
+        when(listRepository.fetchAllFor(boardId)).thenReturn(listDetailsDTOS);
 
-        AllListDTO fetched = listService.fetchAllFor(boardId);
+        AllListDetailsDTO fetched = listService.fetchAllFor(boardId);
 
         assertThat(fetched.lists()).hasSize(3);
         assertThat(fetched.lists()).extracting("id").containsExactlyInAnyOrder(1, 2, 3);
@@ -78,7 +78,7 @@ class ListServiceTest {
         String updatedTitle = "Updated title";
         when(listRepository.save(any())).thenReturn(listBuilder.but().withTitle(updatedTitle).build());
 
-        ListDTO updated = listService.update(new UpdateListCommand(id, updatedTitle));
+        UpdateListResponse updated = listService.update(new UpdateListCommand(id, updatedTitle));
 
         assertThat(updated.id()).isEqualTo(id);
         assertThat(updated.title()).isEqualTo(updatedTitle);

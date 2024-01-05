@@ -7,7 +7,7 @@ import io.hrushik09.tasker.cards.CardMinDTO;
 import io.hrushik09.tasker.cards.CardService;
 import io.hrushik09.tasker.cards.CreateCardCommand;
 import io.hrushik09.tasker.lists.CreateListCommand;
-import io.hrushik09.tasker.lists.ListDTO;
+import io.hrushik09.tasker.lists.CreateListResponse;
 import io.hrushik09.tasker.lists.ListService;
 import io.hrushik09.tasker.users.CreateUserCommand;
 import io.hrushik09.tasker.users.CreateUserResponse;
@@ -43,11 +43,11 @@ public class EndToEndTestDataPersister {
         return boardService.create(new CreateBoardCommand("Not important", userId));
     }
 
-    public ListDTO havingPersistedList(String title, Integer boardId) {
+    public CreateListResponse havingPersistedList(String title, Integer boardId) {
         return listService.create(new CreateListCommand(title, boardId));
     }
 
-    public ListDTO havingPersistedList() {
+    public CreateListResponse havingPersistedList() {
         CreateUserResponse createUserResponse = havingPersistedUser();
         CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
         return havingPersistedList("Not important", createBoardResponse.id());
@@ -60,7 +60,7 @@ public class EndToEndTestDataPersister {
     public CardMinDTO havingPersistedCard() {
         CreateUserResponse createUserResponse = havingPersistedUser();
         CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
-        ListDTO listDTO = havingPersistedList("Not important", createBoardResponse.id());
-        return havingPersistedCard("No important", listDTO.id());
+        CreateListResponse createListResponse = havingPersistedList("Not important", createBoardResponse.id());
+        return havingPersistedCard("No important", createListResponse.id());
     }
 }
