@@ -20,8 +20,8 @@ List of current testcases
 [x] fetch all data for a Board at GET /api/boards/{id}
     [x] key `lists` contains id, title for each list for given board
     [x] key `cards` contains id, title, listId for each card in each list for given board
-[ ] check if tests covering all scenarios, exceptions, edge-cases
-    [ ] check if current tests can be simplified
+[x] check if tests covering all scenarios, exceptions, edge-cases
+    [x] check if current tests can be simplified
 [ ] fetch card by id
     [ ] title, description
 [ ] add fields to Card, these are optional
