@@ -26,10 +26,12 @@ List of current testcases
     [x] id, title, description, listId, createdAt, updatedAt
 [ ] add fields to Card, these are optional
     [ ] start date, due date
-[ ] "fetch card details before any update" test case is missing
-[ ] fetch start date, due date while fetching card details
 [ ] update card
     [ ] title
+[ ] "fetch card details before any update" test case is missing
+[ ] separate current fetchCardDetails tests in common data test and description test similar to update card tests
+[ ] fetch start date, due date while fetching card details
+    [ ] use new tests
 [ ] add timezone for a user
 [ ] update timezone for a user
 [ ] for all tests
