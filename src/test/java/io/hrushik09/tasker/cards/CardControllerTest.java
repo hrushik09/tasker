@@ -122,5 +122,23 @@ public class CardControllerTest {
                     .andExpect(jsonPath("$.title", equalTo("Not important")))
                     .andExpect(jsonPath("$.listId", equalTo(1)));
         }
+
+        @Test
+        void shouldUpdateStartDateSuccessfully() throws Exception {
+            Map<String, Object> fields = Map.of("start", "2023-02-14T23:45:45Z");
+            when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {
+                                    "start": "2023-02-14T23:45:45Z"
+                                    }
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id", equalTo(1)))
+                    .andExpect(jsonPath("$.title", equalTo("Not important")))
+                    .andExpect(jsonPath("$.listId", equalTo(1)));
+        }
     }
 }
