@@ -106,6 +106,24 @@ public class CardControllerTest {
         }
 
         @Test
+        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() throws Exception {
+            Map<String, Object> fields = Map.of("description", "Not important");
+            when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {
+                                    "description": "Not important"
+                                    }
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id", equalTo(1)))
+                    .andExpect(jsonPath("$.title", equalTo("Not important")))
+                    .andExpect(jsonPath("$.listId", equalTo(1)));
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() throws Exception {
             Map<String, Object> fields = Map.of("description", "Description after update");
             when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
@@ -117,10 +135,7 @@ public class CardControllerTest {
                                     "description": "Description after update"
                                     }
                                     """))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id", equalTo(1)))
-                    .andExpect(jsonPath("$.title", equalTo("Not important")))
-                    .andExpect(jsonPath("$.listId", equalTo(1)));
+                    .andExpect(status().isOk());
         }
 
         @Test
@@ -135,10 +150,7 @@ public class CardControllerTest {
                                     "start": "2023-02-14T23:45:45Z"
                                     }
                                     """))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id", equalTo(1)))
-                    .andExpect(jsonPath("$.title", equalTo("Not important")))
-                    .andExpect(jsonPath("$.listId", equalTo(1)));
+                    .andExpect(status().isOk());
         }
     }
 }

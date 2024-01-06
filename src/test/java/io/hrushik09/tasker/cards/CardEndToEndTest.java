@@ -73,6 +73,26 @@ public class CardEndToEndTest {
     @Nested
     class UpdateCard {
         @Test
+        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() {
+            CreateCardResponse card = dataPersister.havingPersistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "description": "Not important"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()));
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() {
             CreateCardResponse card = dataPersister.havingPersistedCard();
 
@@ -86,10 +106,7 @@ public class CardEndToEndTest {
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
-                    .statusCode(200)
-                    .body("id", equalTo(card.id()))
-                    .body("title", equalTo(card.title()))
-                    .body("listId", equalTo(card.listId()));
+                    .statusCode(200);
         }
 
         @Test
@@ -106,10 +123,7 @@ public class CardEndToEndTest {
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
-                    .statusCode(200)
-                    .body("id", equalTo(card.id()))
-                    .body("title", equalTo(card.title()))
-                    .body("listId", equalTo(card.listId()));
+                    .statusCode(200);
         }
     }
 }

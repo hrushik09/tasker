@@ -135,6 +135,22 @@ class CardServiceTest {
         }
 
         @Test
+        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() {
+            Integer id = 1;
+            String updatedDescription = "Not important";
+            Map<String, Object> fields = Map.of("description", updatedDescription);
+            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
+
+            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+
+            assertThat(updated.id()).isEqualTo(id);
+            assertThat(updated.title()).isEqualTo("Not important");
+            assertThat(updated.listId()).isEqualTo(1);
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() {
             Integer id = 1;
             String updatedDescription = "This is updated description";
@@ -143,14 +159,11 @@ class CardServiceTest {
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
 
-            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+            cardService.update(new UpdateCardCommand(id, fields));
 
             verify(cardRepository).save(cardArgumentCaptor.capture());
             Card captorValue = cardArgumentCaptor.getValue();
             assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
-            assertThat(updated.id()).isEqualTo(id);
-            assertThat(updated.title()).isEqualTo("Not important");
-            assertThat(updated.listId()).isEqualTo(1);
         }
 
         @Test
@@ -162,14 +175,11 @@ class CardServiceTest {
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withStart(Instant.parse(startStr)).build());
 
-            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+            cardService.update(new UpdateCardCommand(id, fields));
 
             verify(cardRepository).save(cardArgumentCaptor.capture());
             Card captorValue = cardArgumentCaptor.getValue();
             assertThat(captorValue.getStart()).isEqualTo(Instant.parse(startStr));
-            assertThat(updated.id()).isEqualTo(id);
-            assertThat(updated.title()).isEqualTo("Not important");
-            assertThat(updated.listId()).isEqualTo(1);
         }
     }
 }
