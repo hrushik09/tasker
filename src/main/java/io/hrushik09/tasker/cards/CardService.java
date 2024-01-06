@@ -24,6 +24,7 @@ public class CardService {
         return CreateCardResponse.from(saved);
     }
 
+    @Transactional
     public UpdateCardDescriptionResponse updateDescription(UpdateDescriptionCommand cmd) {
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
         fetched.setDescription(cmd.description());
@@ -33,5 +34,9 @@ public class CardService {
 
     public AllCardMinDetailsDTO fetchAllFor(Integer boardId) {
         return new AllCardMinDetailsDTO(cardRepository.fetchForAll(boardId));
+    }
+
+    public CardMaxDetailsDTO fetchCardDetails(Integer id) {
+        return cardRepository.findCardDetailsById(id).orElseThrow(() -> new CardDoesNotExistException(id));
     }
 }

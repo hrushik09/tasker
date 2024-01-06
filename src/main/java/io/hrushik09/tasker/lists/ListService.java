@@ -28,6 +28,7 @@ public class ListService {
         return new AllListDetailsDTO(listRepository.fetchAllFor(boardId));
     }
 
+    @Transactional
     public UpdateListResponse update(UpdateListCommand cmd) {
         List fetched = listRepository.findById(cmd.id()).orElseThrow(() -> new ListDoesNotExistException(cmd.id()));
         fetched.setTitle(cmd.title());

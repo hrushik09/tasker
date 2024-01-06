@@ -67,4 +67,23 @@ public class CardEndToEndTest {
                 .body("title", equalTo(card.title()))
                 .body("listId", equalTo(card.listId()));
     }
+
+    @Test
+    void shouldFetchCardDetailsSuccessfully() {
+        CreateCardResponse createdCard = dataPersister.havingPersistedCard();
+        UpdateCardDescriptionResponse updatedCard = dataPersister.havingUpdatedCardDescription(createdCard.id(), "This is updated card description");
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/api/cards/{id}", updatedCard.id())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(updatedCard.id()))
+                .body("title", equalTo(updatedCard.title()))
+                .body("description", equalTo(updatedCard.description()))
+                .body("listId", equalTo(updatedCard.listId()))
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
+    }
 }

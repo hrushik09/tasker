@@ -22,8 +22,8 @@ List of current testcases
     [x] key `cards` contains id, title, listId for each card in each list for given board
 [x] check if tests covering all scenarios, exceptions, edge-cases
     [x] check if current tests can be simplified
-[ ] fetch card by id
-    [ ] title, description
+[x] fetch card by id
+    [x] id, title, description, listId, createdAt, updatedAt
 [ ] add fields to Card, these are optional
     [ ] Start date
     [ ] Due date
@@ -44,3 +44,10 @@ List of current testcases
     [ ] add item to checklist
     [ ] mark item as completed
     [ ] unmark completed item
+[ ] add timezone for a user
+[ ] update timezone for a user
+[ ] for all tests
+    [ ] change all Instant assertions in responses
+        [ ] replace notNullValue, isNotNull, etc. with concrete values of Instant type
+        [ ] change assertions to assert on a standard format string
+        [ ] update and assert the strings as per user's timezone

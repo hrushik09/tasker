@@ -23,4 +23,9 @@ public class CardController {
     UpdateCardDescriptionResponse updateDescription(@PathVariable Integer id, @RequestBody @Valid UpdateDescriptionRequest request) {
         return cardService.updateDescription(new UpdateDescriptionCommand(id, request.description()));
     }
+
+    @GetMapping("/{id}")
+    CardMaxDetailsDTO fetchCardDetails(@PathVariable Integer id) {
+        return cardService.fetchCardDetails(id);
+    }
 }

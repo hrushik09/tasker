@@ -20,7 +20,7 @@ public class UserService {
         return CreateUserResponse.from(savedUser);
     }
 
-    public UserDetailsDTO findDTOById(Integer id) {
+    public UserDetailsDTO fetchDTOById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException(id));
         return UserDetailsDTO.from(user);
     }
