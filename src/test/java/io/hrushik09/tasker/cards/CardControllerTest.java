@@ -68,4 +68,18 @@ public class CardControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
     }
+
+    @Test
+    void shouldFetchCardDetailsSuccessfully() throws Exception {
+        Integer id = 1;
+        String title = "Custom card";
+        String description = "This is the current description";
+        when(cardService.fetchCardDetails(id)).thenReturn(new CardMaxDetailsDTO(id, title, description));
+
+        mockMvc.perform(get("/api/cards/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(id)))
+                .andExpect(jsonPath("$.title", equalTo(title)))
+                .andExpect(jsonPath("$.description", equalTo(description)));
+    }
 }
