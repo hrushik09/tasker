@@ -49,7 +49,7 @@ public class CardControllerTest {
         Integer nonExistingId = 100;
         when(cardService.update(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
 
-        mockMvc.perform(put("/api/cards/{id}", nonExistingId)
+        mockMvc.perform(patch("/api/cards/{id}", nonExistingId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -65,7 +65,7 @@ public class CardControllerTest {
     void shouldThrowWhenUpdatingNonExistingField() throws Exception {
         when(cardService.update(any())).thenThrow(new InvalidFieldForUpdateCardException("invalidFieldName"));
 
-        mockMvc.perform(put("/api/cards/{id}", 1)
+        mockMvc.perform(patch("/api/cards/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -82,7 +82,7 @@ public class CardControllerTest {
         Map<String, Object> fields = Map.of("description", "Description after update");
         when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
 
-        mockMvc.perform(put("/api/cards/{id}", 1)
+        mockMvc.perform(patch("/api/cards/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {

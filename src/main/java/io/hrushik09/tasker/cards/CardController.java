@@ -21,7 +21,7 @@ public class CardController {
         return cardService.create(new CreateCardCommand(listId, request.title()));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     UpdateCardResponse update(@PathVariable Integer id, @RequestBody Map<String, Object> fields) {
         return cardService.update(new UpdateCardCommand(id, fields));
     }

@@ -61,7 +61,7 @@ public class CardEndToEndTest {
                         }
                         """)
                 .when()
-                .put("/api/cards/{id}", card.id())
+                .patch("/api/cards/{id}", card.id())
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(card.id()))
