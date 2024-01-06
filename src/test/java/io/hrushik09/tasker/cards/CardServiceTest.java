@@ -106,9 +106,24 @@ class CardServiceTest {
     @Test
     void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
         Integer nonExistingId = 102;
+        when(cardRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
                 .isInstanceOf(CardDoesNotExistException.class)
                 .hasMessage("Card with id=" + nonExistingId + " does not exist");
+    }
+
+    @Test
+    void shouldFetchCardDetailsSuccessfully() {
+        Integer id = 1;
+        String title = "Card 1";
+        String description = "current description for card 1";
+        CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description);
+        when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+
+        CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+        assertThat(fetched.id()).isEqualTo(id);
+        assertThat(fetched.title()).isEqualTo(title);
+        assertThat(fetched.description()).isEqualTo(description);
     }
 }
