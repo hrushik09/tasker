@@ -7,6 +7,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
@@ -74,12 +76,16 @@ public class CardControllerTest {
         Integer id = 1;
         String title = "Custom card";
         String description = "This is the current description";
-        when(cardService.fetchCardDetails(id)).thenReturn(new CardMaxDetailsDTO(id, title, description));
+        Integer listId = 2;
+        when(cardService.fetchCardDetails(id)).thenReturn(new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now()));
 
         mockMvc.perform(get("/api/cards/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(id)))
                 .andExpect(jsonPath("$.title", equalTo(title)))
-                .andExpect(jsonPath("$.description", equalTo(description)));
+                .andExpect(jsonPath("$.description", equalTo(description)))
+                .andExpect(jsonPath("$.listId", equalTo(listId)))
+                .andExpect(jsonPath("$.createdAt", notNullValue()))
+                .andExpect(jsonPath("$.updatedAt", notNullValue()));
     }
 }

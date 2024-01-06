@@ -118,12 +118,17 @@ class CardServiceTest {
         Integer id = 1;
         String title = "Card 1";
         String description = "current description for card 1";
-        CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description);
+        Integer listId = 3;
+        ListBuilder listBuilder = aList().withId(listId);
+        CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description).with(listBuilder);
         when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
 
         CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
         assertThat(fetched.id()).isEqualTo(id);
         assertThat(fetched.title()).isEqualTo(title);
         assertThat(fetched.description()).isEqualTo(description);
+        assertThat(fetched.listId()).isEqualTo(listId);
+        assertThat(fetched.createdAt()).isNotNull();
+        assertThat(fetched.updatedAt()).isNotNull();
     }
 }

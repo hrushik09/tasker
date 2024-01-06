@@ -81,6 +81,9 @@ public class CardEndToEndTest {
                 .statusCode(200)
                 .body("id", equalTo(updatedCard.id()))
                 .body("title", equalTo(updatedCard.title()))
-                .body("description", equalTo(updatedCard.description()));
+                .body("description", equalTo(updatedCard.description()))
+                .body("listId", equalTo(updatedCard.listId()))
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
     }
 }
