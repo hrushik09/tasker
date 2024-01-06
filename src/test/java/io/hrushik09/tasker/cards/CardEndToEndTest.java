@@ -6,6 +6,7 @@ import io.hrushik09.tasker.lists.CreateListResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -50,26 +51,6 @@ public class CardEndToEndTest {
     }
 
     @Test
-    void shouldUpdateDescriptionSuccessfully() {
-        CreateCardResponse card = dataPersister.havingPersistedCard();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {
-                        "description": "This is updated description"
-                        }
-                        """)
-                .when()
-                .patch("/api/cards/{id}", card.id())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(card.id()))
-                .body("title", equalTo(card.title()))
-                .body("listId", equalTo(card.listId()));
-    }
-
-    @Test
     void shouldFetchCardDetailsSuccessfully() {
         CreateCardResponse createdCard = dataPersister.havingPersistedCard();
         Map<String, Object> fields = Map.of("description", "This is updated card description");
@@ -89,23 +70,46 @@ public class CardEndToEndTest {
                 .body("updatedAt", notNullValue());
     }
 
-    @Test
-    void shouldUpdateStartDateSuccessfully() {
-        CreateCardResponse card = dataPersister.havingPersistedCard();
+    @Nested
+    class UpdateCard {
+        @Test
+        void shouldUpdateDescriptionSuccessfully() {
+            CreateCardResponse card = dataPersister.havingPersistedCard();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "description": "This is updated description"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()));
+        }
+
+        @Test
+        void shouldUpdateStartDateSuccessfully() {
+            CreateCardResponse card = dataPersister.havingPersistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
                         {
                         "start": "2023-12-20T14:35:23Z"
                         }
                         """)
-                .when()
-                .patch("/api/cards/{id}", card.id())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(card.id()))
-                .body("title", equalTo(card.title()))
-                .body("listId", equalTo(card.listId()));
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()));
+        }
     }
 }

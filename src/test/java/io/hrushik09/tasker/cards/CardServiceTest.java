@@ -3,6 +3,7 @@ package io.hrushik09.tasker.cards;
 import io.hrushik09.tasker.lists.ListBuilder;
 import io.hrushik09.tasker.lists.ListService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -58,48 +59,6 @@ class CardServiceTest {
     }
 
     @Test
-    void shouldThrowWhenUpdatingNonExistingCard() {
-        Integer nonExistingId = 1;
-        Map<String, Object> fields = Map.of("description", "Not important");
-
-        assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(nonExistingId, fields)))
-                .isInstanceOf(CardDoesNotExistException.class)
-                .hasMessage("Card with id=" + nonExistingId + " does not exist");
-    }
-
-    @Test
-    void shouldThrowWhenUpdatingNonExistingField() {
-        Integer id = 1;
-        Map<String, Object> fields = Map.of("invalidFieldName", "Not important");
-        CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
-        when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-
-        assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
-                .isInstanceOf(InvalidFieldForUpdateCardException.class)
-                .hasMessage("Field invalidFieldName not found in Card");
-    }
-
-    @Test
-    void shouldUpdateDescriptionSuccessfully() {
-        Integer id = 1;
-        String updatedDescription = "This is updated description";
-        Map<String, Object> fields = Map.of("description", updatedDescription);
-        CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
-        when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-        when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
-
-        UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
-
-        ArgumentCaptor<Card> cardArgumentCaptor = ArgumentCaptor.forClass(Card.class);
-        verify(cardRepository).save(cardArgumentCaptor.capture());
-        Card captorValue = cardArgumentCaptor.getValue();
-        assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
-        assertThat(updated.id()).isEqualTo(id);
-        assertThat(updated.title()).isNotNull();
-        assertThat(updated.listId()).isNotNull();
-    }
-
-    @Test
     void shouldFetchAllCardsForGivenBoard() {
         Integer boardId = 1;
         List<CardMinDetailsDTO> cards = List.of(
@@ -122,7 +81,7 @@ class CardServiceTest {
     @Test
     void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
         Integer nonExistingId = 102;
-        when(cardRepository.findCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
+        when(cardRepository.fetchCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
                 .isInstanceOf(CardDoesNotExistException.class)
@@ -136,7 +95,7 @@ class CardServiceTest {
         String description = "current description for card 1";
         Integer listId = 3;
         CardMaxDetailsDTO cardMaxDetailsDTO = new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now());
-        when(cardRepository.findCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
+        when(cardRepository.fetchCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
 
         CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
         assertThat(fetched.id()).isEqualTo(id);
@@ -145,5 +104,50 @@ class CardServiceTest {
         assertThat(fetched.listId()).isEqualTo(listId);
         assertThat(fetched.createdAt()).isNotNull();
         assertThat(fetched.updatedAt()).isNotNull();
+    }
+
+    @Nested
+    class UpdateCard {
+        @Test
+        void shouldThrowWhenUpdatingNonExistingCard() {
+            Integer nonExistingId = 1;
+            Map<String, Object> fields = Map.of("description", "Not important");
+
+            assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(nonExistingId, fields)))
+                    .isInstanceOf(CardDoesNotExistException.class)
+                    .hasMessage("Card with id=" + nonExistingId + " does not exist");
+        }
+
+        @Test
+        void shouldThrowWhenUpdatingNonExistingField() {
+            Integer id = 1;
+            Map<String, Object> fields = Map.of("invalidFieldName", "Not important");
+            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+
+            assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
+                    .isInstanceOf(InvalidFieldForUpdateCardException.class)
+                    .hasMessage("Field invalidFieldName not found in Card");
+        }
+
+        @Test
+        void shouldUpdateDescriptionSuccessfully() {
+            Integer id = 1;
+            String updatedDescription = "This is updated description";
+            Map<String, Object> fields = Map.of("description", updatedDescription);
+            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
+
+            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+
+            ArgumentCaptor<Card> cardArgumentCaptor = ArgumentCaptor.forClass(Card.class);
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
+            assertThat(updated.id()).isEqualTo(id);
+            assertThat(updated.title()).isNotNull();
+            assertThat(updated.listId()).isNotNull();
+        }
     }
 }

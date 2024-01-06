@@ -1,5 +1,6 @@
 package io.hrushik09.tasker.cards;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -45,58 +46,6 @@ public class CardControllerTest {
     }
 
     @Test
-    void shouldThrowWhenUpdatingNonExistingCard() throws Exception {
-        Integer nonExistingId = 100;
-        when(cardService.update(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
-
-        mockMvc.perform(patch("/api/cards/{id}", nonExistingId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                "description": "Not important"
-                                }
-                                """)
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
-    }
-
-    @Test
-    void shouldThrowWhenUpdatingNonExistingField() throws Exception {
-        when(cardService.update(any())).thenThrow(new InvalidFieldForUpdateCardException("invalidFieldName"));
-
-        mockMvc.perform(patch("/api/cards/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                "invalidFieldName": "Not important"
-                                }
-                                """)
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", equalTo("Field invalidFieldName not found in Card")));
-    }
-
-    @Test
-    void shouldUpdateDescriptionSuccessfully() throws Exception {
-        Map<String, Object> fields = Map.of("description", "Description after update");
-        when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
-
-        mockMvc.perform(patch("/api/cards/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                "description": "Description after update"
-                                }
-                                """)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.title", equalTo("Not important")))
-                .andExpect(jsonPath("$.listId", equalTo(1)));
-    }
-
-    @Test
     void shouldThrowWhenFetchingCardDetailsForNonExistingCard() throws Exception {
         Integer nonExistingId = 101;
         when(cardService.fetchCardDetails(nonExistingId)).thenThrow(new CardDoesNotExistException(nonExistingId));
@@ -122,5 +71,60 @@ public class CardControllerTest {
                 .andExpect(jsonPath("$.listId", equalTo(listId)))
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
+    }
+
+    @Nested
+    class UpdateCard {
+        @Test
+        void shouldThrowWhenUpdatingNonExistingCard() throws Exception {
+            Integer nonExistingId = 100;
+            when(cardService.update(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
+
+            mockMvc.perform(patch("/api/cards/{id}", nonExistingId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                {
+                                "description": "Not important"
+                                }
+                                """)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
+        }
+
+        @Test
+        void shouldThrowWhenUpdatingNonExistingField() throws Exception {
+            when(cardService.update(any())).thenThrow(new InvalidFieldForUpdateCardException("invalidFieldName"));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                {
+                                "invalidFieldName": "Not important"
+                                }
+                                """)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error", equalTo("Field invalidFieldName not found in Card")));
+        }
+
+        @Test
+        void shouldUpdateDescriptionSuccessfully() throws Exception {
+            Map<String, Object> fields = Map.of("description", "Description after update");
+            when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                {
+                                "description": "Description after update"
+                                }
+                                """)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id", equalTo(1)))
+                    .andExpect(jsonPath("$.title", equalTo("Not important")))
+                    .andExpect(jsonPath("$.listId", equalTo(1)));
+        }
     }
 }

@@ -49,13 +49,13 @@ class CardRepositoryTest {
     }
 
     @Test
-    void validateFindCardDetailsById() {
+    void validateFetchCardDetailsById() {
         User user = dataPersister.havingPersistedUser(entityManager, "user 1");
         Board board = dataPersister.havingPersistedBoard(entityManager, "Board 1", user);
         List todo = dataPersister.havingPersistedList(entityManager, "To Do", board);
         Card card = dataPersister.havingPersistedCard(entityManager, "Card 1", todo);
 
-        Optional<CardMaxDetailsDTO> optionalDetails = cardRepository.findCardDetailsById(card.getId());
+        Optional<CardMaxDetailsDTO> optionalDetails = cardRepository.fetchCardDetailsById(card.getId());
 
         assertThat(optionalDetails).isPresent();
         CardMaxDetailsDTO details = optionalDetails.get();
