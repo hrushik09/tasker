@@ -22,8 +22,8 @@ List of current testcases
     [x] key `cards` contains id, title, listId for each card in each list for given board
 [x] check if tests covering all scenarios, exceptions, edge-cases
     [x] check if current tests can be simplified
-[ ] fetch card by id
-    [ ] id, title, description, listId, createdAt, updatedAt
+[x] fetch card by id
+    [x] id, title, description, listId, createdAt, updatedAt
 [ ] add fields to Card, these are optional
     [ ] Start date
     [ ] Due date
