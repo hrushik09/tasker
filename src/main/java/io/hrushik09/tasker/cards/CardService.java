@@ -37,7 +37,6 @@ public class CardService {
     }
 
     public CardMaxDetailsDTO fetchCardDetails(Integer id) {
-        Card card = cardRepository.findById(id).orElseThrow(() -> new CardDoesNotExistException(id));
-        return CardMaxDetailsDTO.from(card);
+        return cardRepository.findCardDetailsById(id).orElseThrow(() -> new CardDoesNotExistException(id));
     }
 }

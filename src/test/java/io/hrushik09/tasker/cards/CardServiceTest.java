@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +107,7 @@ class CardServiceTest {
     @Test
     void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
         Integer nonExistingId = 102;
-        when(cardRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+        when(cardRepository.findCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
                 .isInstanceOf(CardDoesNotExistException.class)
@@ -119,9 +120,8 @@ class CardServiceTest {
         String title = "Card 1";
         String description = "current description for card 1";
         Integer listId = 3;
-        ListBuilder listBuilder = aList().withId(listId);
-        CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description).with(listBuilder);
-        when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+        CardMaxDetailsDTO cardMaxDetailsDTO = new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now());
+        when(cardRepository.findCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
 
         CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
         assertThat(fetched.id()).isEqualTo(id);

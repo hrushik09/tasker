@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RepositoryTest
@@ -44,5 +46,24 @@ class CardRepositoryTest {
         assertThat(cards).extracting("id").containsExactlyInAnyOrder(card1.getId(), card2.getId(), card3.getId(), card4.getId(), card5.getId(), card6.getId());
         assertThat(cards).extracting("title").containsExactlyInAnyOrder(card1.getTitle(), card2.getTitle(), card3.getTitle(), card4.getTitle(), card5.getTitle(), card6.getTitle());
         assertThat(cards).extracting("listId").containsExactlyInAnyOrder(card1.getList().getId(), card2.getList().getId(), card3.getList().getId(), card4.getList().getId(), card5.getList().getId(), card6.getList().getId());
+    }
+
+    @Test
+    void validateFindCardDetailsById() {
+        User user = dataPersister.havingPersistedUser(entityManager, "user 1");
+        Board board = dataPersister.havingPersistedBoard(entityManager, "Board 1", user);
+        List todo = dataPersister.havingPersistedList(entityManager, "To Do", board);
+        Card card = dataPersister.havingPersistedCard(entityManager, "Card 1", todo);
+
+        Optional<CardMaxDetailsDTO> optionalDetails = cardRepository.findCardDetailsById(card.getId());
+
+        assertThat(optionalDetails).isPresent();
+        CardMaxDetailsDTO details = optionalDetails.get();
+        assertThat(details.id()).isEqualTo(card.getId());
+        assertThat(details.title()).isEqualTo(card.getTitle());
+        assertThat(details.description()).isEqualTo(card.getDescription());
+        assertThat(details.listId()).isEqualTo(todo.getId());
+        assertThat(details.createdAt()).isNotNull();
+        assertThat(details.updatedAt()).isNotNull();
     }
 }
