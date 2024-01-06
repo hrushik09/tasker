@@ -34,4 +34,8 @@ public class CardService {
     public AllCardMinDetailsDTO fetchAllFor(Integer boardId) {
         return new AllCardMinDetailsDTO(cardRepository.fetchForAll(boardId));
     }
+
+    public CardMaxDetailsDTO fetchCardDetails(Integer id) {
+        return null;
+    }
 }

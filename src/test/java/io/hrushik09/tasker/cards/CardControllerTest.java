@@ -10,8 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,5 +57,15 @@ public class CardControllerTest {
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.title", equalTo("Not important")))
                 .andExpect(jsonPath("$.listId", equalTo(1)));
+    }
+
+    @Test
+    void shouldThrowWhenFetchingCardDetailsForNonExistingCard() throws Exception {
+        Integer nonExistingId = 101;
+        when(cardService.fetchCardDetails(nonExistingId)).thenThrow(new CardDoesNotExistException(nonExistingId));
+
+        mockMvc.perform(get("/api/cards/{id}", nonExistingId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
     }
 }
