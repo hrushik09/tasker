@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -44,9 +45,9 @@ public class CardControllerTest {
     }
 
     @Test
-    void shouldThrowWhenUpdatingDescriptionForNonExistingCard() throws Exception {
+    void shouldThrowWhenUpdatingNonExistingCard() throws Exception {
         Integer nonExistingId = 100;
-        when(cardService.updateDescription(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
+        when(cardService.update(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
 
         mockMvc.perform(put("/api/cards/{id}", nonExistingId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,8 +62,25 @@ public class CardControllerTest {
     }
 
     @Test
+    void shouldThrowWhenUpdatingNonExistingField() throws Exception {
+        when(cardService.update(any())).thenThrow(new InvalidFieldForUpdateCardException("invalidFieldName"));
+
+        mockMvc.perform(put("/api/cards/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "invalidFieldName": "Not important"
+                                }
+                                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("Field invalidFieldName not found in Card")));
+    }
+
+    @Test
     void shouldUpdateDescriptionSuccessfully() throws Exception {
-        when(cardService.updateDescription(new UpdateDescriptionCommand(1, "Description after update"))).thenReturn(new UpdateCardDescriptionResponse(1, "Not important", 1, "Description after update"));
+        Map<String, Object> fields = Map.of("description", "Description after update");
+        when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
 
         mockMvc.perform(put("/api/cards/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +91,6 @@ public class CardControllerTest {
                                 """)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description", equalTo("Description after update")))
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.title", equalTo("Not important")))
                 .andExpect(jsonPath("$.listId", equalTo(1)));

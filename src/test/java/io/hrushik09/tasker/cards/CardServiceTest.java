@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
@@ -57,31 +58,45 @@ class CardServiceTest {
     }
 
     @Test
-    void shouldThrowWhenUpdatingDescriptionForNonExistingCard() {
+    void shouldThrowWhenUpdatingNonExistingCard() {
         Integer nonExistingId = 1;
-        assertThatThrownBy(() -> cardService.updateDescription(new UpdateDescriptionCommand(nonExistingId, "Not important")))
+        Map<String, Object> fields = Map.of("description", "Not important");
+
+        assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(nonExistingId, fields)))
                 .isInstanceOf(CardDoesNotExistException.class)
                 .hasMessage("Card with id=" + nonExistingId + " does not exist");
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingNonExistingField() {
+        Integer id = 1;
+        Map<String, Object> fields = Map.of("invalidFieldName", "Not important");
+        CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+        when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+
+        assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
+                .isInstanceOf(InvalidFieldForUpdateCardException.class)
+                .hasMessage("Field invalidFieldName not found in Card");
     }
 
     @Test
     void shouldUpdateDescriptionSuccessfully() {
         Integer id = 1;
         String updatedDescription = "This is updated description";
+        Map<String, Object> fields = Map.of("description", updatedDescription);
         CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
         when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
         when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
 
-        UpdateCardDescriptionResponse updated = cardService.updateDescription(new UpdateDescriptionCommand(id, updatedDescription));
+        UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
 
-        assertThat(updated.description()).isEqualTo(updatedDescription);
-        assertThat(updated.id()).isEqualTo(id);
-        assertThat(updated.title()).isNotNull();
-        assertThat(updated.listId()).isNotNull();
         ArgumentCaptor<Card> cardArgumentCaptor = ArgumentCaptor.forClass(Card.class);
         verify(cardRepository).save(cardArgumentCaptor.capture());
         Card captorValue = cardArgumentCaptor.getValue();
         assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
+        assertThat(updated.id()).isEqualTo(id);
+        assertThat(updated.title()).isNotNull();
+        assertThat(updated.listId()).isNotNull();
     }
 
     @Test

@@ -13,6 +13,8 @@ import io.hrushik09.tasker.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class EndToEndTestDataPersister {
     @Autowired
@@ -62,7 +64,7 @@ public class EndToEndTestDataPersister {
         return havingPersistedCard("Not important", createListResponse.id());
     }
 
-    public UpdateCardDescriptionResponse havingUpdatedCardDescription(Integer id, String description) {
-        return cardService.updateDescription(new UpdateDescriptionCommand(id, description));
+    public UpdateCardResponse havingUpdatedCardDescription(Integer id, Map<String, Object> fields) {
+        return cardService.update(new UpdateCardCommand(id, fields));
     }
 }

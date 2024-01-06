@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
@@ -20,8 +22,8 @@ public class CardController {
     }
 
     @PutMapping("/{id}")
-    UpdateCardDescriptionResponse updateDescription(@PathVariable Integer id, @RequestBody @Valid UpdateDescriptionRequest request) {
-        return cardService.updateDescription(new UpdateDescriptionCommand(id, request.description()));
+    UpdateCardResponse update(@PathVariable Integer id, @RequestBody Map<String, Object> fields) {
+        return cardService.update(new UpdateCardCommand(id, fields));
     }
 
     @GetMapping("/{id}")

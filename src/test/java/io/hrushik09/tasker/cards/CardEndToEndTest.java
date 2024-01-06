@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -62,7 +64,6 @@ public class CardEndToEndTest {
                 .put("/api/cards/{id}", card.id())
                 .then()
                 .statusCode(200)
-                .body("description", equalTo("This is updated description"))
                 .body("id", equalTo(card.id()))
                 .body("title", equalTo(card.title()))
                 .body("listId", equalTo(card.listId()));
@@ -71,7 +72,8 @@ public class CardEndToEndTest {
     @Test
     void shouldFetchCardDetailsSuccessfully() {
         CreateCardResponse createdCard = dataPersister.havingPersistedCard();
-        UpdateCardDescriptionResponse updatedCard = dataPersister.havingUpdatedCardDescription(createdCard.id(), "This is updated card description");
+        Map<String, Object> fields = Map.of("description", "This is updated card description");
+        UpdateCardResponse updatedCard = dataPersister.havingUpdatedCardDescription(createdCard.id(), fields);
 
         given()
                 .contentType(ContentType.JSON)
@@ -81,7 +83,7 @@ public class CardEndToEndTest {
                 .statusCode(200)
                 .body("id", equalTo(updatedCard.id()))
                 .body("title", equalTo(updatedCard.title()))
-                .body("description", equalTo(updatedCard.description()))
+                .body("description", equalTo("This is updated card description"))
                 .body("listId", equalTo(updatedCard.listId()))
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());

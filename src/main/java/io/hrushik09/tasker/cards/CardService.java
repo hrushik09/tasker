@@ -3,6 +3,9 @@ package io.hrushik09.tasker.cards;
 import io.hrushik09.tasker.lists.ListService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,11 +28,19 @@ public class CardService {
     }
 
     @Transactional
-    public UpdateCardDescriptionResponse updateDescription(UpdateDescriptionCommand cmd) {
+    public UpdateCardResponse update(UpdateCardCommand cmd) {
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
-        fetched.setDescription(cmd.description());
+        cmd.fields().forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Card.class, key);
+            if (field == null) {
+                throw new InvalidFieldForUpdateCardException(key);
+            }
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, fetched, value);
+            field.setAccessible(false);
+        });
         Card updated = cardRepository.save(fetched);
-        return UpdateCardDescriptionResponse.from(updated);
+        return UpdateCardResponse.from(updated);
     }
 
     public AllCardMinDetailsDTO fetchAllFor(Integer boardId) {
