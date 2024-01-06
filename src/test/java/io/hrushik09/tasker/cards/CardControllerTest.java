@@ -11,6 +11,7 @@ import java.time.Instant;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -40,6 +41,23 @@ public class CardControllerTest {
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("Card 1")))
                 .andExpect(jsonPath("$.listId", equalTo(1)));
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingDescriptionForNonExistingCard() throws Exception {
+        Integer nonExistingId = 100;
+        when(cardService.updateDescription(any())).thenThrow(new CardDoesNotExistException(nonExistingId));
+
+        mockMvc.perform(put("/api/cards/{id}", nonExistingId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "description": "Not important"
+                                }
+                                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
     }
 
     @Test
