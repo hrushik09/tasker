@@ -88,4 +88,24 @@ public class CardEndToEndTest {
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
     }
+
+    @Test
+    void shouldUpdateStartDateSuccessfully() {
+        CreateCardResponse card = dataPersister.havingPersistedCard();
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                        "start": "2023-12-20T14:35:23Z"
+                        }
+                        """)
+                .when()
+                .patch("/api/cards/{id}", card.id())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(card.id()))
+                .body("title", equalTo(card.title()))
+                .body("listId", equalTo(card.listId()));
+    }
 }
