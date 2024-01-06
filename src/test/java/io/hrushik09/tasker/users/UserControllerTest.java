@@ -53,12 +53,13 @@ public class UserControllerTest {
 
     @Test
     void shouldFindUserSuccessfully() throws Exception {
+        Integer id = 1;
         String name = "user 2";
-        when(userService.findDTOById(1)).thenReturn(new UserDetailsDTO(1, name, Instant.now(), Instant.now()));
+        when(userService.findDTOById(id)).thenReturn(new UserDetailsDTO(id, name, Instant.now(), Instant.now()));
 
-        mockMvc.perform(get("/api/users/{id}", 1))
+        mockMvc.perform(get("/api/users/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.id", equalTo(id)))
                 .andExpect(jsonPath("$.name", equalTo(name)))
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
