@@ -25,11 +25,11 @@ List of current testcases
 [x] fetch card by id
     [x] id, title, description, listId, createdAt, updatedAt
 [ ] add fields to Card, these are optional
-    [ ] Start date
-    [ ] Due date
+    [ ] start date, due date
+[ ] fetch start date, due date while fetching card details
 [ ] update card
     [ ] title
-    [ ] start, end dates
+    [ ] start date, due date
 [ ] add timezone for a user
 [ ] update timezone for a user
 [ ] for all tests
