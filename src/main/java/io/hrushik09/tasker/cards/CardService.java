@@ -24,6 +24,7 @@ public class CardService {
         return CreateCardResponse.from(saved);
     }
 
+    @Transactional
     public UpdateCardDescriptionResponse updateDescription(UpdateDescriptionCommand cmd) {
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
         fetched.setDescription(cmd.description());

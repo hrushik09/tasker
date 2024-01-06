@@ -59,7 +59,7 @@ public class EndToEndTestDataPersister {
         CreateUserResponse createUserResponse = havingPersistedUser();
         CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
         CreateListResponse createListResponse = havingPersistedList("Not important", createBoardResponse.id());
-        return havingPersistedCard("No important", createListResponse.id());
+        return havingPersistedCard("Not important", createListResponse.id());
     }
 
     public UpdateCardDescriptionResponse havingUpdatedCardDescription(Integer id, String description) {

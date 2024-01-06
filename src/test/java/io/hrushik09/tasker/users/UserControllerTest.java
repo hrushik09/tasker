@@ -44,7 +44,7 @@ public class UserControllerTest {
     @Test
     void shouldThrowWhenFindingNonExistingUser() throws Exception {
         Integer nonExistingId = 100;
-        when(userService.findDTOById(nonExistingId)).thenThrow(new UserDoesNotExistException(nonExistingId));
+        when(userService.fetchDTOById(nonExistingId)).thenThrow(new UserDoesNotExistException(nonExistingId));
 
         mockMvc.perform(get("/api/users/{id}", nonExistingId))
                 .andExpect(status().isBadRequest())
@@ -55,7 +55,7 @@ public class UserControllerTest {
     void shouldFindUserSuccessfully() throws Exception {
         Integer id = 1;
         String name = "user 2";
-        when(userService.findDTOById(id)).thenReturn(new UserDetailsDTO(id, name, Instant.now(), Instant.now()));
+        when(userService.fetchDTOById(id)).thenReturn(new UserDetailsDTO(id, name, Instant.now(), Instant.now()));
 
         mockMvc.perform(get("/api/users/{id}", id))
                 .andExpect(status().isOk())
