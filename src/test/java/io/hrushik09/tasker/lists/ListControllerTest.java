@@ -58,22 +58,6 @@ public class ListControllerTest {
     }
 
     @Test
-    void shouldUpdateListTitleSuccessfully() throws Exception {
-        when(listService.update(new UpdateListCommand(1, "New List title"))).thenReturn(new UpdateListResponse(1, "New List title"));
-
-        mockMvc.perform(put("/api/lists/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                "title": "New List title"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.title", equalTo("New List title")));
-    }
-
-    @Test
     void shouldThrowWhenUpdatingTitleForNonExistingList() throws Exception {
         Integer nonExistingId = 100;
         when(listService.update(new UpdateListCommand(nonExistingId, "Not important"))).thenThrow(new ListDoesNotExistException(nonExistingId));
@@ -87,5 +71,21 @@ public class ListControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", equalTo("List with id=" + nonExistingId + " does not exist")));
+    }
+
+    @Test
+    void shouldUpdateListTitleSuccessfully() throws Exception {
+        when(listService.update(new UpdateListCommand(1, "New List title"))).thenReturn(new UpdateListResponse(1, "New List title"));
+
+        mockMvc.perform(put("/api/lists/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "title": "New List title"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.title", equalTo("New List title")));
     }
 }

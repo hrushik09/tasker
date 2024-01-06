@@ -10,6 +10,7 @@ public class CardBuilder {
     private Integer id = 1;
     private String title = "Not important";
     private String description = "Not important";
+    private Instant start = Instant.now();
     private ListBuilder listBuilder = aList();
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
@@ -21,6 +22,7 @@ public class CardBuilder {
         id = copy.id;
         title = copy.title;
         description = copy.description;
+        start = copy.start;
         listBuilder = copy.listBuilder;
         createdAt = copy.createdAt;
         updatedAt = copy.updatedAt;
@@ -46,6 +48,11 @@ public class CardBuilder {
 
     public CardBuilder withDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public CardBuilder withStart(Instant start) {
+        this.start = start;
         return this;
     }
 

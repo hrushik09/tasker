@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -108,6 +109,9 @@ class CardServiceTest {
 
     @Nested
     class UpdateCard {
+        @Captor
+        ArgumentCaptor<Card> cardArgumentCaptor;
+
         @Test
         void shouldThrowWhenUpdatingNonExistingCard() {
             Integer nonExistingId = 1;
@@ -141,13 +145,31 @@ class CardServiceTest {
 
             UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
 
-            ArgumentCaptor<Card> cardArgumentCaptor = ArgumentCaptor.forClass(Card.class);
             verify(cardRepository).save(cardArgumentCaptor.capture());
             Card captorValue = cardArgumentCaptor.getValue();
             assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
             assertThat(updated.id()).isEqualTo(id);
-            assertThat(updated.title()).isNotNull();
-            assertThat(updated.listId()).isNotNull();
+            assertThat(updated.title()).isEqualTo("Not important");
+            assertThat(updated.listId()).isEqualTo(1);
+        }
+
+        @Test
+        void shouldUpdateStartTimeSuccessfully() {
+            Integer id = 1;
+            String startStr = "2023-04-24T13:45:55Z";
+            Map<String, Object> fields = Map.of("start", startStr);
+            CardBuilder cardBuilder = aCard().withId(id).withStart(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withStart(Instant.parse(startStr)).build());
+
+            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getStart()).isEqualTo(Instant.parse(startStr));
+            assertThat(updated.id()).isEqualTo(id);
+            assertThat(updated.title()).isEqualTo("Not important");
+            assertThat(updated.listId()).isEqualTo(1);
         }
     }
 }

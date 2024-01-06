@@ -93,7 +93,7 @@ public class CardEndToEndTest {
         }
 
         @Test
-        void shouldUpdateStartDateSuccessfully() {
+        void shouldUpdateStartTimeSuccessfully() {
             CreateCardResponse card = dataPersister.havingPersistedCard();
 
             given()

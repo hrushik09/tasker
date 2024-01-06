@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,7 +37,12 @@ public class CardService {
                 throw new InvalidFieldForUpdateCardException(key);
             }
             field.setAccessible(true);
-            ReflectionUtils.setField(field, fetched, value);
+            if ("start".equals(key)) {
+                Instant start = Instant.parse((String) value);
+                ReflectionUtils.setField(field, fetched, start);
+            } else {
+                ReflectionUtils.setField(field, fetched, value);
+            }
             field.setAccessible(false);
         });
         Card updated = cardRepository.save(fetched);
