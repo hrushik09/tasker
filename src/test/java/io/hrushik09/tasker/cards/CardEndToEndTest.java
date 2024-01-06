@@ -73,7 +73,7 @@ public class CardEndToEndTest {
     @Nested
     class UpdateCard {
         @Test
-        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() {
+        void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
             CreateCardResponse card = dataPersister.havingPersistedCard();
 
             given()

@@ -135,7 +135,7 @@ class CardServiceTest {
         }
 
         @Test
-        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() {
+        void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
             Integer id = 1;
             String updatedDescription = "Not important";
             Map<String, Object> fields = Map.of("description", updatedDescription);
@@ -148,6 +148,54 @@ class CardServiceTest {
             assertThat(updated.id()).isEqualTo(id);
             assertThat(updated.title()).isEqualTo("Not important");
             assertThat(updated.listId()).isEqualTo(1);
+        }
+
+        @Nested
+        class NotAllowedFields {
+            @Test
+            void shouldThrowWhenUpdatingFieldId() {
+                Map<String, Object> fields = Map.of("id", 100);
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
+                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
+                        .hasMessage("Field id is not allowed for update");
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldTitle() {
+                Map<String, Object> fields = Map.of("title", "Not important");
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
+                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
+                        .hasMessage("Field title is not allowed for update");
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldList() {
+                Map<String, Object> fields = Map.of("list", "Not important");
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
+                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
+                        .hasMessage("Field list is not allowed for update");
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldCreatedAt() {
+                Map<String, Object> fields = Map.of("createdAt", "Not important");
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
+                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
+                        .hasMessage("Field createdAt is not allowed for update");
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldIUpdatedAt() {
+                Map<String, Object> fields = Map.of("updatedAt", "Not important");
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
+                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
+                        .hasMessage("Field updatedAt is not allowed for update");
+            }
         }
 
         @Test

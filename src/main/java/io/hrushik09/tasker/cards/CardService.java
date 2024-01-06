@@ -7,10 +7,14 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class CardService {
+    private static final List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = List.of("id", "title", "list", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
 
@@ -30,8 +34,16 @@ public class CardService {
 
     @Transactional
     public UpdateCardResponse update(UpdateCardCommand cmd) {
+        Map<String, Object> fields = cmd.fields();
+        Optional<String> optionalField = CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE.stream()
+                .filter(fields::containsKey)
+                .findFirst();
+        if (optionalField.isPresent()) {
+            throw new NotAllowedFieldForUpdateCardException(optionalField.get());
+        }
+
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
-        cmd.fields().forEach((key, value) -> {
+        fields.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Card.class, key);
             if (field == null) {
                 throw new InvalidFieldForUpdateCardException(key);

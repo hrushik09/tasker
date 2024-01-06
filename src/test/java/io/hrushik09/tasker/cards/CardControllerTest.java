@@ -106,7 +106,7 @@ public class CardControllerTest {
         }
 
         @Test
-        void shouldReturnCorrectResponseFieldsAfterAnyFieldUpdateIsPerformed() throws Exception {
+        void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() throws Exception {
             Map<String, Object> fields = Map.of("description", "Not important");
             when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));
 
@@ -121,6 +121,84 @@ public class CardControllerTest {
                     .andExpect(jsonPath("$.id", equalTo(1)))
                     .andExpect(jsonPath("$.title", equalTo("Not important")))
                     .andExpect(jsonPath("$.listId", equalTo(1)));
+        }
+
+        @Nested
+        class NotAllowedFields {
+            @Test
+            void shouldThrowWhenUpdatingFieldId() throws Exception {
+                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("id"));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "id": 100
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("Field id is not allowed for update")));
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldTitle() throws Exception {
+                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("title"));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "title": "Not important"
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("Field title is not allowed for update")));
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldList() throws Exception {
+                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("list"));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "list": "Not important"
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("Field list is not allowed for update")));
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldCreatedAt() throws Exception {
+                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("createdAt"));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "createdAt": "Not important"
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("Field createdAt is not allowed for update")));
+            }
+
+            @Test
+            void shouldThrowWhenUpdatingFieldUpdatedAt() throws Exception {
+                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("updatedAt"));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "updatedAt": "Not important"
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("Field updatedAt is not allowed for update")));
+            }
         }
 
         @Test
