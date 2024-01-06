@@ -36,6 +36,6 @@ public class CardService {
     }
 
     public CardMaxDetailsDTO fetchCardDetails(Integer id) {
-        return null;
+        throw new CardDoesNotExistException(id);
     }
 }
