@@ -23,7 +23,7 @@ List of current testcases
 [x] check if tests covering all scenarios, exceptions, edge-cases
     [x] check if current tests can be simplified
 [ ] fetch card by id
-    [ ] title, description
+    [ ] id, title, description
 [ ] add fields to Card, these are optional
     [ ] Start date
     [ ] Due date
