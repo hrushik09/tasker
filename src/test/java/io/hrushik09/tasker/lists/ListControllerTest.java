@@ -33,8 +33,7 @@ public class ListControllerTest {
                                 {
                                 "title": "To Do"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("To Do")));
@@ -51,8 +50,7 @@ public class ListControllerTest {
         when(listService.fetchAllFor(boardId)).thenReturn(allListDetailsDTO);
 
         mockMvc.perform(get("/api/lists")
-                        .queryParam("boardId", String.valueOf(boardId))
-                )
+                        .queryParam("boardId", String.valueOf(boardId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lists", hasSize(3)))
                 .andExpect(jsonPath("$.lists[*].id", containsInAnyOrder(1, 2, 3)))
@@ -69,8 +67,7 @@ public class ListControllerTest {
                                 {
                                 "title": "New List title"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.title", equalTo("New List title")));
@@ -87,8 +84,7 @@ public class ListControllerTest {
                                 {
                                 "title": "Not important"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", equalTo("List with id=" + nonExistingId + " does not exist")));
     }

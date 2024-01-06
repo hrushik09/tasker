@@ -39,8 +39,7 @@ public class BoardControllerTest {
                                 {
                                 "title": "Development Board"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("Development Board")));

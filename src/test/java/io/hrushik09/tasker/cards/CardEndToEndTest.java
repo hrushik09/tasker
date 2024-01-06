@@ -99,10 +99,10 @@ public class CardEndToEndTest {
             given()
                     .contentType(ContentType.JSON)
                     .body("""
-                        {
-                        "start": "2023-12-20T14:35:23Z"
-                        }
-                        """)
+                            {
+                            "start": "2023-12-20T14:35:23Z"
+                            }
+                            """)
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()

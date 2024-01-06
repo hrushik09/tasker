@@ -34,8 +34,7 @@ public class UserControllerTest {
                                 {
                                 "name": "user 1"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.name", equalTo("user 1")));

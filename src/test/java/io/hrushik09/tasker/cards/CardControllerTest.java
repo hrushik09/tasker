@@ -37,8 +37,7 @@ public class CardControllerTest {
                                 {
                                 "title": "Card 1"
                                 }
-                                """)
-                )
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.title", equalTo("Card 1")))
@@ -83,11 +82,10 @@ public class CardControllerTest {
             mockMvc.perform(patch("/api/cards/{id}", nonExistingId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                {
-                                "description": "Not important"
-                                }
-                                """)
-                    )
+                                    {
+                                    "description": "Not important"
+                                    }
+                                    """))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
         }
@@ -99,11 +97,10 @@ public class CardControllerTest {
             mockMvc.perform(patch("/api/cards/{id}", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                {
-                                "invalidFieldName": "Not important"
-                                }
-                                """)
-                    )
+                                    {
+                                    "invalidFieldName": "Not important"
+                                    }
+                                    """))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.error", equalTo("Field invalidFieldName not found in Card")));
         }
@@ -116,11 +113,10 @@ public class CardControllerTest {
             mockMvc.perform(patch("/api/cards/{id}", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                {
-                                "description": "Description after update"
-                                }
-                                """)
-                    )
+                                    {
+                                    "description": "Description after update"
+                                    }
+                                    """))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id", equalTo(1)))
                     .andExpect(jsonPath("$.title", equalTo("Not important")))
