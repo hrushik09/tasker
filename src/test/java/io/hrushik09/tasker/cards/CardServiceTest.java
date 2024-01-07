@@ -128,9 +128,9 @@ class CardServiceTest {
         @Test
         void shouldThrowWhenUpdatingNonExistingField() {
             Integer id = 1;
-            Map<String, Object> fields = Map.of("invalidFieldName", "Not important");
             CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            Map<String, Object> fields = Map.of("invalidFieldName", "Not important");
 
             assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
                     .isInstanceOf(InvalidFieldForUpdateCardException.class)
@@ -140,10 +140,10 @@ class CardServiceTest {
         @Test
         void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
             Integer id = 2;
-            String updatedDescription = "Not important";
             ListBuilder listBuilder = aList().withId(11);
             CardBuilder cardBuilder = aCard().withId(id).withTitle("Documentation").withDescription(null).with(listBuilder);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String updatedDescription = "Not important";
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
             Map<String, Object> fields = Map.of("description", updatedDescription);
 
@@ -157,9 +157,9 @@ class CardServiceTest {
         @Test
         void shouldUpdateDescriptionSuccessfully() {
             Integer id = 1;
-            String updatedDescription = "This is updated description";
             CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String updatedDescription = "This is updated description";
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
             Map<String, Object> fields = Map.of("description", updatedDescription);
 
@@ -173,9 +173,9 @@ class CardServiceTest {
         @Test
         void shouldUpdateStartSuccessfully() {
             Integer id = 1;
-            String startStr = "2023-04-24T13:45:55Z";
             CardBuilder cardBuilder = aCard().withId(id).withStart(null);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String startStr = "2023-04-24T13:45:55Z";
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withStart(Instant.parse(startStr)).build());
             Map<String, Object> fields = Map.of("start", startStr);
 
@@ -184,6 +184,22 @@ class CardServiceTest {
             verify(cardRepository).save(cardArgumentCaptor.capture());
             Card captorValue = cardArgumentCaptor.getValue();
             assertThat(captorValue.getStart()).isEqualTo(Instant.parse(startStr));
+        }
+
+        @Test
+        void shouldUpdateDueSuccessfully() {
+            Integer id = 1;
+            CardBuilder cardBuilder = aCard().withId(id).withDue(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String dueStr = "2023-04-25T13:45:55Z";
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDue(Instant.parse(dueStr)).build());
+            Map<String, Object> fields = Map.of("due", dueStr);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getDue()).isEqualTo(Instant.parse(dueStr));
         }
 
         @Nested

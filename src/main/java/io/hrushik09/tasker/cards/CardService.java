@@ -49,7 +49,7 @@ public class CardService {
                 throw new InvalidFieldForUpdateCardException(key);
             }
             field.setAccessible(true);
-            if ("start".equals(key)) {
+            if ("start".equals(key) || "due".equals(key)) {
                 Instant start = Instant.parse((String) value);
                 ReflectionUtils.setField(field, fetched, start);
             } else {
