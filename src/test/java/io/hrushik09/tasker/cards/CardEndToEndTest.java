@@ -93,6 +93,23 @@ public class CardEndToEndTest {
         }
 
         @Test
+        void shouldUpdateTitleSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "title": "This is the updated title"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() {
             CreateCardResponse card = having.persistedCard();
 
