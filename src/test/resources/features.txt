@@ -24,8 +24,8 @@ List of current testcases
     [x] check if current tests can be simplified
 [x] fetch card by id
     [x] id, title, description, listId, createdAt, updatedAt
-[ ] add fields to Card, these are optional
-    [ ] start date, due date
+[x] add fields to Card, these are optional
+    [x] start date, due date
 [ ] update card
     [ ] title
 [ ] "fetch card details before any update" test case is missing
