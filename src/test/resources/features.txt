@@ -24,12 +24,21 @@ List of current testcases
     [x] check if current tests can be simplified
 [x] fetch card by id
     [x] id, title, description, listId, createdAt, updatedAt
-[ ] add fields to Card, these are optional
-    [ ] Start date
-    [ ] Due date
-[ ] update card
-    [ ] title
-    [ ] start, end dates
+[x] add fields to Card, these are optional
+    [x] start date, due date
+[x] update card
+    [x] title
+[ ] "fetch card details before any update" test case is missing
+[ ] separate current fetchCardDetails tests in common data test and description test similar to update card tests
+[ ] fetch start date, due date while fetching card details
+    [ ] use new tests
+[ ] add timezone for a user
+[ ] update timezone for a user
+[ ] for all tests
+    [ ] change all Instant assertions in responses
+        [ ] replace notNullValue, isNotNull, etc. with concrete values of Instant type
+        [ ] change assertions to assert on a standard format string
+        [ ] update and assert the strings as per user's timezone
 [ ] mark card as archived
 [ ] mark card as unarchived
 [ ] move card to different list
@@ -44,10 +53,3 @@ List of current testcases
     [ ] add item to checklist
     [ ] mark item as completed
     [ ] unmark completed item
-[ ] add timezone for a user
-[ ] update timezone for a user
-[ ] for all tests
-    [ ] change all Instant assertions in responses
-        [ ] replace notNullValue, isNotNull, etc. with concrete values of Instant type
-        [ ] change assertions to assert on a standard format string
-        [ ] update and assert the strings as per user's timezone

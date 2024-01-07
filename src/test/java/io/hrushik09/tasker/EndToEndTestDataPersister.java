@@ -13,6 +13,8 @@ import io.hrushik09.tasker.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class EndToEndTestDataPersister {
     @Autowired
@@ -24,45 +26,45 @@ public class EndToEndTestDataPersister {
     @Autowired
     private CardService cardService;
 
-    public CreateUserResponse havingPersistedUser(String name) {
+    public CreateUserResponse persistedUser(String name) {
         return userService.create(new CreateUserCommand(name));
     }
 
-    public CreateUserResponse havingPersistedUser() {
+    public CreateUserResponse persistedUser() {
         return userService.create(new CreateUserCommand("Not important"));
     }
 
-    public CreateBoardResponse havingPersistedBoard() {
-        CreateUserResponse createUserResponse = havingPersistedUser();
+    public CreateBoardResponse persistedBoard() {
+        CreateUserResponse createUserResponse = persistedUser();
         return boardService.create(new CreateBoardCommand("Not important", createUserResponse.id()));
     }
 
-    public CreateBoardResponse havingPersistedBoard(Integer userId) {
+    public CreateBoardResponse persistedBoard(Integer userId) {
         return boardService.create(new CreateBoardCommand("Not important", userId));
     }
 
-    public CreateListResponse havingPersistedList(String title, Integer boardId) {
+    public CreateListResponse persistedList(String title, Integer boardId) {
         return listService.create(new CreateListCommand(title, boardId));
     }
 
-    public CreateListResponse havingPersistedList() {
-        CreateUserResponse createUserResponse = havingPersistedUser();
-        CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
-        return havingPersistedList("Not important", createBoardResponse.id());
+    public CreateListResponse persistedList() {
+        CreateUserResponse createUserResponse = persistedUser();
+        CreateBoardResponse createBoardResponse = persistedBoard(createUserResponse.id());
+        return persistedList("Not important", createBoardResponse.id());
     }
 
-    public CreateCardResponse havingPersistedCard(String title, Integer listId) {
+    public CreateCardResponse persistedCard(String title, Integer listId) {
         return cardService.create(new CreateCardCommand(listId, title));
     }
 
-    public CreateCardResponse havingPersistedCard() {
-        CreateUserResponse createUserResponse = havingPersistedUser();
-        CreateBoardResponse createBoardResponse = havingPersistedBoard(createUserResponse.id());
-        CreateListResponse createListResponse = havingPersistedList("Not important", createBoardResponse.id());
-        return havingPersistedCard("Not important", createListResponse.id());
+    public CreateCardResponse persistedCard() {
+        CreateUserResponse createUserResponse = persistedUser();
+        CreateBoardResponse createBoardResponse = persistedBoard(createUserResponse.id());
+        CreateListResponse createListResponse = persistedList("Not important", createBoardResponse.id());
+        return persistedCard("Not important", createListResponse.id());
     }
 
-    public UpdateCardDescriptionResponse havingUpdatedCardDescription(Integer id, String description) {
-        return cardService.updateDescription(new UpdateDescriptionCommand(id, description));
+    public UpdateCardResponse updatedCardDescription(Integer id, Map<String, Object> fields) {
+        return cardService.update(new UpdateCardCommand(id, fields));
     }
 }

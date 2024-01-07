@@ -1,0 +1,2 @@
+ALTER TABLE cards
+    ADD COLUMN start TIMESTAMP;

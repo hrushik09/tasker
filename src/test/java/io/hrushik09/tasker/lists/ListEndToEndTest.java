@@ -19,7 +19,7 @@ public class ListEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -28,8 +28,8 @@ public class ListEndToEndTest {
 
     @Test
     void shouldCreateListSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -49,11 +49,11 @@ public class ListEndToEndTest {
 
     @Test
     void shouldFetchAllListsForGivenBoard() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
-        CreateListResponse toDo = dataPersister.havingPersistedList("To Do", savedBoard.id());
-        CreateListResponse completed = dataPersister.havingPersistedList("Completed", savedBoard.id());
-        CreateListResponse deployed = dataPersister.havingPersistedList("Deployed", savedBoard.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
+        CreateListResponse toDo = having.persistedList("To Do", savedBoard.id());
+        CreateListResponse completed = having.persistedList("Completed", savedBoard.id());
+        CreateListResponse deployed = having.persistedList("Deployed", savedBoard.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -63,15 +63,15 @@ public class ListEndToEndTest {
                 .then()
                 .statusCode(200)
                 .body("lists", hasSize(3))
-                .body("lists.id", containsInAnyOrder(toDo.id(), completed.id(), deployed.id()))
-                .body("lists.title", containsInAnyOrder(toDo.title(), completed.title(), deployed.title()));
+                .body("lists.id", contains(toDo.id(), completed.id(), deployed.id()))
+                .body("lists.title", contains(toDo.title(), completed.title(), deployed.title()));
     }
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
-        CreateListResponse list = dataPersister.havingPersistedList("Original List title", savedBoard.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
+        CreateListResponse list = having.persistedList("Original List title", savedBoard.id());
 
         given()
                 .contentType(ContentType.JSON)

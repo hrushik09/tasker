@@ -3,10 +3,18 @@ package io.hrushik09.tasker.cards;
 import io.hrushik09.tasker.lists.ListService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class CardService {
+    private static final List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = List.of("id", "list", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
 
@@ -25,11 +33,32 @@ public class CardService {
     }
 
     @Transactional
-    public UpdateCardDescriptionResponse updateDescription(UpdateDescriptionCommand cmd) {
+    public UpdateCardResponse update(UpdateCardCommand cmd) {
+        Map<String, Object> fields = cmd.fields();
+        Optional<String> optionalField = CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE.stream()
+                .filter(fields::containsKey)
+                .findFirst();
+        if (optionalField.isPresent()) {
+            throw new NotAllowedFieldForUpdateCardException(optionalField.get());
+        }
+
         Card fetched = cardRepository.findById(cmd.id()).orElseThrow(() -> new CardDoesNotExistException(cmd.id()));
-        fetched.setDescription(cmd.description());
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Card.class, key);
+            if (field == null) {
+                throw new InvalidFieldForUpdateCardException(key);
+            }
+            field.setAccessible(true);
+            if ("start".equals(key) || "due".equals(key)) {
+                Instant start = Instant.parse((String) value);
+                ReflectionUtils.setField(field, fetched, start);
+            } else {
+                ReflectionUtils.setField(field, fetched, value);
+            }
+            field.setAccessible(false);
+        });
         Card updated = cardRepository.save(fetched);
-        return UpdateCardDescriptionResponse.from(updated);
+        return UpdateCardResponse.from(updated);
     }
 
     public AllCardMinDetailsDTO fetchAllFor(Integer boardId) {
@@ -37,6 +66,6 @@ public class CardService {
     }
 
     public CardMaxDetailsDTO fetchCardDetails(Integer id) {
-        return cardRepository.findCardDetailsById(id).orElseThrow(() -> new CardDoesNotExistException(id));
+        return cardRepository.fetchCardDetailsById(id).orElseThrow(() -> new CardDoesNotExistException(id));
     }
 }

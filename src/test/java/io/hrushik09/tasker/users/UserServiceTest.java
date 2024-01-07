@@ -57,8 +57,8 @@ class UserServiceTest {
     void shouldFindUserSuccessfully() {
         String name = "user 2";
         int id = 1;
-        Optional<User> optional = Optional.of(aUser().withId(id).withName(name).build());
-        when(userRepository.findById(id)).thenReturn(optional);
+        UserBuilder userBuilder = aUser().withId(id).withName(name);
+        when(userRepository.findById(id)).thenReturn(Optional.of(userBuilder.build()));
 
         UserDetailsDTO fetched = userService.fetchDTOById(id);
 

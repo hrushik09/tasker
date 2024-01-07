@@ -36,8 +36,8 @@ class BoardServiceTest {
         when(userService.getReferenceById(userId)).thenReturn(userBuilder.build());
         Integer boardId = 1;
         String title = "My Board";
-        Board board = aBoard().withId(boardId).withTitle(title).with(userBuilder).build();
-        when(boardRepository.save(any())).thenReturn(board);
+        BoardBuilder boardBuilder = aBoard().withId(boardId).withTitle(title).with(userBuilder);
+        when(boardRepository.save(any())).thenReturn(boardBuilder.build());
 
         CreateBoardResponse created = boardService.create(new CreateBoardCommand(title, userId));
 

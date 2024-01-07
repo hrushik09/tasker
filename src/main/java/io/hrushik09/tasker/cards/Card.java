@@ -14,6 +14,8 @@ public class Card {
     @Column(nullable = false)
     private String title;
     private String description;
+    private Instant start;
+    private Instant due;
     @ManyToOne
     private List list;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -43,6 +45,22 @@ public class Card {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Instant getStart() {
+        return start;
+    }
+
+    public void setStart(Instant start) {
+        this.start = start;
+    }
+
+    public Instant getDue() {
+        return due;
+    }
+
+    public void setDue(Instant due) {
+        this.due = due;
     }
 
     public List getList() {

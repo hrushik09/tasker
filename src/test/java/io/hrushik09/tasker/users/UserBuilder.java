@@ -5,8 +5,8 @@ import java.time.Instant;
 public class UserBuilder {
     private Integer id = 1;
     private String name = "Some name";
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+    private Instant createdAt = Instant.parse("2023-01-01T12:12:12Z");
+    private Instant updatedAt = Instant.parse("2023-01-01T12:12:12Z");
 
     private UserBuilder() {
     }

@@ -6,9 +6,12 @@ import io.hrushik09.tasker.lists.CreateListResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -19,7 +22,7 @@ public class CardEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -28,7 +31,7 @@ public class CardEndToEndTest {
 
     @Test
     void shouldCreateCardSuccessfully() {
-        CreateListResponse savedList = dataPersister.havingPersistedList();
+        CreateListResponse savedList = having.persistedList();
 
         given()
                 .contentType(ContentType.JSON)
@@ -48,30 +51,10 @@ public class CardEndToEndTest {
     }
 
     @Test
-    void shouldUpdateDescriptionSuccessfully() {
-        CreateCardResponse card = dataPersister.havingPersistedCard();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {
-                        "description": "This is updated description"
-                        }
-                        """)
-                .when()
-                .put("/api/cards/{id}", card.id())
-                .then()
-                .statusCode(200)
-                .body("description", equalTo("This is updated description"))
-                .body("id", equalTo(card.id()))
-                .body("title", equalTo(card.title()))
-                .body("listId", equalTo(card.listId()));
-    }
-
-    @Test
     void shouldFetchCardDetailsSuccessfully() {
-        CreateCardResponse createdCard = dataPersister.havingPersistedCard();
-        UpdateCardDescriptionResponse updatedCard = dataPersister.havingUpdatedCardDescription(createdCard.id(), "This is updated card description");
+        CreateCardResponse createdCard = having.persistedCard();
+        Map<String, Object> fields = Map.of("description", "This is updated card description");
+        UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
 
         given()
                 .contentType(ContentType.JSON)
@@ -81,9 +64,101 @@ public class CardEndToEndTest {
                 .statusCode(200)
                 .body("id", equalTo(updatedCard.id()))
                 .body("title", equalTo(updatedCard.title()))
-                .body("description", equalTo(updatedCard.description()))
+                .body("description", equalTo("This is updated card description"))
                 .body("listId", equalTo(updatedCard.listId()))
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
+    }
+
+    @Nested
+    class UpdateCard {
+        @Test
+        void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "description": "Not important"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()));
+        }
+
+        @Test
+        void shouldUpdateTitleSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "title": "This is the updated title"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("title", equalTo("This is the updated title"));
+        }
+
+        @Test
+        void shouldUpdateDescriptionSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "description": "This is updated description"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void shouldUpdateStartSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "start": "2023-12-20T14:35:23Z"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void shouldUpdateDueSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "due": "2023-12-22T14:35:23Z"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
     }
 }
