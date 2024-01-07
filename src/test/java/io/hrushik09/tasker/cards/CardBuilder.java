@@ -10,10 +10,10 @@ public class CardBuilder {
     private Integer id = 1;
     private String title = "Not important";
     private String description = "Not important";
-    private Instant start = Instant.now();
+    private Instant start = Instant.parse("2023-01-05T12:12:12Z");
     private ListBuilder listBuilder = aList();
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+    private Instant createdAt = Instant.parse("2023-01-01T12:12:12Z");
+    private Instant updatedAt = Instant.parse("2023-01-01T12:12:12Z");
 
     private CardBuilder() {
     }

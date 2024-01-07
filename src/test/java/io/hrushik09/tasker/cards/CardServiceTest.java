@@ -26,11 +26,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CardServiceTest {
+    private CardService cardService;
     @Mock
     private CardRepository cardRepository;
     @Mock
     private ListService listService;
-    private CardService cardService;
 
     @BeforeEach
     void setUp() {
@@ -44,8 +44,8 @@ class CardServiceTest {
         when(listService.getReferenceById(listId)).thenReturn(listBuilder.build());
         Integer cardId = 1;
         String title = "Card 2";
-        Card card = aCard().withId(cardId).withTitle(title).with(listBuilder).build();
-        when(cardRepository.save(any())).thenReturn(card);
+        CardBuilder cardBuilder = aCard().withId(cardId).withTitle(title).with(listBuilder);
+        when(cardRepository.save(any())).thenReturn(cardBuilder.build());
 
         CreateCardResponse created = cardService.create(new CreateCardCommand(listId, title));
 
@@ -74,9 +74,12 @@ class CardServiceTest {
         AllCardMinDetailsDTO fetched = cardService.fetchAllFor(boardId);
 
         assertThat(fetched.cards()).hasSize(5);
-        assertThat(fetched.cards()).extracting("id").containsExactlyInAnyOrder(1, 2, 3, 4, 5);
-        assertThat(fetched.cards()).extracting("title").containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
-        assertThat(fetched.cards()).extracting("listId").containsExactlyInAnyOrder(1, 2, 1, 2, 3);
+        assertThat(fetched.cards()).extracting("id")
+                .containsExactlyInAnyOrder(1, 2, 3, 4, 5);
+        assertThat(fetched.cards()).extracting("title")
+                .containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
+        assertThat(fetched.cards()).extracting("listId")
+                .containsExactlyInAnyOrder(1, 2, 1, 2, 3);
     }
 
     @Test
@@ -136,18 +139,51 @@ class CardServiceTest {
 
         @Test
         void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
-            Integer id = 1;
+            Integer id = 2;
             String updatedDescription = "Not important";
-            Map<String, Object> fields = Map.of("description", updatedDescription);
-            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+            ListBuilder listBuilder = aList().withId(11);
+            CardBuilder cardBuilder = aCard().withId(id).withTitle("Documentation").withDescription(null).with(listBuilder);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
             when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
+            Map<String, Object> fields = Map.of("description", updatedDescription);
 
             UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
 
             assertThat(updated.id()).isEqualTo(id);
-            assertThat(updated.title()).isEqualTo("Not important");
-            assertThat(updated.listId()).isEqualTo(1);
+            assertThat(updated.title()).isEqualTo("Documentation");
+            assertThat(updated.listId()).isEqualTo(11);
+        }
+
+        @Test
+        void shouldUpdateDescriptionSuccessfully() {
+            Integer id = 1;
+            String updatedDescription = "This is updated description";
+            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
+            Map<String, Object> fields = Map.of("description", updatedDescription);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
+        }
+
+        @Test
+        void shouldUpdateStartTimeSuccessfully() {
+            Integer id = 1;
+            String startStr = "2023-04-24T13:45:55Z";
+            CardBuilder cardBuilder = aCard().withId(id).withStart(null);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withStart(Instant.parse(startStr)).build());
+            Map<String, Object> fields = Map.of("start", startStr);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getStart()).isEqualTo(Instant.parse(startStr));
         }
 
         @Nested
@@ -196,38 +232,6 @@ class CardServiceTest {
                         .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
                         .hasMessage("Field updatedAt is not allowed for update");
             }
-        }
-
-        @Test
-        void shouldUpdateDescriptionSuccessfully() {
-            Integer id = 1;
-            String updatedDescription = "This is updated description";
-            Map<String, Object> fields = Map.of("description", updatedDescription);
-            CardBuilder cardBuilder = aCard().withId(id).withDescription(null);
-            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withDescription(updatedDescription).build());
-
-            cardService.update(new UpdateCardCommand(id, fields));
-
-            verify(cardRepository).save(cardArgumentCaptor.capture());
-            Card captorValue = cardArgumentCaptor.getValue();
-            assertThat(captorValue.getDescription()).isEqualTo(updatedDescription);
-        }
-
-        @Test
-        void shouldUpdateStartTimeSuccessfully() {
-            Integer id = 1;
-            String startStr = "2023-04-24T13:45:55Z";
-            Map<String, Object> fields = Map.of("start", startStr);
-            CardBuilder cardBuilder = aCard().withId(id).withStart(null);
-            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withStart(Instant.parse(startStr)).build());
-
-            cardService.update(new UpdateCardCommand(id, fields));
-
-            verify(cardRepository).save(cardArgumentCaptor.capture());
-            Card captorValue = cardArgumentCaptor.getValue();
-            assertThat(captorValue.getStart()).isEqualTo(Instant.parse(startStr));
         }
     }
 }

@@ -41,18 +41,20 @@ public class BoardControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.title", equalTo("Development Board")));
     }
 
     @Test
     void shouldThrowWhenFetchingAllDataForNonExistingBoard() throws Exception {
         Integer nonExistingId = 1;
-        when(boardDataService.fetchAllData(new FetchBoardDataQuery(nonExistingId))).thenThrow(new BoardDoesNotExistException(nonExistingId));
+        when(boardDataService.fetchAllData(new FetchBoardDataQuery(nonExistingId)))
+                .thenThrow(new BoardDoesNotExistException(nonExistingId));
 
         mockMvc.perform(get("/api/boards/{id}", nonExistingId))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", equalTo("Board with id=" + nonExistingId + " does not exist")));
+                .andExpect(jsonPath("$.error",
+                        equalTo("Board with id=" + nonExistingId + " does not exist")));
     }
 
     @Test
@@ -80,11 +82,16 @@ public class BoardControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(boardId)))
                 .andExpect(jsonPath("$.lists", hasSize(4)))
-                .andExpect(jsonPath("$.lists[*].id", containsInAnyOrder(1, 2, 3, 4)))
-                .andExpect(jsonPath("$.lists[*].title", containsInAnyOrder("Future Works", "Working", "Completed", "Deployed")))
+                .andExpect(jsonPath("$.lists[*].id",
+                        containsInAnyOrder(1, 2, 3, 4)))
+                .andExpect(jsonPath("$.lists[*].title",
+                        containsInAnyOrder("Future Works", "Working", "Completed", "Deployed")))
                 .andExpect(jsonPath("$.cards", hasSize(7)))
-                .andExpect(jsonPath("$.cards[*].id", containsInAnyOrder(1, 2, 3, 4, 5, 6, 7)))
-                .andExpect(jsonPath("$.cards[*].title", containsInAnyOrder("Card 1", "Temp", "Card 2", "Documentation", "Formatting", "New features", "Refactoring")))
-                .andExpect(jsonPath("$.cards[*].listId", containsInAnyOrder(1, 2, 4, 2, 3, 1, 3)));
+                .andExpect(jsonPath("$.cards[*].id",
+                        containsInAnyOrder(1, 2, 3, 4, 5, 6, 7)))
+                .andExpect(jsonPath("$.cards[*].title",
+                        containsInAnyOrder("Card 1", "Temp", "Card 2", "Documentation", "Formatting", "New features", "Refactoring")))
+                .andExpect(jsonPath("$.cards[*].listId",
+                        containsInAnyOrder(1, 2, 4, 2, 3, 1, 3)));
     }
 }

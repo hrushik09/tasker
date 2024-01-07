@@ -42,16 +42,16 @@ public class Card {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Instant getStart() {
         return start;
     }
 
     public void setStart(Instant start) {
         this.start = start;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List getList() {

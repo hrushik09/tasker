@@ -39,8 +39,8 @@ class ListServiceTest {
         when(boardService.getReferenceById(boardId)).thenReturn(boardBuilder.build());
         Integer listId = 1;
         String title = "To Do";
-        List list = aList().withId(listId).withTitle(title).with(boardBuilder).build();
-        when(listRepository.save(any())).thenReturn(list);
+        ListBuilder listBuilder = aList().withId(listId).withTitle(title).with(boardBuilder);
+        when(listRepository.save(any())).thenReturn(listBuilder.build());
 
         CreateListResponse created = listService.create(new CreateListCommand(title, boardId));
 
@@ -66,8 +66,20 @@ class ListServiceTest {
         AllListDetailsDTO fetched = listService.fetchAllFor(boardId);
 
         assertThat(fetched.lists()).hasSize(3);
-        assertThat(fetched.lists()).extracting("id").containsExactlyInAnyOrder(1, 2, 3);
-        assertThat(fetched.lists()).extracting("title").containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
+        assertThat(fetched.lists()).extracting("id")
+                .containsExactlyInAnyOrder(1, 2, 3);
+        assertThat(fetched.lists()).extracting("title")
+                .containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingTitleForNonExistingList() {
+        Integer nonExistingId = 100;
+        when(listRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> listService.update(new UpdateListCommand(nonExistingId, "Not important")))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingId + " does not exist");
     }
 
     @Test
@@ -86,15 +98,5 @@ class ListServiceTest {
         verify(listRepository).save(listArgumentCaptor.capture());
         List captorValue = listArgumentCaptor.getValue();
         assertThat(captorValue.getTitle()).isEqualTo(updatedTitle);
-    }
-
-    @Test
-    void shouldThrowWhenUpdatingTitleForNonExistingList() {
-        Integer nonExistingId = 100;
-        when(listRepository.findById(nonExistingId)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> listService.update(new UpdateListCommand(nonExistingId, "Not important")))
-                .isInstanceOf(ListDoesNotExistException.class)
-                .hasMessage("List with id=" + nonExistingId + " does not exist");
     }
 }

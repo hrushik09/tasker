@@ -24,7 +24,8 @@ public class ListControllerTest {
 
     @Test
     void shouldCreateListSuccessfully() throws Exception {
-        when(listService.create(new CreateListCommand("To Do", 1))).thenReturn(new CreateListResponse(1, "To Do"));
+        when(listService.create(new CreateListCommand("To Do", 1)))
+                .thenReturn(new CreateListResponse(1, "To Do"));
 
         mockMvc.perform(post("/api/lists")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -35,7 +36,7 @@ public class ListControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.title", equalTo("To Do")));
     }
 
@@ -53,14 +54,17 @@ public class ListControllerTest {
                         .queryParam("boardId", String.valueOf(boardId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lists", hasSize(3)))
-                .andExpect(jsonPath("$.lists[*].id", containsInAnyOrder(1, 2, 3)))
-                .andExpect(jsonPath("$.lists[*].title", containsInAnyOrder("To Do", "Completed", "Deployed")));
+                .andExpect(jsonPath("$.lists[*].id",
+                        containsInAnyOrder(1, 2, 3)))
+                .andExpect(jsonPath("$.lists[*].title",
+                        containsInAnyOrder("To Do", "Completed", "Deployed")));
     }
 
     @Test
     void shouldThrowWhenUpdatingTitleForNonExistingList() throws Exception {
         Integer nonExistingId = 100;
-        when(listService.update(new UpdateListCommand(nonExistingId, "Not important"))).thenThrow(new ListDoesNotExistException(nonExistingId));
+        when(listService.update(new UpdateListCommand(nonExistingId, "Not important")))
+                .thenThrow(new ListDoesNotExistException(nonExistingId));
 
         mockMvc.perform(put("/api/lists/{id}", nonExistingId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,12 +74,14 @@ public class ListControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", equalTo("List with id=" + nonExistingId + " does not exist")));
+                .andExpect(jsonPath("$.error",
+                        equalTo("List with id=" + nonExistingId + " does not exist")));
     }
 
     @Test
     void shouldUpdateListTitleSuccessfully() throws Exception {
-        when(listService.update(new UpdateListCommand(1, "New List title"))).thenReturn(new UpdateListResponse(1, "New List title"));
+        when(listService.update(new UpdateListCommand(1, "New List title")))
+                .thenReturn(new UpdateListResponse(1, "New List title"));
 
         mockMvc.perform(put("/api/lists/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -26,7 +26,8 @@ public class UserControllerTest {
 
     @Test
     void shouldCreateUserSuccessfully() throws Exception {
-        when(userService.create(new CreateUserCommand("user 1"))).thenReturn(new CreateUserResponse(1, "user 1"));
+        when(userService.create(new CreateUserCommand("user 1")))
+                .thenReturn(new CreateUserResponse(1, "user 1"));
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -36,7 +37,7 @@ public class UserControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.name", equalTo("user 1")));
     }
 

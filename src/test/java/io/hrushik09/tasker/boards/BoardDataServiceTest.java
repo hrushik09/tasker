@@ -46,7 +46,8 @@ class BoardDataServiceTest {
     @Test
     void shouldFetchAllDataForGivenBoardSuccessfully() {
         Integer boardId = 1;
-        when(boardRepository.findById(boardId)).thenReturn(Optional.of(aBoard().withId(1).build()));
+        when(boardRepository.findById(boardId))
+                .thenReturn(Optional.of(aBoard().withId(boardId).build()));
         List<ListDetailsDTO> lists = List.of(
                 new ListDetailsDTO(1, "To Do"),
                 new ListDetailsDTO(2, "Completed"),
@@ -66,11 +67,16 @@ class BoardDataServiceTest {
 
         assertThat(boardDetailsDTO.id()).isEqualTo(boardId);
         assertThat(boardDetailsDTO.lists()).hasSize(3);
-        assertThat(boardDetailsDTO.lists()).extracting("id").containsExactlyInAnyOrder(1, 2, 3);
-        assertThat(boardDetailsDTO.lists()).extracting("title").containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
+        assertThat(boardDetailsDTO.lists()).extracting("id")
+                .containsExactlyInAnyOrder(1, 2, 3);
+        assertThat(boardDetailsDTO.lists()).extracting("title")
+                .containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
         assertThat(boardDetailsDTO.cards()).hasSize(5);
-        assertThat(boardDetailsDTO.cards()).extracting("id").containsExactlyInAnyOrder(1, 2, 3, 4, 5);
-        assertThat(boardDetailsDTO.cards()).extracting("title").containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
-        assertThat(boardDetailsDTO.cards()).extracting("listId").containsExactlyInAnyOrder(1, 2, 1, 3, 1);
+        assertThat(boardDetailsDTO.cards()).extracting("id")
+                .containsExactlyInAnyOrder(1, 2, 3, 4, 5);
+        assertThat(boardDetailsDTO.cards()).extracting("title")
+                .containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
+        assertThat(boardDetailsDTO.cards()).extracting("listId")
+                .containsExactlyInAnyOrder(1, 2, 1, 3, 1);
     }
 }
