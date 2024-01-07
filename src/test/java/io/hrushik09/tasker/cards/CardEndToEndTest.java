@@ -110,7 +110,7 @@ public class CardEndToEndTest {
         }
 
         @Test
-        void shouldUpdateStartTimeSuccessfully() {
+        void shouldUpdateStartSuccessfully() {
             CreateCardResponse card = having.persistedCard();
 
             given()
@@ -118,6 +118,23 @@ public class CardEndToEndTest {
                     .body("""
                             {
                             "start": "2023-12-20T14:35:23Z"
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void shouldUpdateDueSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "due": "2023-12-22T14:35:23Z"
                             }
                             """)
                     .when()

@@ -171,7 +171,7 @@ class CardServiceTest {
         }
 
         @Test
-        void shouldUpdateStartTimeSuccessfully() {
+        void shouldUpdateStartSuccessfully() {
             Integer id = 1;
             String startStr = "2023-04-24T13:45:55Z";
             CardBuilder cardBuilder = aCard().withId(id).withStart(null);
