@@ -155,6 +155,24 @@ class CardServiceTest {
         }
 
         @Test
+        void shouldUpdateTitleSuccessfully() {
+            Integer id = 1;
+            String originalTitle = "Original title";
+            CardBuilder cardBuilder = aCard().withId(id).withTitle(originalTitle);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String updatedTitle = "Title after update";
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withTitle(updatedTitle).build());
+            Map<String, Object> fields = Map.of("title", updatedTitle);
+
+            UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+
+            assertThat(updated.title()).isEqualTo(updatedTitle);
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getTitle()).isEqualTo(updatedTitle);
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() {
             Integer id = 1;
             CardBuilder cardBuilder = aCard().withId(id).withDescription(null);

@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 public class CardService {
-    private static final List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = List.of("id", "title", "list", "createdAt", "updatedAt");
+    private static final List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = List.of("id", "list", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
 
