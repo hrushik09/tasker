@@ -127,6 +127,23 @@ public class CardControllerTest {
         }
 
         @Test
+        void shouldUpdateTitleSuccessfully() throws Exception {
+            Map<String, Object> fields = Map.of("title", "This is updated title");
+            when(cardService.update(new UpdateCardCommand(1, fields)))
+                    .thenReturn(new UpdateCardResponse(1, "This is updated title", 1));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {
+                                    "title": "This is updated title"
+                                    }
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.title", equalTo("This is updated title")));
+        }
+
+        @Test
         void shouldUpdateDescriptionSuccessfully() throws Exception {
             Map<String, Object> fields = Map.of("description", "Description after update");
             when(cardService.update(new UpdateCardCommand(1, fields))).thenReturn(new UpdateCardResponse(1, "Not important", 1));

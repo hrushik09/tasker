@@ -106,7 +106,8 @@ public class CardEndToEndTest {
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
-                    .statusCode(200);
+                    .statusCode(200)
+                    .body("title", equalTo("This is the updated title"));
         }
 
         @Test
