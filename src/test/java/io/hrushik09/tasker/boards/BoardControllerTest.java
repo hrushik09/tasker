@@ -83,15 +83,15 @@ public class BoardControllerTest {
                 .andExpect(jsonPath("$.id", equalTo(boardId)))
                 .andExpect(jsonPath("$.lists", hasSize(4)))
                 .andExpect(jsonPath("$.lists[*].id",
-                        containsInAnyOrder(1, 2, 3, 4)))
+                        contains(1, 2, 3, 4)))
                 .andExpect(jsonPath("$.lists[*].title",
-                        containsInAnyOrder("Future Works", "Working", "Completed", "Deployed")))
+                        contains("Future Works", "Working", "Completed", "Deployed")))
                 .andExpect(jsonPath("$.cards", hasSize(7)))
                 .andExpect(jsonPath("$.cards[*].id",
-                        containsInAnyOrder(1, 2, 3, 4, 5, 6, 7)))
+                        contains(1, 2, 3, 4, 5, 6, 7)))
                 .andExpect(jsonPath("$.cards[*].title",
-                        containsInAnyOrder("Card 1", "Temp", "Card 2", "Documentation", "Formatting", "New features", "Refactoring")))
+                        contains("Card 1", "Temp", "Card 2", "Documentation", "Formatting", "New features", "Refactoring")))
                 .andExpect(jsonPath("$.cards[*].listId",
-                        containsInAnyOrder(1, 2, 4, 2, 3, 1, 3)));
+                        contains(1, 2, 4, 2, 3, 1, 3)));
     }
 }

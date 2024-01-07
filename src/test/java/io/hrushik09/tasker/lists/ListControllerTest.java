@@ -54,10 +54,8 @@ public class ListControllerTest {
                         .queryParam("boardId", String.valueOf(boardId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lists", hasSize(3)))
-                .andExpect(jsonPath("$.lists[*].id",
-                        containsInAnyOrder(1, 2, 3)))
-                .andExpect(jsonPath("$.lists[*].title",
-                        containsInAnyOrder("To Do", "Completed", "Deployed")));
+                .andExpect(jsonPath("$.lists[*].id", contains(1, 2, 3)))
+                .andExpect(jsonPath("$.lists[*].title", contains("To Do", "Completed", "Deployed")));
     }
 
     @Test

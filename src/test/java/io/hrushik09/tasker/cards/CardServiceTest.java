@@ -75,11 +75,11 @@ class CardServiceTest {
 
         assertThat(fetched.cards()).hasSize(5);
         assertThat(fetched.cards()).extracting("id")
-                .containsExactlyInAnyOrder(1, 2, 3, 4, 5);
+                .containsExactly(1, 2, 3, 4, 5);
         assertThat(fetched.cards()).extracting("title")
-                .containsExactlyInAnyOrder("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
+                .containsExactly("Card 1", "Card 2", "Card 3", "Card 4", "Card 5");
         assertThat(fetched.cards()).extracting("listId")
-                .containsExactlyInAnyOrder(1, 2, 1, 2, 3);
+                .containsExactly(1, 2, 1, 2, 3);
     }
 
     @Test

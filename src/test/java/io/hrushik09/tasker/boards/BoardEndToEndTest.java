@@ -64,11 +64,11 @@ public class BoardEndToEndTest {
                 .statusCode(200)
                 .body("id", equalTo(board.id()))
                 .body("lists", hasSize(2))
-                .body("lists.id", containsInAnyOrder(working.id(), completed.id()))
-                .body("lists.title", containsInAnyOrder(working.title(), completed.title()))
+                .body("lists.id", contains(working.id(), completed.id()))
+                .body("lists.title", contains(working.title(), completed.title()))
                 .body("cards", hasSize(3))
-                .body("cards.id", containsInAnyOrder(card.id(), documentation.id(), formatting.id()))
-                .body("cards.title", containsInAnyOrder(card.title(), documentation.title(), formatting.title()))
-                .body("cards.listId", containsInAnyOrder(card.listId(), documentation.listId(), formatting.listId()));
+                .body("cards.id", contains(card.id(), documentation.id(), formatting.id()))
+                .body("cards.title", contains(card.title(), documentation.title(), formatting.title()))
+                .body("cards.listId", contains(card.listId(), documentation.listId(), formatting.listId()));
     }
 }

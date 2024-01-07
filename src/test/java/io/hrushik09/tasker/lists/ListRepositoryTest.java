@@ -35,8 +35,8 @@ class ListRepositoryTest {
 
         assertThat(fetched).hasSize(4);
         assertThat(fetched).extracting("id")
-                .containsExactlyInAnyOrder(todo.getId(), completed.getId(), deployed.getId(), futureWorks.getId());
+                .containsExactly(todo.getId(), completed.getId(), deployed.getId(), futureWorks.getId());
         assertThat(fetched).extracting("title")
-                .containsExactlyInAnyOrder(todo.getTitle(), completed.getTitle(), deployed.getTitle(), futureWorks.getTitle());
+                .containsExactly(todo.getTitle(), completed.getTitle(), deployed.getTitle(), futureWorks.getTitle());
     }
 }

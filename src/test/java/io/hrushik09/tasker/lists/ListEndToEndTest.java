@@ -63,8 +63,8 @@ public class ListEndToEndTest {
                 .then()
                 .statusCode(200)
                 .body("lists", hasSize(3))
-                .body("lists.id", containsInAnyOrder(toDo.id(), completed.id(), deployed.id()))
-                .body("lists.title", containsInAnyOrder(toDo.title(), completed.title(), deployed.title()));
+                .body("lists.id", contains(toDo.id(), completed.id(), deployed.id()))
+                .body("lists.title", contains(toDo.title(), completed.title(), deployed.title()));
     }
 
     @Test

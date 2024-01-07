@@ -67,9 +67,9 @@ class ListServiceTest {
 
         assertThat(fetched.lists()).hasSize(3);
         assertThat(fetched.lists()).extracting("id")
-                .containsExactlyInAnyOrder(1, 2, 3);
+                .containsExactly(1, 2, 3);
         assertThat(fetched.lists()).extracting("title")
-                .containsExactlyInAnyOrder("To Do", "Completed", "Deployed");
+                .containsExactly("To Do", "Completed", "Deployed");
     }
 
     @Test

@@ -43,9 +43,9 @@ class CardRepositoryTest {
         java.util.List<CardMinDetailsDTO> cards = cardRepository.fetchForAll(board.getId());
 
         assertThat(cards).hasSize(6);
-        assertThat(cards).extracting("id").containsExactlyInAnyOrder(card1.getId(), card2.getId(), card3.getId(), card4.getId(), card5.getId(), card6.getId());
-        assertThat(cards).extracting("title").containsExactlyInAnyOrder(card1.getTitle(), card2.getTitle(), card3.getTitle(), card4.getTitle(), card5.getTitle(), card6.getTitle());
-        assertThat(cards).extracting("listId").containsExactlyInAnyOrder(card1.getList().getId(), card2.getList().getId(), card3.getList().getId(), card4.getList().getId(), card5.getList().getId(), card6.getList().getId());
+        assertThat(cards).extracting("id").containsExactly(card1.getId(), card2.getId(), card3.getId(), card4.getId(), card5.getId(), card6.getId());
+        assertThat(cards).extracting("title").containsExactly(card1.getTitle(), card2.getTitle(), card3.getTitle(), card4.getTitle(), card5.getTitle(), card6.getTitle());
+        assertThat(cards).extracting("listId").containsExactly(card1.getList().getId(), card2.getList().getId(), card3.getList().getId(), card4.getList().getId(), card5.getList().getId(), card6.getList().getId());
     }
 
     @Test
