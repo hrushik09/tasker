@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RepositoryTest
 class CardRepositoryTest {
-    private final RepositoryTestDataPersister dataPersister = new RepositoryTestDataPersister();
+    private final RepositoryTestDataPersister having = new RepositoryTestDataPersister();
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -23,22 +23,22 @@ class CardRepositoryTest {
 
     @Test
     void validateFetchForAll() {
-        User user = dataPersister.havingPersistedUser(entityManager, "user 1");
-        Board board = dataPersister.havingPersistedBoard(entityManager, "Board 1", user);
-        List todo = dataPersister.havingPersistedList(entityManager, "To Do", board);
-        List completed = dataPersister.havingPersistedList(entityManager, "Completed", board);
-        List deployed = dataPersister.havingPersistedList(entityManager, "Deployed", board);
-        List futureWorks = dataPersister.havingPersistedList(entityManager, "Future Works", board);
-        Card card1 = dataPersister.havingPersistedCard(entityManager, "Card 1", todo);
-        Card card2 = dataPersister.havingPersistedCard(entityManager, "Card 2", completed);
-        Card card3 = dataPersister.havingPersistedCard(entityManager, "Card 3", futureWorks);
-        Card card4 = dataPersister.havingPersistedCard(entityManager, "Card 4", deployed);
-        Card card5 = dataPersister.havingPersistedCard(entityManager, "Card 5", completed);
-        Card card6 = dataPersister.havingPersistedCard(entityManager, "Card 6", todo);
+        User user = having.persistedUser(entityManager, "user 1");
+        Board board = having.persistedBoard(entityManager, "Board 1", user);
+        List todo = having.persistedList(entityManager, "To Do", board);
+        List completed = having.persistedList(entityManager, "Completed", board);
+        List deployed = having.persistedList(entityManager, "Deployed", board);
+        List futureWorks = having.persistedList(entityManager, "Future Works", board);
+        Card card1 = having.persistedCard(entityManager, "Card 1", todo);
+        Card card2 = having.persistedCard(entityManager, "Card 2", completed);
+        Card card3 = having.persistedCard(entityManager, "Card 3", futureWorks);
+        Card card4 = having.persistedCard(entityManager, "Card 4", deployed);
+        Card card5 = having.persistedCard(entityManager, "Card 5", completed);
+        Card card6 = having.persistedCard(entityManager, "Card 6", todo);
 
-        Board extraBoard = dataPersister.havingPersistedBoard(entityManager, "Extra Board", user);
-        List extraList = dataPersister.havingPersistedList(entityManager, "Extra List", extraBoard);
-        Card extraCard = dataPersister.havingPersistedCard(entityManager, "Extra Card", extraList);
+        Board extraBoard = having.persistedBoard(entityManager, "Extra Board", user);
+        List extraList = having.persistedList(entityManager, "Extra List", extraBoard);
+        Card extraCard = having.persistedCard(entityManager, "Extra Card", extraList);
 
         java.util.List<CardMinDetailsDTO> cards = cardRepository.fetchForAll(board.getId());
 
@@ -50,10 +50,10 @@ class CardRepositoryTest {
 
     @Test
     void validateFetchCardDetailsById() {
-        User user = dataPersister.havingPersistedUser(entityManager, "user 1");
-        Board board = dataPersister.havingPersistedBoard(entityManager, "Board 1", user);
-        List todo = dataPersister.havingPersistedList(entityManager, "To Do", board);
-        Card card = dataPersister.havingPersistedCard(entityManager, "Card 1", todo);
+        User user = having.persistedUser(entityManager, "user 1");
+        Board board = having.persistedBoard(entityManager, "Board 1", user);
+        List todo = having.persistedList(entityManager, "To Do", board);
+        Card card = having.persistedCard(entityManager, "Card 1", todo);
 
         Optional<CardMaxDetailsDTO> optionalDetails = cardRepository.fetchCardDetailsById(card.getId());
 

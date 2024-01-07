@@ -22,7 +22,7 @@ public class CardEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +31,7 @@ public class CardEndToEndTest {
 
     @Test
     void shouldCreateCardSuccessfully() {
-        CreateListResponse savedList = dataPersister.havingPersistedList();
+        CreateListResponse savedList = having.persistedList();
 
         given()
                 .contentType(ContentType.JSON)
@@ -52,9 +52,9 @@ public class CardEndToEndTest {
 
     @Test
     void shouldFetchCardDetailsSuccessfully() {
-        CreateCardResponse createdCard = dataPersister.havingPersistedCard();
+        CreateCardResponse createdCard = having.persistedCard();
         Map<String, Object> fields = Map.of("description", "This is updated card description");
-        UpdateCardResponse updatedCard = dataPersister.havingUpdatedCardDescription(createdCard.id(), fields);
+        UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
 
         given()
                 .contentType(ContentType.JSON)
@@ -74,7 +74,7 @@ public class CardEndToEndTest {
     class UpdateCard {
         @Test
         void shouldReturnCorrectResponseFieldsAfterAllowedFieldUpdateIsPerformed() {
-            CreateCardResponse card = dataPersister.havingPersistedCard();
+            CreateCardResponse card = having.persistedCard();
 
             given()
                     .contentType(ContentType.JSON)
@@ -94,7 +94,7 @@ public class CardEndToEndTest {
 
         @Test
         void shouldUpdateDescriptionSuccessfully() {
-            CreateCardResponse card = dataPersister.havingPersistedCard();
+            CreateCardResponse card = having.persistedCard();
 
             given()
                     .contentType(ContentType.JSON)
@@ -111,7 +111,7 @@ public class CardEndToEndTest {
 
         @Test
         void shouldUpdateStartTimeSuccessfully() {
-            CreateCardResponse card = dataPersister.havingPersistedCard();
+            CreateCardResponse card = having.persistedCard();
 
             given()
                     .contentType(ContentType.JSON)

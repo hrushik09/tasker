@@ -20,7 +20,7 @@ public class BoardEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -29,7 +29,7 @@ public class BoardEndToEndTest {
 
     @Test
     void shouldCreateBoardSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
+        CreateUserResponse savedUser = having.persistedUser();
 
         given()
                 .contentType(ContentType.JSON)
@@ -49,12 +49,12 @@ public class BoardEndToEndTest {
 
     @Test
     void shouldFetchAllDataForGivenBoardSuccessfully() {
-        CreateBoardResponse board = dataPersister.havingPersistedBoard();
-        CreateListResponse working = dataPersister.havingPersistedList("Working", board.id());
-        CreateListResponse completed = dataPersister.havingPersistedList("Completed", board.id());
-        CreateCardResponse card = dataPersister.havingPersistedCard("Card 1", working.id());
-        CreateCardResponse documentation = dataPersister.havingPersistedCard("Documentation", completed.id());
-        CreateCardResponse formatting = dataPersister.havingPersistedCard("Formatting", working.id());
+        CreateBoardResponse board = having.persistedBoard();
+        CreateListResponse working = having.persistedList("Working", board.id());
+        CreateListResponse completed = having.persistedList("Completed", board.id());
+        CreateCardResponse card = having.persistedCard("Card 1", working.id());
+        CreateCardResponse documentation = having.persistedCard("Documentation", completed.id());
+        CreateCardResponse formatting = having.persistedCard("Formatting", working.id());
 
         given()
                 .contentType(ContentType.JSON)

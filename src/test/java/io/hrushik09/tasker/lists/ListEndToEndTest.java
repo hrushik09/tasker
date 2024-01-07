@@ -19,7 +19,7 @@ public class ListEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -28,8 +28,8 @@ public class ListEndToEndTest {
 
     @Test
     void shouldCreateListSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -49,11 +49,11 @@ public class ListEndToEndTest {
 
     @Test
     void shouldFetchAllListsForGivenBoard() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
-        CreateListResponse toDo = dataPersister.havingPersistedList("To Do", savedBoard.id());
-        CreateListResponse completed = dataPersister.havingPersistedList("Completed", savedBoard.id());
-        CreateListResponse deployed = dataPersister.havingPersistedList("Deployed", savedBoard.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
+        CreateListResponse toDo = having.persistedList("To Do", savedBoard.id());
+        CreateListResponse completed = having.persistedList("Completed", savedBoard.id());
+        CreateListResponse deployed = having.persistedList("Deployed", savedBoard.id());
 
         given()
                 .contentType(ContentType.JSON)
@@ -69,9 +69,9 @@ public class ListEndToEndTest {
 
     @Test
     void shouldUpdateListTitleSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser();
-        CreateBoardResponse savedBoard = dataPersister.havingPersistedBoard(savedUser.id());
-        CreateListResponse list = dataPersister.havingPersistedList("Original List title", savedBoard.id());
+        CreateUserResponse savedUser = having.persistedUser();
+        CreateBoardResponse savedBoard = having.persistedBoard(savedUser.id());
+        CreateListResponse list = having.persistedList("Original List title", savedBoard.id());
 
         given()
                 .contentType(ContentType.JSON)

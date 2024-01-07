@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RepositoryTest
 class ListRepositoryTest {
-    private final RepositoryTestDataPersister dataPersister = new RepositoryTestDataPersister();
+    private final RepositoryTestDataPersister having = new RepositoryTestDataPersister();
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -20,14 +20,14 @@ class ListRepositoryTest {
 
     @Test
     void validateFetchForAll() {
-        User user = dataPersister.havingPersistedUser(entityManager, "user 1");
-        Board board = dataPersister.havingPersistedBoard(entityManager, "Board 1", user);
-        List todo = dataPersister.havingPersistedList(entityManager, "To Do", board);
-        List completed = dataPersister.havingPersistedList(entityManager, "Completed", board);
-        List deployed = dataPersister.havingPersistedList(entityManager, "Deployed", board);
-        List futureWorks = dataPersister.havingPersistedList(entityManager, "Future Works", board);
-        Board extraBoard = dataPersister.havingPersistedBoard(entityManager, "Extra Board", user);
-        List extraList = dataPersister.havingPersistedList(entityManager, "Not important", extraBoard);
+        User user = having.persistedUser(entityManager, "user 1");
+        Board board = having.persistedBoard(entityManager, "Board 1", user);
+        List todo = having.persistedList(entityManager, "To Do", board);
+        List completed = having.persistedList(entityManager, "Completed", board);
+        List deployed = having.persistedList(entityManager, "Deployed", board);
+        List futureWorks = having.persistedList(entityManager, "Future Works", board);
+        Board extraBoard = having.persistedBoard(entityManager, "Extra Board", user);
+        List extraList = having.persistedList(entityManager, "Not important", extraBoard);
         entityManager.flush();
         entityManager.clear();
 

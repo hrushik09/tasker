@@ -18,7 +18,7 @@ public class UserEndToEndTest {
     @LocalServerPort
     private Integer port;
     @Autowired
-    private EndToEndTestDataPersister dataPersister;
+    private EndToEndTestDataPersister having;
 
     @BeforeEach
     void setUp() {
@@ -44,7 +44,7 @@ public class UserEndToEndTest {
 
     @Test
     void shouldFindUserSuccessfully() {
-        CreateUserResponse savedUser = dataPersister.havingPersistedUser("user 2");
+        CreateUserResponse savedUser = having.persistedUser("user 2");
 
         given()
                 .contentType(ContentType.JSON)
