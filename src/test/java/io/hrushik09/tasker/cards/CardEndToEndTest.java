@@ -50,24 +50,38 @@ public class CardEndToEndTest {
                 .body("listId", equalTo(savedList.id()));
     }
 
-    @Test
-    void shouldFetchCardDetailsSuccessfully() {
-        CreateCardResponse createdCard = having.persistedCard();
-        Map<String, Object> fields = Map.of("description", "This is updated card description");
-        UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
+    @Nested
+    class FetchCardDetails {
+        @Test
+        void shouldFetchBasicCardDetailsSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
 
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/cards/{id}", updatedCard.id())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(updatedCard.id()))
-                .body("title", equalTo(updatedCard.title()))
-                .body("description", equalTo("This is updated card description"))
-                .body("listId", equalTo(updatedCard.listId()))
-                .body("createdAt", notNullValue())
-                .body("updatedAt", notNullValue());
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", card.id())
+                    .then()
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()))
+                    .body("createdAt", notNullValue())
+                    .body("updatedAt", notNullValue());
+        }
+
+        @Test
+        void shouldFetchDescriptionSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("description", "This is updated card description");
+            UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", updatedCard.id())
+                    .then()
+                    .statusCode(200)
+                    .body("description", equalTo("This is updated card description"));
+        }
     }
 
     @Nested
