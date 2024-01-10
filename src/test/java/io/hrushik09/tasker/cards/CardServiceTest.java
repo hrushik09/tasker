@@ -87,7 +87,7 @@ class CardServiceTest {
         @Test
         void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
             Integer nonExistingId = 102;
-            when(cardRepository.fetchCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
+            when(cardRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
                     .isInstanceOf(CardDoesNotExistException.class)
@@ -100,13 +100,16 @@ class CardServiceTest {
             String title = "Card 1";
             String description = "current description for card 1";
             Integer listId = 3;
-            CardMaxDetailsDTO cardMaxDetailsDTO = new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now());
-            when(cardRepository.fetchCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
+            String startStr = "2023-04-05T04:05:02Z";
+            ListBuilder listBuilder = aList().withId(listId);
+            CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description).with(listBuilder).withStart(Instant.parse(startStr));
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
 
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
             assertThat(fetched.id()).isEqualTo(id);
             assertThat(fetched.title()).isEqualTo(title);
             assertThat(fetched.description()).isEqualTo(description);
+            assertThat(fetched.start()).isEqualTo(startStr);
             assertThat(fetched.listId()).isEqualTo(listId);
             assertThat(fetched.createdAt()).isNotNull();
             assertThat(fetched.updatedAt()).isNotNull();

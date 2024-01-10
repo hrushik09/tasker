@@ -63,14 +63,16 @@ public class CardControllerTest {
             String title = "Custom card";
             String description = "This is the current description";
             Integer listId = 2;
+            String startStr = "2024-01-01T22:23:23Z";
             when(cardService.fetchCardDetails(id))
-                    .thenReturn(new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now()));
+                    .thenReturn(new CardMaxDetailsDTO(id, title, description, startStr, listId, Instant.now(), Instant.now()));
 
             mockMvc.perform(get("/api/cards/{id}", id))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id", equalTo(id)))
                     .andExpect(jsonPath("$.title", equalTo(title)))
                     .andExpect(jsonPath("$.description", equalTo(description)))
+                    .andExpect(jsonPath("$.start", equalTo(startStr)))
                     .andExpect(jsonPath("$.listId", equalTo(listId)))
                     .andExpect(jsonPath("$.createdAt", notNullValue()))
                     .andExpect(jsonPath("$.updatedAt", notNullValue()));
