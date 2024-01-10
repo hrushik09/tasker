@@ -61,6 +61,7 @@ public class CardEndToEndTest {
                     .when()
                     .get("/api/cards/{id}", card.id())
                     .then()
+                    .statusCode(200)
                     .body("id", equalTo(card.id()))
                     .body("title", equalTo(card.title()))
                     .body("listId", equalTo(card.listId()))
@@ -69,17 +70,30 @@ public class CardEndToEndTest {
         }
 
         @Test
+        void shouldFetchUpdatedTitleSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("title", "The new title");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("title", equalTo("The new title"));
+        }
+
+        @Test
         void shouldFetchUpdatedDescriptionSuccessfully() {
             CreateCardResponse createdCard = having.persistedCard();
             Map<String, Object> fields = Map.of("description", "This is updated card description");
-            UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
+            UpdateCardResponse updatedCard = having.updatedCard(createdCard.id(), fields);
 
             given()
                     .contentType(ContentType.JSON)
                     .when()
                     .get("/api/cards/{id}", updatedCard.id())
                     .then()
-                    .statusCode(200)
                     .body("description", equalTo("This is updated card description"));
         }
     }
