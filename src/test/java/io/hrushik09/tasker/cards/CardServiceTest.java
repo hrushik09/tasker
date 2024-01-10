@@ -82,32 +82,35 @@ class CardServiceTest {
                 .containsExactly(1, 2, 1, 2, 3);
     }
 
-    @Test
-    void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
-        Integer nonExistingId = 102;
-        when(cardRepository.fetchCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
+    @Nested
+    class FetchCardDetails {
+        @Test
+        void shouldThrowWhenFetchingCardDetailsForNonExistingCard() {
+            Integer nonExistingId = 102;
+            when(cardRepository.fetchCardDetailsById(nonExistingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
-                .isInstanceOf(CardDoesNotExistException.class)
-                .hasMessage("Card with id=" + nonExistingId + " does not exist");
-    }
+            assertThatThrownBy(() -> cardService.fetchCardDetails(nonExistingId))
+                    .isInstanceOf(CardDoesNotExistException.class)
+                    .hasMessage("Card with id=" + nonExistingId + " does not exist");
+        }
 
-    @Test
-    void shouldFetchCardDetailsSuccessfully() {
-        Integer id = 1;
-        String title = "Card 1";
-        String description = "current description for card 1";
-        Integer listId = 3;
-        CardMaxDetailsDTO cardMaxDetailsDTO = new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now());
-        when(cardRepository.fetchCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
+        @Test
+        void shouldFetchCardDetailsSuccessfully() {
+            Integer id = 1;
+            String title = "Card 1";
+            String description = "current description for card 1";
+            Integer listId = 3;
+            CardMaxDetailsDTO cardMaxDetailsDTO = new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now());
+            when(cardRepository.fetchCardDetailsById(id)).thenReturn(Optional.of(cardMaxDetailsDTO));
 
-        CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
-        assertThat(fetched.id()).isEqualTo(id);
-        assertThat(fetched.title()).isEqualTo(title);
-        assertThat(fetched.description()).isEqualTo(description);
-        assertThat(fetched.listId()).isEqualTo(listId);
-        assertThat(fetched.createdAt()).isNotNull();
-        assertThat(fetched.updatedAt()).isNotNull();
+            CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+            assertThat(fetched.id()).isEqualTo(id);
+            assertThat(fetched.title()).isEqualTo(title);
+            assertThat(fetched.description()).isEqualTo(description);
+            assertThat(fetched.listId()).isEqualTo(listId);
+            assertThat(fetched.createdAt()).isNotNull();
+            assertThat(fetched.updatedAt()).isNotNull();
+        }
     }
 
     @Nested
