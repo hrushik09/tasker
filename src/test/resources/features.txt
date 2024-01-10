@@ -30,8 +30,8 @@ List of current testcases
     [x] title
 [x] "fetch card details before any update" test case is missing
 [x] separate current fetchCardDetails tests in common data test and description test similar to update card tests
-[ ] fetch start date, due date while fetching card details
-    [ ] use new tests
+[x] fetch start date, due date while fetching card details
+    [x] use new tests
 [ ] add timezone for a user
 [ ] update timezone for a user
 [ ] for all tests
