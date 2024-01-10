@@ -101,8 +101,11 @@ class CardServiceTest {
             String description = "current description for card 1";
             Integer listId = 3;
             String startStr = "2023-04-05T04:05:02Z";
+            String dueStr = "2023-04-06T04:05:02Z";
             ListBuilder listBuilder = aList().withId(listId);
-            CardBuilder cardBuilder = aCard().withId(id).withTitle(title).withDescription(description).with(listBuilder).withStart(Instant.parse(startStr));
+            CardBuilder cardBuilder = aCard().withId(id).withTitle(title)
+                    .withDescription(description).with(listBuilder).withStart(Instant.parse(startStr))
+                    .withDue(Instant.parse(dueStr));
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
 
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
@@ -110,6 +113,7 @@ class CardServiceTest {
             assertThat(fetched.title()).isEqualTo(title);
             assertThat(fetched.description()).isEqualTo(description);
             assertThat(fetched.start()).isEqualTo(startStr);
+            assertThat(fetched.due()).isEqualTo(dueStr);
             assertThat(fetched.listId()).isEqualTo(listId);
             assertThat(fetched.createdAt()).isNotNull();
             assertThat(fetched.updatedAt()).isNotNull();
