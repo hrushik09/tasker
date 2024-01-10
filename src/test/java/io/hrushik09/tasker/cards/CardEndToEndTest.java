@@ -110,6 +110,20 @@ public class CardEndToEndTest {
                     .then()
                     .body("start", equalTo("2023-02-02T12:12:12Z"));
         }
+
+        @Test
+        void shouldFetchUpdatedDueSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("due", "2023-02-05T12:12:12Z");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("due", equalTo("2023-02-05T12:12:12Z"));
+        }
     }
 
     @Nested
