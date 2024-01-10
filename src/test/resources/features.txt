@@ -28,8 +28,8 @@ List of current testcases
     [x] start date, due date
 [x] update card
     [x] title
-[ ] "fetch card details before any update" test case is missing
-[ ] separate current fetchCardDetails tests in common data test and description test similar to update card tests
+[x] "fetch card details before any update" test case is missing
+[x] separate current fetchCardDetails tests in common data test and description test similar to update card tests
 [ ] fetch start date, due date while fetching card details
     [ ] use new tests
 [ ] add timezone for a user
