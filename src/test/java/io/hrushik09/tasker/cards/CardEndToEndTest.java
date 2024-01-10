@@ -50,24 +50,80 @@ public class CardEndToEndTest {
                 .body("listId", equalTo(savedList.id()));
     }
 
-    @Test
-    void shouldFetchCardDetailsSuccessfully() {
-        CreateCardResponse createdCard = having.persistedCard();
-        Map<String, Object> fields = Map.of("description", "This is updated card description");
-        UpdateCardResponse updatedCard = having.updatedCardDescription(createdCard.id(), fields);
+    @Nested
+    class FetchCardDetails {
+        @Test
+        void shouldFetchBasicCardDetailsSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
 
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/api/cards/{id}", updatedCard.id())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(updatedCard.id()))
-                .body("title", equalTo(updatedCard.title()))
-                .body("description", equalTo("This is updated card description"))
-                .body("listId", equalTo(updatedCard.listId()))
-                .body("createdAt", notNullValue())
-                .body("updatedAt", notNullValue());
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200)
+                    .body("id", equalTo(card.id()))
+                    .body("title", equalTo(card.title()))
+                    .body("listId", equalTo(card.listId()))
+                    .body("createdAt", notNullValue())
+                    .body("updatedAt", notNullValue());
+        }
+
+        @Test
+        void shouldFetchUpdatedTitleSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("title", "The new title");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("title", equalTo("The new title"));
+        }
+
+        @Test
+        void shouldFetchUpdatedDescriptionSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("description", "This is updated card description");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("description", equalTo("This is updated card description"));
+        }
+
+        @Test
+        void shouldFetchUpdatedStartSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("start", "2023-02-02T12:12:12Z");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("start", equalTo("2023-02-02T12:12:12Z"));
+        }
+
+        @Test
+        void shouldFetchUpdatedDueSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("due", "2023-02-05T12:12:12Z");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("due", equalTo("2023-02-05T12:12:12Z"));
+        }
     }
 
     @Nested

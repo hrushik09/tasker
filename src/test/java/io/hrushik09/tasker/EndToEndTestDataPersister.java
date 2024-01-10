@@ -64,7 +64,7 @@ public class EndToEndTestDataPersister {
         return persistedCard("Not important", createListResponse.id());
     }
 
-    public UpdateCardResponse updatedCardDescription(Integer id, Map<String, Object> fields) {
+    public UpdateCardResponse updatedCard(Integer id, Map<String, Object> fields) {
         return cardService.update(new UpdateCardCommand(id, fields));
     }
 }

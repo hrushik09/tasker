@@ -45,33 +45,40 @@ public class CardControllerTest {
                 .andExpect(jsonPath("$.listId", equalTo(1)));
     }
 
-    @Test
-    void shouldThrowWhenFetchingCardDetailsForNonExistingCard() throws Exception {
-        Integer nonExistingId = 101;
-        when(cardService.fetchCardDetails(nonExistingId)).thenThrow(new CardDoesNotExistException(nonExistingId));
+    @Nested
+    class FetchCardDetails {
+        @Test
+        void shouldThrowWhenFetchingCardDetailsForNonExistingCard() throws Exception {
+            Integer nonExistingId = 101;
+            when(cardService.fetchCardDetails(nonExistingId)).thenThrow(new CardDoesNotExistException(nonExistingId));
 
-        mockMvc.perform(get("/api/cards/{id}", nonExistingId))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
-    }
+            mockMvc.perform(get("/api/cards/{id}", nonExistingId))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error", equalTo("Card with id=" + nonExistingId + " does not exist")));
+        }
 
-    @Test
-    void shouldFetchCardDetailsSuccessfully() throws Exception {
-        Integer id = 1;
-        String title = "Custom card";
-        String description = "This is the current description";
-        Integer listId = 2;
-        when(cardService.fetchCardDetails(id))
-                .thenReturn(new CardMaxDetailsDTO(id, title, description, listId, Instant.now(), Instant.now()));
+        @Test
+        void shouldFetchCardDetailsSuccessfully() throws Exception {
+            Integer id = 1;
+            String title = "Custom card";
+            String description = "This is the current description";
+            Integer listId = 2;
+            String startStr = "2024-01-01T22:23:23Z";
+            String dueStr = "2024-01-04T22:23:23Z";
+            when(cardService.fetchCardDetails(id))
+                    .thenReturn(new CardMaxDetailsDTO(id, title, description, Instant.parse(startStr), Instant.parse(dueStr), listId, Instant.now(), Instant.now()));
 
-        mockMvc.perform(get("/api/cards/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(id)))
-                .andExpect(jsonPath("$.title", equalTo(title)))
-                .andExpect(jsonPath("$.description", equalTo(description)))
-                .andExpect(jsonPath("$.listId", equalTo(listId)))
-                .andExpect(jsonPath("$.createdAt", notNullValue()))
-                .andExpect(jsonPath("$.updatedAt", notNullValue()));
+            mockMvc.perform(get("/api/cards/{id}", id))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id", equalTo(id)))
+                    .andExpect(jsonPath("$.title", equalTo(title)))
+                    .andExpect(jsonPath("$.description", equalTo(description)))
+                    .andExpect(jsonPath("$.start", equalTo(startStr)))
+                    .andExpect(jsonPath("$.due", equalTo(dueStr)))
+                    .andExpect(jsonPath("$.listId", equalTo(listId)))
+                    .andExpect(jsonPath("$.createdAt", notNullValue()))
+                    .andExpect(jsonPath("$.updatedAt", notNullValue()));
+        }
     }
 
     @Nested
