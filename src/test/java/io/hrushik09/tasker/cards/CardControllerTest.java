@@ -66,7 +66,7 @@ public class CardControllerTest {
             String startStr = "2024-01-01T22:23:23Z";
             String dueStr = "2024-01-04T22:23:23Z";
             when(cardService.fetchCardDetails(id))
-                    .thenReturn(new CardMaxDetailsDTO(id, title, description, startStr, dueStr, listId, Instant.now(), Instant.now()));
+                    .thenReturn(new CardMaxDetailsDTO(id, title, description, Instant.parse(startStr), Instant.parse(dueStr), listId, Instant.now(), Instant.now()));
 
             mockMvc.perform(get("/api/cards/{id}", id))
                     .andExpect(status().isOk())

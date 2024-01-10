@@ -112,8 +112,8 @@ class CardServiceTest {
             assertThat(fetched.id()).isEqualTo(id);
             assertThat(fetched.title()).isEqualTo(title);
             assertThat(fetched.description()).isEqualTo(description);
-            assertThat(fetched.start()).isEqualTo(startStr);
-            assertThat(fetched.due()).isEqualTo(dueStr);
+            assertThat(fetched.start()).isEqualTo(Instant.parse(startStr));
+            assertThat(fetched.due()).isEqualTo(Instant.parse(dueStr));
             assertThat(fetched.listId()).isEqualTo(listId);
             assertThat(fetched.createdAt()).isNotNull();
             assertThat(fetched.updatedAt()).isNotNull();
