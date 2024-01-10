@@ -92,9 +92,23 @@ public class CardEndToEndTest {
             given()
                     .contentType(ContentType.JSON)
                     .when()
-                    .get("/api/cards/{id}", updatedCard.id())
+                    .get("/api/cards/{id}", createdCard.id())
                     .then()
                     .body("description", equalTo("This is updated card description"));
+        }
+
+        @Test
+        void shouldFetchUpdatedStartSuccessfully() {
+            CreateCardResponse createdCard = having.persistedCard();
+            Map<String, Object> fields = Map.of("start", "2023-02-02T12:12:12Z");
+            having.updatedCard(createdCard.id(), fields);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/api/cards/{id}", createdCard.id())
+                    .then()
+                    .body("start", equalTo("2023-02-02T12:12:12Z"));
         }
     }
 
