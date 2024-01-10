@@ -87,7 +87,7 @@ public class CardEndToEndTest {
         void shouldFetchUpdatedDescriptionSuccessfully() {
             CreateCardResponse createdCard = having.persistedCard();
             Map<String, Object> fields = Map.of("description", "This is updated card description");
-            UpdateCardResponse updatedCard = having.updatedCard(createdCard.id(), fields);
+            having.updatedCard(createdCard.id(), fields);
 
             given()
                     .contentType(ContentType.JSON)
