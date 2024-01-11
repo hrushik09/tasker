@@ -32,13 +32,6 @@ List of current testcases
 [x] separate current fetchCardDetails tests in common data test and description test similar to update card tests
 [x] fetch start date, due date while fetching card details
     [x] use new tests
-[ ] add timezone for a user
-[ ] update timezone for a user
-[ ] for all tests
-    [ ] change all Instant assertions in responses
-        [ ] replace notNullValue, isNotNull, etc. with concrete values of Instant type
-        [ ] change assertions to assert on a standard format string
-        [ ] update and assert the strings as per user's timezone
 [ ] mark card as archived
 [ ] mark card as unarchived
 [ ] move card to different list
@@ -53,3 +46,10 @@ List of current testcases
     [ ] add item to checklist
     [ ] mark item as completed
     [ ] unmark completed item
+[ ] add timezone for a user
+[ ] update timezone for a user
+[ ] for all tests
+    [ ] change all Instant assertions in responses
+        [ ] replace notNullValue, isNotNull, etc. with concrete values of Instant type
+        [ ] change assertions to assert on a standard format string
+        [ ] update and assert the strings as per user's timezone
