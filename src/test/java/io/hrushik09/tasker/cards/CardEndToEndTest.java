@@ -216,5 +216,22 @@ public class CardEndToEndTest {
                     .then()
                     .statusCode(200);
         }
+
+        @Test
+        void shouldArchiveCardSuccessfully() {
+            CreateCardResponse card = having.persistedCard();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "archived": true
+                            }
+                            """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
     }
 }
