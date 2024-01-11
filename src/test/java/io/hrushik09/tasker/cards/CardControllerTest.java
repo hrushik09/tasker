@@ -196,6 +196,22 @@ public class CardControllerTest {
                     .andExpect(status().isOk());
         }
 
+        @Test
+        void shouldArchiveCardSuccessfully() throws Exception {
+            Map<String, Object> fields = Map.of("archived", true);
+            when(cardService.update(new UpdateCardCommand(1, fields)))
+                    .thenReturn(new UpdateCardResponse(1, "Not important", 1));
+
+            mockMvc.perform(patch("/api/cards/{id}", 1)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {
+                                    "archived": true
+                                    }
+                                    """))
+                    .andExpect(status().isOk());
+        }
+
         @Nested
         class NotAllowedFields {
             @Test
