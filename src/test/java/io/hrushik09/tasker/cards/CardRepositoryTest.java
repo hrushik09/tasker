@@ -48,7 +48,7 @@ class CardRepositoryTest {
     }
 
     @Test
-    void shouldFetchOnlyUnArchivedCard() {
+    void shouldNotFetchUnarchivedCards() {
         User user = having.persistedUser(entityManager, "user 1");
         Board board = having.persistedBoard(entityManager, "Board 1", user);
         List todo = having.persistedList(entityManager, "To Do", board);
