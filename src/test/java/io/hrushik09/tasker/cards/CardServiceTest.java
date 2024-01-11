@@ -230,6 +230,36 @@ class CardServiceTest {
             assertThat(captorValue.getDue()).isEqualTo(Instant.parse(dueStr));
         }
 
+        @Test
+        void shouldArchiveCardSuccessfully() {
+            Integer id = 1;
+            CardBuilder cardBuilder = aCard().withId(id).withArchived(false);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withArchived(true).build());
+            Map<String, Object> fields = Map.of("archived", true);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.isArchived()).isTrue();
+        }
+
+        @Test
+        void shouldUnarchiveCardSuccessfully() {
+            Integer id = 1;
+            CardBuilder cardBuilder = aCard().withId(id).withArchived(true);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardRepository.save(any())).thenReturn(cardBuilder.but().withArchived(false).build());
+            Map<String, Object> fields = Map.of("archived", false);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(cardRepository).save(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.isArchived()).isFalse();
+        }
+
         @Nested
         class NotAllowedFields {
             @Test

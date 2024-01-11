@@ -3,7 +3,10 @@ package io.hrushik09.tasker;
 import io.hrushik09.tasker.boards.BoardService;
 import io.hrushik09.tasker.boards.CreateBoardCommand;
 import io.hrushik09.tasker.boards.CreateBoardResponse;
-import io.hrushik09.tasker.cards.*;
+import io.hrushik09.tasker.cards.CardService;
+import io.hrushik09.tasker.cards.CreateCardCommand;
+import io.hrushik09.tasker.cards.CreateCardResponse;
+import io.hrushik09.tasker.cards.UpdateCardCommand;
 import io.hrushik09.tasker.lists.CreateListCommand;
 import io.hrushik09.tasker.lists.CreateListResponse;
 import io.hrushik09.tasker.lists.ListService;
@@ -64,7 +67,7 @@ public class EndToEndTestDataPersister {
         return persistedCard("Not important", createListResponse.id());
     }
 
-    public UpdateCardResponse updatedCard(Integer id, Map<String, Object> fields) {
-        return cardService.update(new UpdateCardCommand(id, fields));
+    public void updatedCard(Integer id, Map<String, Object> fields) {
+        cardService.update(new UpdateCardCommand(id, fields));
     }
 }

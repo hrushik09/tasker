@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -70,5 +72,25 @@ public class BoardEndToEndTest {
                 .body("cards.id", contains(card.id(), documentation.id(), formatting.id()))
                 .body("cards.title", contains(card.title(), documentation.title(), formatting.title()))
                 .body("cards.listId", contains(card.listId(), documentation.listId(), formatting.listId()));
+    }
+
+    @Test
+    void shouldNotFetchUnarchivedCards() {
+        CreateBoardResponse board = having.persistedBoard();
+        CreateListResponse working = having.persistedList("Working", board.id());
+        CreateCardResponse card = having.persistedCard("Card 1", working.id());
+        CreateCardResponse documentation = having.persistedCard("Documentation", working.id());
+        CreateCardResponse formatting = having.persistedCard("Formatting", working.id());
+        Map<String, Object> fields = Map.of("archived", true);
+        having.updatedCard(documentation.id(), fields);
+        having.updatedCard(formatting.id(), fields);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/api/boards/{id}", board.id())
+                .then()
+                .body("cards", hasSize(1))
+                .body("cards.id", contains(card.id()));
     }
 }

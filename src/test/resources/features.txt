@@ -32,8 +32,9 @@ List of current testcases
 [x] separate current fetchCardDetails tests in common data test and description test similar to update card tests
 [x] fetch start date, due date while fetching card details
     [x] use new tests
-[ ] mark card as archived
-[ ] mark card as unarchived
+[x] mark card as archived
+[x] while fetching all cards for a board, ignore archived cards
+[x] mark card as unarchived
 [ ] move card to different list
 [ ] store activity/action for a card such as
     [ ] added to list

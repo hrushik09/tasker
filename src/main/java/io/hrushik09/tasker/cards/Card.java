@@ -16,6 +16,7 @@ public class Card {
     private String description;
     private Instant start;
     private Instant due;
+    private boolean archived;
     @ManyToOne
     private List list;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -61,6 +62,14 @@ public class Card {
 
     public void setDue(Instant due) {
         this.due = due;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
     public List getList() {

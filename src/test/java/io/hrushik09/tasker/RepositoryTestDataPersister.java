@@ -33,4 +33,9 @@ public class RepositoryTestDataPersister {
         card.setList(list);
         return entityManager.persist(card);
     }
+
+    public void archivedCard(TestEntityManager entityManager, Card card) {
+        card.setArchived(true);
+        entityManager.merge(card);
+    }
 }

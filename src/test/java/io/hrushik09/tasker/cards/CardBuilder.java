@@ -12,6 +12,7 @@ public class CardBuilder {
     private String description = "Not important";
     private Instant start = Instant.parse("2023-01-05T12:12:12Z");
     private Instant due = Instant.parse("2023-01-10T12:12:12Z");
+    private boolean archived = false;
     private ListBuilder listBuilder = aList();
     private Instant createdAt = Instant.parse("2023-01-01T12:12:12Z");
     private Instant updatedAt = Instant.parse("2023-01-01T12:12:12Z");
@@ -25,6 +26,7 @@ public class CardBuilder {
         description = copy.description;
         start = copy.start;
         due = copy.due;
+        archived = copy.archived;
         listBuilder = copy.listBuilder;
         createdAt = copy.createdAt;
         updatedAt = copy.updatedAt;
@@ -63,6 +65,11 @@ public class CardBuilder {
         return this;
     }
 
+    public CardBuilder withArchived(boolean archived) {
+        this.archived = archived;
+        return this;
+    }
+
     public CardBuilder with(ListBuilder listBuilder) {
         this.listBuilder = listBuilder;
         return this;
@@ -75,6 +82,7 @@ public class CardBuilder {
         card.setDescription(description);
         card.setStart(start);
         card.setDue(due);
+        card.setArchived(archived);
         card.setList(listBuilder.build());
         card.setCreatedAt(createdAt);
         card.setUpdatedAt(updatedAt);
