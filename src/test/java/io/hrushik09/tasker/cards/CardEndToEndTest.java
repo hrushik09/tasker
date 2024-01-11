@@ -2,6 +2,7 @@ package io.hrushik09.tasker.cards;
 
 import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
+import io.hrushik09.tasker.boards.CreateBoardResponse;
 import io.hrushik09.tasker.lists.CreateListResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -245,6 +246,26 @@ public class CardEndToEndTest {
                             "archived": false
                             }
                             """)
+                    .when()
+                    .patch("/api/cards/{id}", card.id())
+                    .then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void shouldMoveCardToDifferentList() {
+            CreateBoardResponse board = having.persistedBoard();
+            CreateListResponse toDo = having.persistedList("ToDo", board.id());
+            CreateListResponse completed = having.persistedList("Completed", board.id());
+            CreateCardResponse card = having.persistedCard("Not important", toDo.id());
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .body("""
+                            {
+                            "listId": %s
+                            }
+                            """.formatted(toDo.id()))
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
