@@ -33,6 +33,7 @@ List of current testcases
 [x] fetch start date, due date while fetching card details
     [x] use new tests
 [ ] mark card as archived
+[ ] while fetching all cards for a board, ignore archived cards
 [ ] mark card as unarchived
 [ ] move card to different list
 [ ] store activity/action for a card such as
