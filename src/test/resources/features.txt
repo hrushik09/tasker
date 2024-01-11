@@ -34,7 +34,7 @@ List of current testcases
     [x] use new tests
 [x] mark card as archived
 [x] while fetching all cards for a board, ignore archived cards
-[ ] mark card as unarchived
+[x] mark card as unarchived
 [ ] move card to different list
 [ ] store activity/action for a card such as
     [ ] added to list
