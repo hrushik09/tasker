@@ -269,7 +269,8 @@ public class CardEndToEndTest {
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
-                    .statusCode(200);
+                    .statusCode(200)
+                    .body("listId", equalTo(completed.id()));
         }
     }
 }

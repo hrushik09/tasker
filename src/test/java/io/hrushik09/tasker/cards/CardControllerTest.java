@@ -1,5 +1,6 @@
 package io.hrushik09.tasker.cards;
 
+import io.hrushik09.tasker.lists.ListDoesNotExistException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,7 +230,59 @@ public class CardControllerTest {
         }
 
         @Nested
-        class NotAllowedFields {
+        class MoveCardToAnotherList {
+            @Test
+            void shouldThrowWhenMovingCardToNonExistingList() throws Exception {
+                Map<String, Object> fields = Map.of("listId", 100);
+                when(cardService.update(new UpdateCardCommand(100, fields))).thenThrow(new ListDoesNotExistException(100));
+
+                mockMvc.perform(patch("/api/cards/{id}", 100)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "listId": 100
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("List with id=100 does not exist")));
+            }
+
+            @Test
+            void shouldThrowWhenMovingCardToListNotInCurrentBoard() throws Exception {
+                Map<String, Object> fields = Map.of("listId", 100);
+                when(cardService.update(new UpdateCardCommand(100, fields))).thenThrow(new ListNotInGivenBoardException(100));
+
+                mockMvc.perform(patch("/api/cards/{id}", 100)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "listId": 100
+                                        }
+                                        """))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(jsonPath("$.error", equalTo("List with id=100 does not exist in current board")));
+            }
+
+            @Test
+            void shouldMoveCardToDifferentListSuccessfully() throws Exception {
+                Map<String, Object> fields = Map.of("listId", 2);
+                when(cardService.update(new UpdateCardCommand(1, fields)))
+                        .thenReturn(new UpdateCardResponse(1, "Not important", 2));
+
+                mockMvc.perform(patch("/api/cards/{id}", 1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                        "listId": 2
+                                        }
+                                        """))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.listId", equalTo(2)));
+            }
+        }
+
+        @Nested
+        class NotAllowedFieldsForUpdate {
             @Test
             void shouldThrowWhenUpdatingFieldId() throws Exception {
                 when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("id"));
