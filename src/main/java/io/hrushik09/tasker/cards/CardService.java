@@ -54,6 +54,10 @@ public class CardService {
                 ReflectionUtils.setField(field, fetched, start);
             } else if ("list".equals(key)) {
                 List newlist = listService.findById((Integer) value);
+                if (!newlist.getBoard().getId().equals(fetched.getList().getBoard().getId())) {
+                    throw new ListNotInGivenBoardException((Integer) value);
+                }
+                fetched.setList(newlist);
             } else {
                 ReflectionUtils.setField(field, fetched, value);
             }

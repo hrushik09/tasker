@@ -234,9 +234,9 @@ public class CardControllerTest {
             @Test
             void shouldThrowWhenMovingCardToNonExistingList() throws Exception {
                 Map<String, Object> fields = Map.of("listId", 100);
-                when(cardService.update(new UpdateCardCommand(100, fields))).thenThrow(new ListDoesNotExistException(100));
+                when(cardService.update(new UpdateCardCommand(1, fields))).thenThrow(new ListDoesNotExistException(100));
 
-                mockMvc.perform(patch("/api/cards/{id}", 100)
+                mockMvc.perform(patch("/api/cards/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
@@ -250,9 +250,9 @@ public class CardControllerTest {
             @Test
             void shouldThrowWhenMovingCardToListNotInCurrentBoard() throws Exception {
                 Map<String, Object> fields = Map.of("listId", 100);
-                when(cardService.update(new UpdateCardCommand(100, fields))).thenThrow(new ListNotInGivenBoardException(100));
+                when(cardService.update(new UpdateCardCommand(1, fields))).thenThrow(new ListNotInGivenBoardException(100));
 
-                mockMvc.perform(patch("/api/cards/{id}", 100)
+                mockMvc.perform(patch("/api/cards/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
