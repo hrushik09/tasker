@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.cards;
 
 import io.hrushik09.tasker.lists.ListBuilder;
+import io.hrushik09.tasker.lists.ListDoesNotExistException;
 import io.hrushik09.tasker.lists.ListService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -261,7 +262,24 @@ class CardServiceTest {
         }
 
         @Nested
-        class NotAllowedFields {
+        class MoveCardToAnotherList {
+            @Test
+            void shouldThrowWhenMovingCardToNonExistingList() {
+                Integer id = 100;
+                CardBuilder cardBuilder = aCard().withId(id).withArchived(true);
+                when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+                Integer nonExistingListId = 12;
+                when(listService.findById(nonExistingListId)).thenThrow(new ListDoesNotExistException(nonExistingListId));
+                Map<String, Object> fields = Map.of("list", nonExistingListId);
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
+                        .isInstanceOf(ListDoesNotExistException.class)
+                        .hasMessage("List with id=12 does not exist");
+            }
+        }
+
+        @Nested
+        class NotAllowedFieldsToUpdate {
             @Test
             void shouldThrowWhenUpdatingFieldId() {
                 Map<String, Object> fields = Map.of("id", 100);
