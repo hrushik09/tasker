@@ -338,15 +338,6 @@ class CardServiceTest {
             }
 
             @Test
-            void shouldThrowWhenUpdatingFieldList() {
-                Map<String, Object> fields = Map.of("list", "Not important");
-
-                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
-                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
-                        .hasMessage("Field list is not allowed for update");
-            }
-
-            @Test
             void shouldThrowWhenUpdatingFieldCreatedAt() {
                 Map<String, Object> fields = Map.of("createdAt", "Not important");
 

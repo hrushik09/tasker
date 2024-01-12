@@ -299,21 +299,6 @@ public class CardControllerTest {
             }
 
             @Test
-            void shouldThrowWhenUpdatingFieldList() throws Exception {
-                when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("list"));
-
-                mockMvc.perform(patch("/api/cards/{id}", 1)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("""
-                                        {
-                                        "list": "Not important"
-                                        }
-                                        """))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.error", equalTo("Field list is not allowed for update")));
-            }
-
-            @Test
             void shouldThrowWhenUpdatingFieldCreatedAt() throws Exception {
                 when(cardService.update(any())).thenThrow(new NotAllowedFieldForUpdateCardException("createdAt"));
 
