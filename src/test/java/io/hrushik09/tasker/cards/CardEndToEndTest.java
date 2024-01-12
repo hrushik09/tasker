@@ -265,7 +265,7 @@ public class CardEndToEndTest {
                             {
                             "list": %s
                             }
-                            """.formatted(toDo.id()))
+                            """.formatted(completed.id()))
                     .when()
                     .patch("/api/cards/{id}", card.id())
                     .then()
