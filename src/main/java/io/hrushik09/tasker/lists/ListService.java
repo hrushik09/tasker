@@ -41,6 +41,6 @@ public class ListService {
     }
 
     public List findById(Integer id) {
-        return null;
+        return listRepository.findById(id).orElseThrow(() -> new ListDoesNotExistException(id));
     }
 }
