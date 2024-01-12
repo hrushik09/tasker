@@ -1,5 +1,6 @@
 package io.hrushik09.tasker.cards;
 
+import io.hrushik09.tasker.lists.List;
 import io.hrushik09.tasker.lists.ListService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,14 +8,13 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class CardService {
-    private static final List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = List.of("id", "list", "createdAt", "updatedAt");
+    private static final java.util.List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = java.util.List.of("id", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
 
@@ -52,6 +52,12 @@ public class CardService {
             if ("start".equals(key) || "due".equals(key)) {
                 Instant start = Instant.parse((String) value);
                 ReflectionUtils.setField(field, fetched, start);
+            } else if ("list".equals(key)) {
+                List newlist = listService.findById((Integer) value);
+                if (!newlist.getBoard().getId().equals(fetched.getList().getBoard().getId())) {
+                    throw new ListNotInGivenBoardException((Integer) value);
+                }
+                fetched.setList(newlist);
             } else {
                 ReflectionUtils.setField(field, fetched, value);
             }

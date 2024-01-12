@@ -39,4 +39,8 @@ public class ListService {
     public List getReferenceById(int id) {
         return listRepository.getReferenceById(id);
     }
+
+    public List findById(Integer id) {
+        return listRepository.findById(id).orElseThrow(() -> new ListDoesNotExistException(id));
+    }
 }

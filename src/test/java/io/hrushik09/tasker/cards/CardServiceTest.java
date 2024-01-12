@@ -1,6 +1,8 @@
 package io.hrushik09.tasker.cards;
 
+import io.hrushik09.tasker.boards.BoardBuilder;
 import io.hrushik09.tasker.lists.ListBuilder;
+import io.hrushik09.tasker.lists.ListDoesNotExistException;
 import io.hrushik09.tasker.lists.ListService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -261,7 +264,70 @@ class CardServiceTest {
         }
 
         @Nested
-        class NotAllowedFields {
+        class MoveCardToAnotherList {
+            @Test
+            void shouldThrowWhenMovingCardToNonExistingList() {
+                Integer nonExistingListId = 12;
+                ListBuilder listBuilder = aList().withId(nonExistingListId);
+                Integer id = 1;
+                CardBuilder cardBuilder = aCard().withId(id).with(listBuilder);
+                when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+                when(listService.findById(nonExistingListId)).thenThrow(new ListDoesNotExistException(nonExistingListId));
+                Map<String, Object> fields = Map.of("list", nonExistingListId);
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
+                        .isInstanceOf(ListDoesNotExistException.class)
+                        .hasMessage("List with id=12 does not exist");
+            }
+
+            @Test
+            void shouldThrowWhenMovingCardToListNotInCurrentBoard() {
+                Integer originalBoardId = 1;
+                BoardBuilder originalBoardBuilder = aBoard().withId(originalBoardId);
+                Integer originalListId = 12;
+                ListBuilder originalListBuilder = aList().withId(originalListId).with(originalBoardBuilder);
+                Integer id = 1;
+                CardBuilder cardBuilder = aCard().withId(id).with(originalListBuilder);
+                when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+                Integer newBoardId = 2;
+                BoardBuilder newBoardBuilder = originalBoardBuilder.but().withId(newBoardId);
+                Integer invalidListId = 100;
+                ListBuilder invalidListBuilder = originalListBuilder.but().withId(invalidListId).with(newBoardBuilder);
+                when(listService.findById(invalidListId)).thenReturn(invalidListBuilder.build());
+                Map<String, Object> fields = Map.of("list", invalidListId);
+
+                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(id, fields)))
+                        .isInstanceOf(ListNotInGivenBoardException.class)
+                        .hasMessage("List with id=" + invalidListId + " does not exist in current board");
+            }
+
+            @Test
+            void shouldMoveCardToDifferentListSuccessfully() {
+                Integer boardId = 23;
+                BoardBuilder boardBuilder = aBoard().withId(boardId);
+                Integer originalListId = 43;
+                ListBuilder listBuilder = aList().withId(originalListId).with(boardBuilder);
+                Integer id = 1;
+                CardBuilder cardBuilder = aCard().withId(id).with(listBuilder);
+                when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+                Integer newListId = 2;
+                ListBuilder newListBuilder = listBuilder.but().withId(newListId);
+                when(listService.findById(newListId)).thenReturn(newListBuilder.build());
+                CardBuilder newCardBuilder = cardBuilder.but().with(newListBuilder);
+                when(cardRepository.save(any())).thenReturn(newCardBuilder.build());
+                Map<String, Object> fields = Map.of("list", newListId);
+
+                UpdateCardResponse updated = cardService.update(new UpdateCardCommand(id, fields));
+
+                verify(cardRepository).save(cardArgumentCaptor.capture());
+                Card captorValue = cardArgumentCaptor.getValue();
+                assertThat(captorValue.getList().getId()).isEqualTo(newListId);
+                assertThat(updated.listId()).isEqualTo(newListId);
+            }
+        }
+
+        @Nested
+        class NotAllowedFieldsToUpdate {
             @Test
             void shouldThrowWhenUpdatingFieldId() {
                 Map<String, Object> fields = Map.of("id", 100);
@@ -269,15 +335,6 @@ class CardServiceTest {
                 assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
                         .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
                         .hasMessage("Field id is not allowed for update");
-            }
-
-            @Test
-            void shouldThrowWhenUpdatingFieldList() {
-                Map<String, Object> fields = Map.of("list", "Not important");
-
-                assertThatThrownBy(() -> cardService.update(new UpdateCardCommand(1, fields)))
-                        .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
-                        .hasMessage("Field list is not allowed for update");
             }
 
             @Test

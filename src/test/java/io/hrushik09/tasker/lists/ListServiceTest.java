@@ -99,4 +99,30 @@ class ListServiceTest {
         List captorValue = listArgumentCaptor.getValue();
         assertThat(captorValue.getTitle()).isEqualTo(updatedTitle);
     }
+
+    @Test
+    void shouldThrowWhenFetchingNonExistingList() {
+        Integer nonExistingId = 100;
+        when(listRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> listService.findById(nonExistingId))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingId + " does not exist");
+    }
+
+    @Test
+    void shouldFetchListSuccessfully() {
+        Integer boardId = 1;
+        BoardBuilder boardBuilder = aBoard().withId(boardId);
+        Integer id = 1;
+        String title = "This is a list";
+        ListBuilder listBuilder = aList().withId(id).withTitle(title).with(boardBuilder);
+        when(listRepository.findById(id)).thenReturn(Optional.of(listBuilder.build()));
+
+        List fetched = listService.findById(id);
+
+        assertThat(fetched.getId()).isEqualTo(id);
+        assertThat(fetched.getTitle()).isEqualTo(title);
+        assertThat(fetched.getBoard().getId()).isEqualTo(boardId);
+    }
 }
