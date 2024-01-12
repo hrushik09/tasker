@@ -35,8 +35,8 @@ List of current testcases
 [x] mark card as archived
 [x] while fetching all cards for a board, ignore archived cards
 [x] mark card as unarchived
-[ ] move card to different list
-    [ ] new list should be in same board as original list, else throw
+[x] move card to different list
+    [x] new list should be in same board as original list, else throw
 [ ] store activity/action for a card such as
     [ ] added to list
     [ ] added start, due date
