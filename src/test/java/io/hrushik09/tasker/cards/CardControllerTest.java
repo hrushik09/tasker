@@ -233,14 +233,14 @@ public class CardControllerTest {
         class MoveCardToAnotherList {
             @Test
             void shouldThrowWhenMovingCardToNonExistingList() throws Exception {
-                Map<String, Object> fields = Map.of("listId", 100);
+                Map<String, Object> fields = Map.of("list", 100);
                 when(cardService.update(new UpdateCardCommand(1, fields))).thenThrow(new ListDoesNotExistException(100));
 
                 mockMvc.perform(patch("/api/cards/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
-                                        "listId": 100
+                                        "list": 100
                                         }
                                         """))
                         .andExpect(status().isBadRequest())
@@ -249,14 +249,14 @@ public class CardControllerTest {
 
             @Test
             void shouldThrowWhenMovingCardToListNotInCurrentBoard() throws Exception {
-                Map<String, Object> fields = Map.of("listId", 100);
+                Map<String, Object> fields = Map.of("list", 100);
                 when(cardService.update(new UpdateCardCommand(1, fields))).thenThrow(new ListNotInGivenBoardException(100));
 
                 mockMvc.perform(patch("/api/cards/{id}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
-                                        "listId": 100
+                                        "list": 100
                                         }
                                         """))
                         .andExpect(status().isBadRequest())
@@ -265,7 +265,7 @@ public class CardControllerTest {
 
             @Test
             void shouldMoveCardToDifferentListSuccessfully() throws Exception {
-                Map<String, Object> fields = Map.of("listId", 2);
+                Map<String, Object> fields = Map.of("list", 2);
                 when(cardService.update(new UpdateCardCommand(1, fields)))
                         .thenReturn(new UpdateCardResponse(1, "Not important", 2));
 
@@ -273,7 +273,7 @@ public class CardControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
-                                        "listId": 2
+                                        "list": 2
                                         }
                                         """))
                         .andExpect(status().isOk())

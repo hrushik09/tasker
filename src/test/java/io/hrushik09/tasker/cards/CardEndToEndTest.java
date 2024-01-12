@@ -263,7 +263,7 @@ public class CardEndToEndTest {
                     .contentType(ContentType.JSON)
                     .body("""
                             {
-                            "listId": %s
+                            "list": %s
                             }
                             """.formatted(toDo.id()))
                     .when()
