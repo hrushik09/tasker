@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.cards;
 
 import java.time.Instant;
+import java.util.List;
 
 public class CardMaxDetailsDTOBuilder {
     private Integer id = 1;
@@ -11,6 +12,7 @@ public class CardMaxDetailsDTOBuilder {
     private Integer listId = 1;
     private Instant createdAt = Instant.parse("2023-01-12T12:34:23Z");
     private Instant updatedAt = Instant.parse("2023-01-13T01:32:23Z");
+    private List<Action> actions = List.of();
 
     private CardMaxDetailsDTOBuilder() {
     }
@@ -24,6 +26,7 @@ public class CardMaxDetailsDTOBuilder {
         listId = copy.listId;
         createdAt = copy.createdAt;
         updatedAt = copy.updatedAt;
+        actions = copy.actions;
     }
 
     public static CardMaxDetailsDTOBuilder aCardMaxDetailsDTO() {
@@ -74,7 +77,12 @@ public class CardMaxDetailsDTOBuilder {
         return this;
     }
 
+    public CardMaxDetailsDTOBuilder withActions(List<Action> actions) {
+        this.actions = actions;
+        return this;
+    }
+
     public CardMaxDetailsDTO build() {
-        return new CardMaxDetailsDTO(id, title, description, start, due, listId, createdAt, updatedAt);
+        return new CardMaxDetailsDTO(id, title, description, start, due, listId, createdAt, updatedAt, actions);
     }
 }

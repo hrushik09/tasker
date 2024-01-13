@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.cards;
 
 import java.time.Instant;
+import java.util.List;
 
 public record CardMaxDetailsDTO(
         Integer id,
@@ -10,10 +11,11 @@ public record CardMaxDetailsDTO(
         Instant due,
         Integer listId,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        List<Action> actions
 ) {
-    public static CardMaxDetailsDTO from(Card card) {
+    public static CardMaxDetailsDTO from(Card card, List<Action> actions) {
         return new CardMaxDetailsDTO(card.getId(), card.getTitle(), card.getDescription(), card.getStart(),
-                card.getDue(), card.getList().getId(), card.getCreatedAt(), card.getUpdatedAt());
+                card.getDue(), card.getList().getId(), card.getCreatedAt(), card.getUpdatedAt(), actions);
     }
 }

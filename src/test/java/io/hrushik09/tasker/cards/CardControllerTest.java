@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import static io.hrushik09.tasker.cards.CardMaxDetailsDTOBuilder.aCardMaxDetailsDTO;
@@ -109,6 +110,16 @@ public class CardControllerTest {
                 String listTitle = "Completed";
                 Integer id = 1;
                 String cardTitle = "Card 1 Title";
+                CardMaxDetailsDTOBuilder cardMaxDetailsDTOBuilder = aCardMaxDetailsDTO()
+                        .withActions(List.of(new Action(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
+                                new ActionDisplay("action_create_card",
+                                        new ActionDisplayEntities(
+                                                new CardActionEntity("card", id, cardTitle),
+                                                new ListActionEntity("list", listId, listTitle),
+                                                new MemberCreatorActionEntity("member", creatorId, creatorName)
+                                        ))
+                        )));
+                when(cardService.fetchCardDetails(id)).thenReturn(cardMaxDetailsDTOBuilder.build());
 
                 mockMvc.perform(get("/api/cards/{id}", id))
                         .andExpect(jsonPath("$.actions", hasSize(1)))
