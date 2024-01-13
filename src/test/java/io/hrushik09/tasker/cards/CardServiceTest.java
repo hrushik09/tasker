@@ -41,10 +41,20 @@ class CardServiceTest {
     }
 
     @Test
+    void shouldFailToCreateCardForNonExistingListId() {
+        Integer nonExistingListId = 100;
+        when(listService.findById(nonExistingListId)).thenThrow(new ListDoesNotExistException(nonExistingListId));
+
+        assertThatThrownBy(() -> cardService.create(new CreateCardCommand(nonExistingListId, "Not important")))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingListId + " does not exist");
+    }
+
+    @Test
     void shouldCreateCardSuccessfully() {
         Integer listId = 1;
         ListBuilder listBuilder = aList().withId(listId);
-        when(listService.getReferenceById(listId)).thenReturn(listBuilder.build());
+        when(listService.findById(listId)).thenReturn(listBuilder.build());
         Integer cardId = 1;
         String title = "Card 2";
         CardBuilder cardBuilder = aCard().withId(cardId).withTitle(title).with(listBuilder);

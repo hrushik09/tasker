@@ -27,7 +27,7 @@ public class CardService {
     public CreateCardResponse create(CreateCardCommand cmd) {
         Card card = new Card();
         card.setTitle(cmd.title());
-        card.setList(listService.getReferenceById(cmd.listId()));
+        card.setList(listService.findById(cmd.listId()));
         Card saved = cardRepository.save(card);
         return CreateCardResponse.from(saved);
     }

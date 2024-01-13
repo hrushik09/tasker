@@ -28,6 +28,22 @@ public class CardControllerTest {
     private CardService cardService;
 
     @Test
+    void shouldFailToCreateCardForNonExistingListId() throws Exception {
+        when(cardService.create(new CreateCardCommand(100, "Not important"))).thenThrow(new ListDoesNotExistException(100));
+
+        mockMvc.perform(post("/api/cards")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .queryParam("listId", String.valueOf(100))
+                        .content("""
+                                {
+                                "title": "Not important"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", equalTo("List with id=100 does not exist")));
+    }
+
+    @Test
     void shouldCreateCardSuccessfully() throws Exception {
         when(cardService.create(new CreateCardCommand(1, "Card 1")))
                 .thenReturn(new CreateCardResponse(1, "Card 1", 1));
