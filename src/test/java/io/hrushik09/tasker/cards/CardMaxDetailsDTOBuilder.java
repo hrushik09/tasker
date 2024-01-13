@@ -7,10 +7,10 @@ public class CardMaxDetailsDTOBuilder {
     private String title = "Not important";
     private String description = "Not important";
     private Instant start = Instant.parse("2023-03-23T12:34:23Z");
-    private Instant due = Instant.parse("2023-03-23T12:34:23Z");
+    private Instant due = Instant.parse("2023-03-26T06:34:23Z");
     private Integer listId = 1;
-    private Instant createdAt = Instant.parse("2023-03-23T12:34:23Z");
-    private Instant updatedAt = Instant.parse("2023-03-23T12:34:23Z");
+    private Instant createdAt = Instant.parse("2023-01-12T12:34:23Z");
+    private Instant updatedAt = Instant.parse("2023-01-13T01:32:23Z");
 
     private CardMaxDetailsDTOBuilder() {
     }
