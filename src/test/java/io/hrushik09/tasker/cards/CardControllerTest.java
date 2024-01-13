@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Instant;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -95,6 +94,41 @@ public class CardControllerTest {
                     .andExpect(jsonPath("$.listId", equalTo(listId)))
                     .andExpect(jsonPath("$.createdAt", notNullValue()))
                     .andExpect(jsonPath("$.updatedAt", notNullValue()));
+        }
+
+        @Nested
+        class FetchCardActionDetails {
+            @Test
+            void shouldFetchCreateCardActionDetails() throws Exception {
+                Integer creatorId = 10;
+                String creatorName = "User 1";
+                Integer listId = 23;
+                String listTitle = "Completed";
+                Integer id = 1;
+                String cardTitle = "Card 1 Title";
+
+                mockMvc.perform(get("/api/cards/{id}", id))
+                        .andExpect(jsonPath("$.actions", hasSize(1)))
+                        .andExpect(jsonPath("$.actions[0].id", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].memberCreatorId", equalTo(creatorId)))
+                        .andExpect(jsonPath("$.actions[0].type", equalTo("createCard")))
+                        .andExpect(jsonPath("$.actions[0].happenedAt", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display.translationKey", equalTo("action_create_card")))
+                        .andExpect(jsonPath("$.actions[0].display.entities", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display.entities.card", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display.entities.card.type", equalTo("card")))
+                        .andExpect(jsonPath("$.actions[0].display.entities.card.id", equalTo(id)))
+                        .andExpect(jsonPath("$.actions[0].display.entities.card.text", equalTo(cardTitle)))
+                        .andExpect(jsonPath("$.actions[0].display.entities.list", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display.entities.list.type", equalTo("list")))
+                        .andExpect(jsonPath("$.actions[0].display.entities.list.id", equalTo(listId)))
+                        .andExpect(jsonPath("$.actions[0].display.entities.list.text", equalTo(listTitle)))
+                        .andExpect(jsonPath("$.actions[0].display.entities.memberCreator", notNullValue()))
+                        .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.type", equalTo("member")))
+                        .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.id", equalTo(creatorId)))
+                        .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.text", equalTo(creatorName)));
+            }
         }
     }
 
