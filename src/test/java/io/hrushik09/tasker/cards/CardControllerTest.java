@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Instant;
 import java.util.Map;
 
+import static io.hrushik09.tasker.cards.CardMaxDetailsDTOBuilder.aCardMaxDetailsDTO;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -81,8 +82,10 @@ public class CardControllerTest {
             Integer listId = 2;
             String startStr = "2024-01-01T22:23:23Z";
             String dueStr = "2024-01-04T22:23:23Z";
-            when(cardService.fetchCardDetails(id))
-                    .thenReturn(new CardMaxDetailsDTO(id, title, description, Instant.parse(startStr), Instant.parse(dueStr), listId, Instant.now(), Instant.now()));
+            CardMaxDetailsDTOBuilder cardMaxDetailsDTOBuilder = aCardMaxDetailsDTO().withId(id).withTitle(title).withDescription(description).withStart(Instant.parse(startStr))
+                    .withDue(Instant.parse(dueStr)).withListId(listId).withCreatedAt(Instant.now())
+                    .withUpdatedAt(Instant.now());
+            when(cardService.fetchCardDetails(id)).thenReturn(cardMaxDetailsDTOBuilder.build());
 
             mockMvc.perform(get("/api/cards/{id}", id))
                     .andExpect(status().isOk())
