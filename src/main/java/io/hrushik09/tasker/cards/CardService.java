@@ -76,7 +76,7 @@ public class CardService {
 
     public CardMaxDetailsDTO fetchCardDetails(Integer id) {
         Card fetched = cardRepository.findById(id).orElseThrow(() -> new CardDoesNotExistException(id));
-        java.util.List<ActionDTO> actionDTOS = cardActionService.fetchAllCardActions(id);
+        java.util.List<ActionResponse> actionDTOS = cardActionService.fetchAllCardActions(id);
         return CardMaxDetailsDTO.from(fetched, actionDTOS);
     }
 }

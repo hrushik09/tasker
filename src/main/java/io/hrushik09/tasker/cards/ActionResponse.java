@@ -2,7 +2,7 @@ package io.hrushik09.tasker.cards;
 
 import java.time.Instant;
 
-public record ActionDTO(
+public record ActionResponse(
         Integer id,
         Integer memberCreatorId,
         String type,

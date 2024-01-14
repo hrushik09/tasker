@@ -1,8 +1,8 @@
 package io.hrushik09.tasker.cards;
 
-public record MemberCreatorActionEntityDTO(
+public record ListActionDTO(
         String type,
         Integer id,
         String text
-) implements ActionEntityDTO {
+) implements TypeOfActionDTO {
 }

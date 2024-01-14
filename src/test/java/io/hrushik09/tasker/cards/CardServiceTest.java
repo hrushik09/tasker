@@ -408,12 +408,12 @@ class CardServiceTest {
             CardBuilder cardBuilder = aCard().withId(id);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
             when(cardActionService.fetchAllCardActions(id))
-                    .thenReturn(List.of(new ActionDTO(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
+                    .thenReturn(List.of(new ActionResponse(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
                             new ActionDisplayDTO("action_create_card",
                                     new ActionDisplayEntitiesDTO(
-                                            new CardActionEntityDTO("card", id, cardTitle),
-                                            new ListActionEntityDTO("list", listId, listTitle),
-                                            new MemberCreatorActionEntityDTO("member", creatorId, creatorName)
+                                            new CardActionDTO("card", id, cardTitle),
+                                            new ListActionDTO("list", listId, listTitle),
+                                            new MemberCreatorActionDTO("member", creatorId, creatorName)
                                     ))
                     )));
 
