@@ -17,13 +17,11 @@ import java.time.Instant;
 import java.util.List;
 
 import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
-import static io.hrushik09.tasker.cards.ActionDisplayDTOBuilder.anActionDisplayDTOBuilder;
-import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anActionDisplayEntitiesDTOBuilder;
-import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
-import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
+import static io.hrushik09.tasker.cards.ActionBuilder.anActionBuilder;
+import static io.hrushik09.tasker.cards.CardActionBuilder.aCardActionBuilder;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
-import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
-import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
+import static io.hrushik09.tasker.cards.ListActionBuilder.aListActionBuilder;
+import static io.hrushik09.tasker.cards.MemberCreatorActionBuilder.aMemberCreatorActionBuilder;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,15 +92,13 @@ class ActionServiceTest {
             String cardTitle = "New feature";
             Integer actionId = 3;
             Instant happenedAt = Instant.parse("2023-12-12T01:01:01Z");
-            ActionResponseBuilder createAction = anActionResponseBuilder().withId(actionId).withMemberCreatorId(creatorId).withType("createCard").withHappenedAt(happenedAt)
-                    .with(anActionDisplayDTOBuilder().withTranslationKey("action_create_card")
-                            .with(anActionDisplayEntitiesDTOBuilder()
-                                    .with(aCardActionDTO().withId(cardId).withText(cardTitle))
-                                    .with(aListActionDTO().withId(listId).withText(listTitle))
-                                    .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
-                            )
-                    );
-            when(actionRepository.findActionDetailsByCardId(cardId)).thenReturn(List.of(createAction.build()));
+            ActionBuilder actionBuilder = anActionBuilder().withId(actionId).with(aCard().withId(cardId))
+                    .withMemberCreatorId(creatorId).withType("createCard").withHappenedAt(happenedAt)
+                    .withTranslationKey("action_create_card")
+                    .with(aCardActionBuilder().withCardId(cardId).withText(cardTitle))
+                    .with(aListActionBuilder().withListId(listId).withText(listTitle))
+                    .with(aMemberCreatorActionBuilder().withCreatorId(creatorId).withText(creatorName));
+            when(actionRepository.findByCardId(cardId)).thenReturn(List.of(actionBuilder.build()));
 
             List<ActionResponse> actions = actionService.fetchAllCardActions(cardId);
 

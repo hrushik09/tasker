@@ -21,7 +21,6 @@ public class Action {
     @Column(nullable = false)
     private String translationKey;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
-    @JoinColumn()
     private CardAction cardAction;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private ListAction listAction;

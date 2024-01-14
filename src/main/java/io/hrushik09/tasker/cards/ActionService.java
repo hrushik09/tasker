@@ -42,6 +42,7 @@ public class ActionService {
     }
 
     public List<ActionResponse> fetchAllCardActions(Integer cardId) {
-        return actionRepository.findActionDetailsByCardId(cardId);
+        List<Action> actions = actionRepository.findByCardId(cardId);
+        return actions.stream().map(ActionResponse::from).toList();
     }
 }
