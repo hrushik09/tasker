@@ -38,7 +38,7 @@ List of current testcases
 [x] move card to different list
     [x] new list should be in same board as original list, else throw
 [ ] store activity/action for a card such as
-    [ ] created card
+    [x] created card
     [ ] added start, due date
     [ ] removed start, due date
     [ ] marked as archived
