@@ -17,10 +17,12 @@ public class CardService {
     private static final java.util.List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = java.util.List.of("id", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
+    private final CardActionService cardActionService;
 
-    public CardService(CardRepository cardRepository, ListService listService) {
+    public CardService(CardRepository cardRepository, ListService listService, CardActionService cardActionService) {
         this.cardRepository = cardRepository;
         this.listService = listService;
+        this.cardActionService = cardActionService;
     }
 
     @Transactional
@@ -29,6 +31,7 @@ public class CardService {
         card.setTitle(cmd.title());
         card.setList(listService.findById(cmd.listId()));
         Card saved = cardRepository.save(card);
+        cardActionService.saveCreateCardAction(saved);
         return CreateCardResponse.from(saved);
     }
 

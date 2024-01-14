@@ -34,10 +34,12 @@ class CardServiceTest {
     private CardRepository cardRepository;
     @Mock
     private ListService listService;
+    @Mock
+    private CardActionService cardActionService;
 
     @BeforeEach
     void setUp() {
-        cardService = new CardService(cardRepository, listService);
+        cardService = new CardService(cardRepository, listService, cardActionService);
     }
 
     @Test
@@ -364,6 +366,31 @@ class CardServiceTest {
                         .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
                         .hasMessage("Field updatedAt is not allowed for update");
             }
+        }
+    }
+
+    @Nested
+    class AddCardActionDetails {
+        @Captor
+        ArgumentCaptor<Card> cardArgumentCaptor;
+
+        @Test
+        void shouldAddCreateCardActionWhenCreatingCard() {
+            Integer listId = 12;
+            ListBuilder listBuilder = aList().withId(listId);
+            when(listService.findById(listId)).thenReturn(listBuilder.build());
+            Integer id = 11;
+            String title = "Card 1";
+            CardBuilder cardBuilder = aCard().withId(id).withTitle(title).with(listBuilder);
+            when(cardRepository.save(any())).thenReturn(cardBuilder.build());
+
+            cardService.create(new CreateCardCommand(listId, title));
+
+            verify(cardActionService).saveCreateCardAction(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getId()).isEqualTo(id);
+            assertThat(captorValue.getTitle()).isEqualTo(title);
+            assertThat(captorValue.getList().getId()).isEqualTo(listId);
         }
     }
 }
