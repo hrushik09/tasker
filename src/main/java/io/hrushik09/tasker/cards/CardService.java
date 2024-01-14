@@ -17,18 +17,21 @@ public class CardService {
     private static final java.util.List<String> CARD_FIELDS_NOT_ALLOWED_FOR_UPDATE = java.util.List.of("id", "createdAt", "updatedAt");
     private final CardRepository cardRepository;
     private final ListService listService;
+    private final ActionService actionService;
 
-    public CardService(CardRepository cardRepository, ListService listService) {
+    public CardService(CardRepository cardRepository, ListService listService, ActionService actionService) {
         this.cardRepository = cardRepository;
         this.listService = listService;
+        this.actionService = actionService;
     }
 
     @Transactional
     public CreateCardResponse create(CreateCardCommand cmd) {
         Card card = new Card();
         card.setTitle(cmd.title());
-        card.setList(listService.getReferenceById(cmd.listId()));
+        card.setList(listService.findById(cmd.listId()));
         Card saved = cardRepository.save(card);
+        actionService.saveCreateCardAction(saved);
         return CreateCardResponse.from(saved);
     }
 
@@ -73,6 +76,7 @@ public class CardService {
 
     public CardMaxDetailsDTO fetchCardDetails(Integer id) {
         Card fetched = cardRepository.findById(id).orElseThrow(() -> new CardDoesNotExistException(id));
-        return CardMaxDetailsDTO.from(fetched);
+        java.util.List<ActionResponse> actionDTOS = actionService.fetchAllCardActions(id);
+        return CardMaxDetailsDTO.from(fetched, actionDTOS);
     }
 }

@@ -19,7 +19,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
+import static io.hrushik09.tasker.cards.ActionDisplayDTOBuilder.anActionDisplayDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anActionDisplayEntitiesDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
+import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
+import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
+import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,17 +40,29 @@ class CardServiceTest {
     private CardRepository cardRepository;
     @Mock
     private ListService listService;
+    @Mock
+    private ActionService actionService;
 
     @BeforeEach
     void setUp() {
-        cardService = new CardService(cardRepository, listService);
+        cardService = new CardService(cardRepository, listService, actionService);
+    }
+
+    @Test
+    void shouldFailToCreateCardForNonExistingListId() {
+        Integer nonExistingListId = 100;
+        when(listService.findById(nonExistingListId)).thenThrow(new ListDoesNotExistException(nonExistingListId));
+
+        assertThatThrownBy(() -> cardService.create(new CreateCardCommand(nonExistingListId, "Not important")))
+                .isInstanceOf(ListDoesNotExistException.class)
+                .hasMessage("List with id=" + nonExistingListId + " does not exist");
     }
 
     @Test
     void shouldCreateCardSuccessfully() {
         Integer listId = 1;
         ListBuilder listBuilder = aList().withId(listId);
-        when(listService.getReferenceById(listId)).thenReturn(listBuilder.build());
+        when(listService.findById(listId)).thenReturn(listBuilder.build());
         Integer cardId = 1;
         String title = "Card 2";
         CardBuilder cardBuilder = aCard().withId(cardId).withTitle(title).with(listBuilder);
@@ -112,6 +130,7 @@ class CardServiceTest {
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
 
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+
             assertThat(fetched.id()).isEqualTo(id);
             assertThat(fetched.title()).isEqualTo(title);
             assertThat(fetched.description()).isEqualTo(description);
@@ -354,6 +373,83 @@ class CardServiceTest {
                         .isInstanceOf(NotAllowedFieldForUpdateCardException.class)
                         .hasMessage("Field updatedAt is not allowed for update");
             }
+        }
+    }
+
+    @Nested
+    class AddCardActionDetails {
+        @Captor
+        ArgumentCaptor<Card> cardArgumentCaptor;
+
+        @Test
+        void shouldAddCreateCardActionWhenCreatingCard() {
+            Integer listId = 12;
+            ListBuilder listBuilder = aList().withId(listId);
+            when(listService.findById(listId)).thenReturn(listBuilder.build());
+            Integer id = 11;
+            String title = "Card 1";
+            CardBuilder cardBuilder = aCard().withId(id).withTitle(title).with(listBuilder);
+            when(cardRepository.save(any())).thenReturn(cardBuilder.build());
+
+            cardService.create(new CreateCardCommand(listId, title));
+
+            verify(actionService).saveCreateCardAction(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getId()).isEqualTo(id);
+            assertThat(captorValue.getTitle()).isEqualTo(title);
+            assertThat(captorValue.getList().getId()).isEqualTo(listId);
+        }
+    }
+
+    @Nested
+    class FetchCardActionDetails {
+        @Test
+        void shouldFetchCreateCardActionDetails() {
+            Integer creatorId = 2;
+            String creatorName = "User 3";
+            Integer listId = 4;
+            String listTitle = "To Do";
+            Integer id = 23;
+            String title = "Format Code";
+            CardBuilder cardBuilder = aCard().withId(id);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            Integer actionId = 123;
+            Instant happenedAt = Instant.parse("2023-12-12T12:23:44Z");
+            ActionResponseBuilder createAction = anActionResponseBuilder().withId(actionId).withMemberCreatorId(creatorId).withType("createCard").withHappenedAt(happenedAt)
+                    .with(anActionDisplayDTOBuilder().withTranslationKey("action_create_card")
+                            .with(anActionDisplayEntitiesDTOBuilder()
+                                    .with(aCardActionDTO().withId(id).withText(title))
+                                    .with(aListActionDTO().withId(listId).withText(listTitle))
+                                    .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
+                            )
+                    );
+            when(actionService.fetchAllCardActions(id)).thenReturn(List.of(createAction.build()));
+
+            CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+
+            assertThat(fetched.actions()).hasSize(1);
+            ActionResponse action = fetched.actions().getFirst();
+            assertThat(action.id()).isEqualTo(actionId);
+            assertThat(action.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(action.type()).isEqualTo("createCard");
+            assertThat(action.happenedAt()).isEqualTo(happenedAt);
+            assertThat(action.display()).isNotNull();
+            ActionDisplayDTO display = action.display();
+            assertThat(display.translationKey()).isEqualTo("action_create_card");
+            assertThat(display.entities()).isNotNull();
+            ActionDisplayEntitiesDTO entities = display.entities();
+            assertThat(entities.card()).isNotNull();
+            assertThat(entities.card().type()).isEqualTo("card");
+            assertThat(entities.card().id()).isEqualTo(id);
+            assertThat(entities.card().text()).isEqualTo(title);
+            assertThat(entities.list()).isNotNull();
+            assertThat(entities.list().type()).isEqualTo("list");
+            assertThat(entities.list().id()).isEqualTo(listId);
+            assertThat(entities.list().text()).isEqualTo(listTitle);
+            assertThat(entities.memberCreator()).isNotNull();
+            assertThat(entities.memberCreator().type()).isEqualTo("member");
+            assertThat(entities.memberCreator().id()).isEqualTo(creatorId);
+            assertThat(entities.memberCreator().text()).isEqualTo(creatorName);
         }
     }
 }

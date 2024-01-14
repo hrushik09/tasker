@@ -4,6 +4,7 @@ import io.hrushik09.tasker.EndToEndTest;
 import io.hrushik09.tasker.EndToEndTestDataPersister;
 import io.hrushik09.tasker.boards.CreateBoardResponse;
 import io.hrushik09.tasker.lists.CreateListResponse;
+import io.hrushik09.tasker.users.CreateUserResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +16,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 @EndToEndTest
 public class CardEndToEndTest {
@@ -124,6 +124,43 @@ public class CardEndToEndTest {
                     .get("/api/cards/{id}", createdCard.id())
                     .then()
                     .body("due", equalTo("2023-02-05T12:12:12Z"));
+        }
+
+        @Nested
+        class FetchCardActionDetails {
+            @Test
+            void shouldFetchCreateCardActionDetails() {
+                CreateUserResponse creator = having.persistedUser();
+                CreateBoardResponse board = having.persistedBoard(creator.id());
+                CreateListResponse list = having.persistedList("To Do", board.id());
+                CreateCardResponse card = having.persistedCard("Documentation", list.id());
+
+                given()
+                        .contentType(ContentType.JSON)
+                        .when()
+                        .get("/api/cards/{id}", card.id())
+                        .then()
+                        .body("actions", hasSize(1))
+                        .body("actions[0].id", notNullValue())
+                        .body("actions[0].memberCreatorId", equalTo(creator.id()))
+                        .body("actions[0].type", equalTo("createCard"))
+                        .body("actions[0].happenedAt", notNullValue())
+                        .body("actions[0].display", notNullValue())
+                        .body("actions[0].display.translationKey", equalTo("action_create_card"))
+                        .body("actions[0].display.entities", notNullValue())
+                        .body("actions[0].display.entities.card", notNullValue())
+                        .body("actions[0].display.entities.card.type", equalTo("card"))
+                        .body("actions[0].display.entities.card.id", equalTo(card.id()))
+                        .body("actions[0].display.entities.card.text", equalTo(card.title()))
+                        .body("actions[0].display.entities.list", notNullValue())
+                        .body("actions[0].display.entities.list.type", equalTo("list"))
+                        .body("actions[0].display.entities.list.id", equalTo(list.id()))
+                        .body("actions[0].display.entities.list.text", equalTo(list.title()))
+                        .body("actions[0].display.entities.memberCreator", notNullValue())
+                        .body("actions[0].display.entities.memberCreator.type", equalTo("member"))
+                        .body("actions[0].display.entities.memberCreator.id", equalTo(creator.id()))
+                        .body("actions[0].display.entities.memberCreator.text", equalTo(creator.name()));
+            }
         }
     }
 
