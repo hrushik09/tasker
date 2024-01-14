@@ -1,15 +1,42 @@
 package io.hrushik09.tasker.cards;
 
+import jakarta.persistence.*;
+
 import java.time.Instant;
 
+@Entity
+@Table(name = "actions")
 public class Action {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(nullable = false)
     private Integer memberCreatorId;
+    @Column(nullable = false)
     private String type;
+    @Column(nullable = false)
     private Instant happenedAt;
+    @Column(nullable = false)
     private String translationKey;
+    @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
+    @JoinColumn()
     private CardAction cardAction;
+    @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private ListAction listAction;
+    @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private MemberCreatorAction memberCreatorAction;
+    @Column(nullable = false, insertable = false, updatable = false)
+    private Instant createdAt;
+    @Column(nullable = false, insertable = false, updatable = false)
+    private Instant updatedAt;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getMemberCreatorId() {
         return memberCreatorId;
@@ -65,5 +92,21 @@ public class Action {
 
     public void setMemberCreatorAction(MemberCreatorAction memberCreatorAction) {
         this.memberCreatorAction = memberCreatorAction;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

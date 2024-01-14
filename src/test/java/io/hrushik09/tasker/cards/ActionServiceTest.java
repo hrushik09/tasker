@@ -20,14 +20,14 @@ import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class CardActionServiceTest {
-    private CardActionService cardActionService;
+class ActionServiceTest {
+    private ActionService actionService;
     @Mock
-    private CardActionRepository cardActionRepository;
+    private ActionRepository actionRepository;
 
     @BeforeEach
     void setUp() {
-        cardActionService = new CardActionService(cardActionRepository);
+        actionService = new ActionService(actionRepository);
     }
 
     @Nested
@@ -48,9 +48,9 @@ class CardActionServiceTest {
             String cardTitle = "Documentation";
             CardBuilder cardBuilder = aCard().withId(cardId).withTitle(cardTitle).with(listBuilder);
 
-            cardActionService.saveCreateCardAction(cardBuilder.build());
+            actionService.saveCreateCardAction(cardBuilder.build());
 
-            Mockito.verify(cardActionRepository).save(actionArgumentCaptor.capture());
+            Mockito.verify(actionRepository).save(actionArgumentCaptor.capture());
             Action captorValue = actionArgumentCaptor.getValue();
             assertThat(captorValue.getMemberCreatorId()).isEqualTo(creatorId);
             assertThat(captorValue.getType()).isEqualTo("createCard");

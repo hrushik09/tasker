@@ -35,11 +35,11 @@ class CardServiceTest {
     @Mock
     private ListService listService;
     @Mock
-    private CardActionService cardActionService;
+    private ActionService actionService;
 
     @BeforeEach
     void setUp() {
-        cardService = new CardService(cardRepository, listService, cardActionService);
+        cardService = new CardService(cardRepository, listService, actionService);
     }
 
     @Test
@@ -387,7 +387,7 @@ class CardServiceTest {
 
             cardService.create(new CreateCardCommand(listId, title));
 
-            verify(cardActionService).saveCreateCardAction(cardArgumentCaptor.capture());
+            verify(actionService).saveCreateCardAction(cardArgumentCaptor.capture());
             Card captorValue = cardArgumentCaptor.getValue();
             assertThat(captorValue.getId()).isEqualTo(id);
             assertThat(captorValue.getTitle()).isEqualTo(title);
@@ -407,7 +407,7 @@ class CardServiceTest {
             String cardTitle = "Format Code";
             CardBuilder cardBuilder = aCard().withId(id);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-            when(cardActionService.fetchAllCardActions(id))
+            when(actionService.fetchAllCardActions(id))
                     .thenReturn(List.of(new ActionResponse(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
                             new ActionDisplayDTO("action_create_card",
                                     new ActionDisplayEntitiesDTO(

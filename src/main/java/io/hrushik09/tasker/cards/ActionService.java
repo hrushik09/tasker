@@ -8,11 +8,11 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class CardActionService {
-    private final CardActionRepository cardActionRepository;
+public class ActionService {
+    private final ActionRepository actionRepository;
 
-    public CardActionService(CardActionRepository cardActionRepository) {
-        this.cardActionRepository = cardActionRepository;
+    public ActionService(ActionRepository actionRepository) {
+        this.actionRepository = actionRepository;
     }
 
     public void saveCreateCardAction(Card card) {
@@ -37,7 +37,7 @@ public class CardActionService {
         memberCreatorAction.setCreatorId(creatorId);
         memberCreatorAction.setText(card.getList().getBoard().getUser().getName());
         action.setMemberCreatorAction(memberCreatorAction);
-        cardActionRepository.save(action);
+        actionRepository.save(action);
     }
 
     public List<ActionResponse> fetchAllCardActions(Integer id) {
