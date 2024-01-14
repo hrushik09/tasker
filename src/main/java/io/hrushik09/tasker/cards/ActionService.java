@@ -17,6 +17,7 @@ public class ActionService {
 
     public void saveCreateCardAction(Card card) {
         Action action = new Action();
+        action.setCard(card);
         Integer creatorId = card.getList().getBoard().getUser().getId();
         action.setMemberCreatorId(creatorId);
         action.setType("createCard");
@@ -40,7 +41,7 @@ public class ActionService {
         actionRepository.save(action);
     }
 
-    public List<ActionResponse> fetchAllCardActions(Integer id) {
-        return null;
+    public List<ActionResponse> fetchAllCardActions(Integer cardId) {
+        return actionRepository.findActionDetailsByCardId(cardId);
     }
 }

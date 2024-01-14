@@ -19,7 +19,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.hrushik09.tasker.boards.BoardBuilder.aBoard;
+import static io.hrushik09.tasker.cards.ActionDisplayDTOBuilder.anActionDisplayDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anActionDisplayEntitiesDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
+import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
+import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
+import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -404,22 +410,46 @@ class CardServiceTest {
             Integer listId = 4;
             String listTitle = "To Do";
             Integer id = 23;
-            String cardTitle = "Format Code";
+            String title = "Format Code";
             CardBuilder cardBuilder = aCard().withId(id);
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
-            when(actionService.fetchAllCardActions(id))
-                    .thenReturn(List.of(new ActionResponse(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
-                            new ActionDisplayDTO("action_create_card",
-                                    new ActionDisplayEntitiesDTO(
-                                            new CardActionDTO("card", id, cardTitle),
-                                            new ListActionDTO("list", listId, listTitle),
-                                            new MemberCreatorActionDTO("member", creatorId, creatorName)
-                                    ))
-                    )));
+            Integer actionId = 123;
+            Instant happenedAt = Instant.parse("2023-12-12T12:23:44Z");
+            ActionResponseBuilder createAction = anActionResponseBuilder().withId(actionId).withMemberCreatorId(creatorId).withType("createCard").withHappenedAt(happenedAt)
+                    .with(anActionDisplayDTOBuilder().withTranslationKey("action_create_card")
+                            .with(anActionDisplayEntitiesDTOBuilder()
+                                    .with(aCardActionDTO().withId(id).withText(title))
+                                    .with(aListActionDTO().withId(listId).withText(listTitle))
+                                    .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
+                            )
+                    );
+            when(actionService.fetchAllCardActions(id)).thenReturn(List.of(createAction.build()));
 
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
 
             assertThat(fetched.actions()).hasSize(1);
+            ActionResponse action = fetched.actions().getFirst();
+            assertThat(action.id()).isEqualTo(actionId);
+            assertThat(action.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(action.type()).isEqualTo("createCard");
+            assertThat(action.happenedAt()).isEqualTo(happenedAt);
+            assertThat(action.display()).isNotNull();
+            ActionDisplayDTO display = action.display();
+            assertThat(display.translationKey()).isEqualTo("action_create_card");
+            assertThat(display.entities()).isNotNull();
+            ActionDisplayEntitiesDTO entities = display.entities();
+            assertThat(entities.card()).isNotNull();
+            assertThat(entities.card().type()).isEqualTo("card");
+            assertThat(entities.card().id()).isEqualTo(id);
+            assertThat(entities.card().text()).isEqualTo(title);
+            assertThat(entities.list()).isNotNull();
+            assertThat(entities.list().type()).isEqualTo("list");
+            assertThat(entities.list().id()).isEqualTo(listId);
+            assertThat(entities.list().text()).isEqualTo(listTitle);
+            assertThat(entities.memberCreator()).isNotNull();
+            assertThat(entities.memberCreator().type()).isEqualTo("member");
+            assertThat(entities.memberCreator().id()).isEqualTo(creatorId);
+            assertThat(entities.memberCreator().text()).isEqualTo(creatorName);
         }
     }
 }

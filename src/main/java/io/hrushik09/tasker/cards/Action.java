@@ -10,6 +10,8 @@ public class Action {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @ManyToOne(optional = false)
+    private Card card;
     @Column(nullable = false)
     private Integer memberCreatorId;
     @Column(nullable = false)
@@ -36,6 +38,14 @@ public class Action {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
     }
 
     public Integer getMemberCreatorId() {

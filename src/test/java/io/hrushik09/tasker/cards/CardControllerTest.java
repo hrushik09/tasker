@@ -10,10 +10,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
+import static io.hrushik09.tasker.cards.ActionDisplayDTOBuilder.anActionDisplayDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anActionDisplayEntitiesDTOBuilder;
+import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
+import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
 import static io.hrushik09.tasker.cards.CardMaxDetailsDTOBuilder.aCardMaxDetailsDTO;
+import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
+import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -111,14 +116,16 @@ public class CardControllerTest {
                 Integer id = 1;
                 String cardTitle = "Card 1 Title";
                 CardMaxDetailsDTOBuilder cardMaxDetailsDTOBuilder = aCardMaxDetailsDTO()
-                        .withActions(List.of(new ActionResponse(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
-                                new ActionDisplayDTO("action_create_card",
-                                        new ActionDisplayEntitiesDTO(
-                                                new CardActionDTO("card", id, cardTitle),
-                                                new ListActionDTO("list", listId, listTitle),
-                                                new MemberCreatorActionDTO("member", creatorId, creatorName)
-                                        ))
-                        )));
+                        .with(anActionResponseBuilder().withId(123).withMemberCreatorId(creatorId).withType("createCard").withHappenedAt(Instant.parse("2023-12-12T12:23:44Z"))
+                                .with(anActionDisplayDTOBuilder().withTranslationKey("action_create_card")
+                                        .with(anActionDisplayEntitiesDTOBuilder()
+                                                .with(aCardActionDTO().withId(id).withText(cardTitle))
+                                                .with(aListActionDTO().withId(listId).withText(listTitle))
+                                                .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
+                                        )
+                                )
+                        );
+
                 when(cardService.fetchCardDetails(id)).thenReturn(cardMaxDetailsDTOBuilder.build());
 
                 mockMvc.perform(get("/api/cards/{id}", id))
