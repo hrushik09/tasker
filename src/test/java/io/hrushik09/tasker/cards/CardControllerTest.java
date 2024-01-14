@@ -111,12 +111,12 @@ public class CardControllerTest {
                 Integer id = 1;
                 String cardTitle = "Card 1 Title";
                 CardMaxDetailsDTOBuilder cardMaxDetailsDTOBuilder = aCardMaxDetailsDTO()
-                        .withActions(List.of(new Action(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
-                                new ActionDisplay("action_create_card",
-                                        new ActionDisplayEntities(
-                                                new CardActionEntity("card", id, cardTitle),
-                                                new ListActionEntity("list", listId, listTitle),
-                                                new MemberCreatorActionEntity("member", creatorId, creatorName)
+                        .withActions(List.of(new ActionDTO(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
+                                new ActionDisplayDTO("action_create_card",
+                                        new ActionDisplayEntitiesDTO(
+                                                new CardActionEntityDTO("card", id, cardTitle),
+                                                new ListActionEntityDTO("list", listId, listTitle),
+                                                new MemberCreatorActionEntityDTO("member", creatorId, creatorName)
                                         ))
                         )));
                 when(cardService.fetchCardDetails(id)).thenReturn(cardMaxDetailsDTOBuilder.build());

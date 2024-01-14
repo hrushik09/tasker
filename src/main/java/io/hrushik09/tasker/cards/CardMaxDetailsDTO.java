@@ -12,9 +12,9 @@ public record CardMaxDetailsDTO(
         Integer listId,
         Instant createdAt,
         Instant updatedAt,
-        List<Action> actions
+        List<ActionDTO> actions
 ) {
-    public static CardMaxDetailsDTO from(Card card, List<Action> actions) {
+    public static CardMaxDetailsDTO from(Card card, List<ActionDTO> actions) {
         return new CardMaxDetailsDTO(card.getId(), card.getTitle(), card.getDescription(), card.getStart(),
                 card.getDue(), card.getList().getId(), card.getCreatedAt(), card.getUpdatedAt(), actions);
     }

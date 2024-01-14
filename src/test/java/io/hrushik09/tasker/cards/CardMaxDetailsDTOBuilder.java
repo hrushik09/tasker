@@ -12,7 +12,7 @@ public class CardMaxDetailsDTOBuilder {
     private Integer listId = 1;
     private Instant createdAt = Instant.parse("2023-01-12T12:34:23Z");
     private Instant updatedAt = Instant.parse("2023-01-13T01:32:23Z");
-    private List<Action> actions = List.of();
+    private List<ActionDTO> actions = List.of();
 
     private CardMaxDetailsDTOBuilder() {
     }
@@ -77,7 +77,7 @@ public class CardMaxDetailsDTOBuilder {
         return this;
     }
 
-    public CardMaxDetailsDTOBuilder withActions(List<Action> actions) {
+    public CardMaxDetailsDTOBuilder withActions(List<ActionDTO> actions) {
         this.actions = actions;
         return this;
     }

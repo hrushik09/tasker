@@ -124,6 +124,7 @@ class CardServiceTest {
             when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
 
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+
             assertThat(fetched.id()).isEqualTo(id);
             assertThat(fetched.title()).isEqualTo(title);
             assertThat(fetched.description()).isEqualTo(description);
@@ -391,6 +392,34 @@ class CardServiceTest {
             assertThat(captorValue.getId()).isEqualTo(id);
             assertThat(captorValue.getTitle()).isEqualTo(title);
             assertThat(captorValue.getList().getId()).isEqualTo(listId);
+        }
+    }
+
+    @Nested
+    class FetchCardActionDetails {
+        @Test
+        void shouldFetchCreateCardActionDetails() {
+            Integer creatorId = 2;
+            String creatorName = "User 3";
+            Integer listId = 4;
+            String listTitle = "To Do";
+            Integer id = 23;
+            String cardTitle = "Format Code";
+            CardBuilder cardBuilder = aCard().withId(id);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            when(cardActionService.fetchAllCardActions(id))
+                    .thenReturn(List.of(new ActionDTO(123, creatorId, "createCard", Instant.parse("2023-12-12T12:23:44Z"),
+                            new ActionDisplayDTO("action_create_card",
+                                    new ActionDisplayEntitiesDTO(
+                                            new CardActionEntityDTO("card", id, cardTitle),
+                                            new ListActionEntityDTO("list", listId, listTitle),
+                                            new MemberCreatorActionEntityDTO("member", creatorId, creatorName)
+                                    ))
+                    )));
+
+            CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+
+            assertThat(fetched.actions()).hasSize(1);
         }
     }
 }
