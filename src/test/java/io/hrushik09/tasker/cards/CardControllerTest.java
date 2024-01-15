@@ -17,6 +17,7 @@ import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anAction
 import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
 import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
 import static io.hrushik09.tasker.cards.CardMaxDetailsDTOBuilder.aCardMaxDetailsDTO;
+import static io.hrushik09.tasker.cards.DateActionDTOBuilder.aDateActionDTOBuilder;
 import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
 import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 import static org.hamcrest.Matchers.*;
@@ -149,6 +150,49 @@ public class CardControllerTest {
                         .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.type", equalTo("member")))
                         .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.id", equalTo(creatorId)))
                         .andExpect(jsonPath("$.actions[0].display.entities.memberCreator.text", equalTo(creatorName)));
+            }
+
+            @Test
+            void shouldFetchAddDueActionDetails() throws Exception {
+                Integer creatorId = 1;
+                String creatorName = "User 100";
+                Integer id = 4;
+                String cardTitle = "Card 122";
+                String dueStr = "2023-04-04T10:10:12Z";
+                CardMaxDetailsDTOBuilder cardMaxDetailsDTOBuilder = aCardMaxDetailsDTO()
+                        .with(anActionResponseBuilder().withType("createCard"))
+                        .with(anActionResponseBuilder().withId(234).withMemberCreatorId(creatorId).withType("updateCard").withHappenedAt(Instant.parse("2024-01-01T01:01:01Z"))
+                                .with(anActionDisplayDTOBuilder().withTranslationKey("action_added_a_due_date")
+                                        .with(anActionDisplayEntitiesDTOBuilder()
+                                                .with(aCardActionDTO().withId(id).withText(cardTitle).withDue(Instant.parse(dueStr)))
+                                                .with(aDateActionDTOBuilder().withDate(Instant.parse(dueStr)))
+                                                .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
+                                        )
+                                )
+                        );
+                when(cardService.fetchCardDetails(id)).thenReturn(cardMaxDetailsDTOBuilder.build());
+
+                mockMvc.perform(get("/api/cards/{id}", id))
+                        .andExpect(jsonPath("actions", hasSize(2)))
+                        .andExpect(jsonPath("actions[1].id", notNullValue()))
+                        .andExpect(jsonPath("actions[1].memberCreatorId", equalTo(creatorId)))
+                        .andExpect(jsonPath("actions[1].type", equalTo("updateCard")))
+                        .andExpect(jsonPath("actions[1].happenedAt", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display.translationKey", equalTo("action_added_a_due_date")))
+                        .andExpect(jsonPath("actions[1].display.entities", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display.entities.card", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display.entities.card.type", equalTo("card")))
+                        .andExpect(jsonPath("actions[1].display.entities.card.id", equalTo(id)))
+                        .andExpect(jsonPath("actions[1].display.entities.card.text", equalTo(cardTitle)))
+                        .andExpect(jsonPath("actions[1].display.entities.card.due", equalTo(dueStr)))
+                        .andExpect(jsonPath("actions[1].display.entities.date", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display.entities.date.type", equalTo("date")))
+                        .andExpect(jsonPath("actions[1].display.entities.date.date", equalTo(dueStr)))
+                        .andExpect(jsonPath("actions[1].display.entities.memberCreator", notNullValue()))
+                        .andExpect(jsonPath("actions[1].display.entities.memberCreator.type", equalTo("member")))
+                        .andExpect(jsonPath("actions[1].display.entities.memberCreator.id", equalTo(creatorId)))
+                        .andExpect(jsonPath("actions[1].display.entities.memberCreator.text", equalTo(creatorName)));
             }
         }
     }

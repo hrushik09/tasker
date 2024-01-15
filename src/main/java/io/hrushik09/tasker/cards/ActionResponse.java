@@ -13,10 +13,10 @@ public record ActionResponse(
         return new ActionResponse(action.getId(), action.getMemberCreatorId(), action.getType(), action.getHappenedAt(),
                 new ActionDisplayDTO(action.getTranslationKey(),
                         new ActionDisplayEntitiesDTO(
-                                new CardActionDTO(action.getCardAction().getType(), action.getCardAction().getCardId(), action.getCardAction().getText()),
+                                new CardActionDTO(action.getCardAction().getType(), action.getCardAction().getCardId(), action.getCardAction().getText(), Instant.MIN),
                                 new ListActionDTO(action.getListAction().getType(), action.getListAction().getListId(), action.getListAction().getText()),
-                                new MemberCreatorActionDTO(action.getMemberCreatorAction().getType(), action.getMemberCreatorAction().getCreatorId(), action.getMemberCreatorAction().getText())
-                        )
+                                new MemberCreatorActionDTO(action.getMemberCreatorAction().getType(), action.getMemberCreatorAction().getCreatorId(), action.getMemberCreatorAction().getText()),
+                                new DateActionDTO("temp", Instant.MIN))
                 )
         );
     }
