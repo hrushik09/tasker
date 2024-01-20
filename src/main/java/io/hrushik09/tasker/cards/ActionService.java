@@ -15,6 +15,11 @@ public class ActionService {
         this.actionRepository = actionRepository;
     }
 
+    public List<ActionResponse> fetchAllCardActions(Integer cardId) {
+        List<Action> actions = actionRepository.findByCardId(cardId);
+        return actions.stream().map(ActionResponse::from).toList();
+    }
+
     public void saveCreateCardAction(Card card) {
         Action action = new Action();
         action.setCard(card);
@@ -41,8 +46,7 @@ public class ActionService {
         actionRepository.save(action);
     }
 
-    public List<ActionResponse> fetchAllCardActions(Integer cardId) {
-        List<Action> actions = actionRepository.findByCardId(cardId);
-        return actions.stream().map(ActionResponse::from).toList();
+    public void saveAddDueAction(Card card) {
+
     }
 }

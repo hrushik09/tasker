@@ -73,6 +73,11 @@ public class CardService {
             field.setAccessible(false);
         });
         Card updated = cardRepository.save(fetched);
+        fields.forEach((key, value) -> {
+            if ("due".equals(key)) {
+                actionService.saveAddDueAction(updated);
+            }
+        });
         return UpdateCardResponse.from(updated);
     }
 

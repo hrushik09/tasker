@@ -399,6 +399,24 @@ class CardServiceTest {
             assertThat(captorValue.getTitle()).isEqualTo(title);
             assertThat(captorValue.getList().getId()).isEqualTo(listId);
         }
+
+        @Test
+        void shouldAddActionWhenAddingDue() {
+            Integer id = 12;
+            CardBuilder cardBuilder = aCard().withId(id);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String dueStr = "2023-06-06T12:12:12Z";
+            CardBuilder updatedCardBuilder = cardBuilder.but().withDue(Instant.parse(dueStr));
+            when(cardRepository.save(any())).thenReturn(updatedCardBuilder.build());
+            Map<String, Object> fields = Map.of("due", dueStr);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(actionService).saveAddDueAction(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getId()).isEqualTo(id);
+            assertThat(captorValue.getDue()).isEqualTo(Instant.parse(dueStr));
+        }
     }
 
     @Nested
