@@ -5,19 +5,15 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "card_actions")
-public class CardAction {
+@Table(name = "date_actions")
+public class DateAction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
     private String type;
     @Column(nullable = false)
-    private Integer cardId;
-    @Column(nullable = false)
-    private String text;
-    @Column
-    private Instant due;
+    private Instant dueAt;
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -39,28 +35,12 @@ public class CardAction {
         this.type = type;
     }
 
-    public Integer getCardId() {
-        return cardId;
+    public Instant getDueAt() {
+        return dueAt;
     }
 
-    public void setCardId(Integer cardId) {
-        this.cardId = cardId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Instant getDue() {
-        return due;
-    }
-
-    public void setDue(Instant due) {
-        this.due = due;
+    public void setDueAt(Instant dueAt) {
+        this.dueAt = dueAt;
     }
 
     public Instant getCreatedAt() {

@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.cards;
 
 import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
+import static io.hrushik09.tasker.cards.DateActionDTOBuilder.aDateActionDTOBuilder;
 import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
 import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 
@@ -8,6 +9,7 @@ public class ActionDisplayEntitiesDTOBuilder {
     private CardActionDTOBuilder cardActionDTOBuilder = aCardActionDTO();
     private ListActionDTOBuilder listActionDTOBuilder = aListActionDTO();
     private MemberCreatorActionDTOBuilder memberCreatorActionDTOBuilder = aMemberCreatorActionDTO();
+    private DateActionDTOBuilder dateActionDTOBuilder = aDateActionDTOBuilder();
 
     private ActionDisplayEntitiesDTOBuilder() {
     }
@@ -16,6 +18,7 @@ public class ActionDisplayEntitiesDTOBuilder {
         this.cardActionDTOBuilder = copy.cardActionDTOBuilder;
         this.listActionDTOBuilder = copy.listActionDTOBuilder;
         this.memberCreatorActionDTOBuilder = copy.memberCreatorActionDTOBuilder;
+        this.dateActionDTOBuilder = copy.dateActionDTOBuilder;
     }
 
     public static ActionDisplayEntitiesDTOBuilder anActionDisplayEntitiesDTOBuilder() {
@@ -41,7 +44,12 @@ public class ActionDisplayEntitiesDTOBuilder {
         return this;
     }
 
+    public ActionDisplayEntitiesDTOBuilder with(DateActionDTOBuilder dateActionDTOBuilder) {
+        this.dateActionDTOBuilder = dateActionDTOBuilder;
+        return this;
+    }
+
     public ActionDisplayEntitiesDTO build() {
-        return new ActionDisplayEntitiesDTO(cardActionDTOBuilder.build(), listActionDTOBuilder.build(), memberCreatorActionDTOBuilder.build());
+        return new ActionDisplayEntitiesDTO(cardActionDTOBuilder.build(), listActionDTOBuilder.build(), memberCreatorActionDTOBuilder.build(), dateActionDTOBuilder.build());
     }
 }

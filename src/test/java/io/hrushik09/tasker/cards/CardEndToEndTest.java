@@ -161,6 +161,42 @@ public class CardEndToEndTest {
                         .body("actions[0].display.entities.memberCreator.id", equalTo(creator.id()))
                         .body("actions[0].display.entities.memberCreator.text", equalTo(creator.name()));
             }
+
+            @Test
+            void shouldFetchUpdateDueActionDetails() {
+                CreateUserResponse creator = having.persistedUser();
+                CreateBoardResponse board = having.persistedBoard(creator.id());
+                CreateListResponse list = having.persistedList("Not picked yet", board.id());
+                CreateCardResponse card = having.persistedCard("Architecture", list.id());
+                Map<String, Object> fields = Map.of("due", "2023-04-04T10:10:12Z");
+                having.updatedCard(card.id(), fields);
+
+                given()
+                        .contentType(ContentType.JSON)
+                        .when()
+                        .get("/api/cards/{id}", card.id())
+                        .then()
+                        .body("actions", hasSize(2))
+                        .body("actions[1].id", notNullValue())
+                        .body("actions[1].memberCreatorId", equalTo(creator.id()))
+                        .body("actions[1].type", equalTo("updateCard"))
+                        .body("actions[1].happenedAt", notNullValue())
+                        .body("actions[1].display", notNullValue())
+                        .body("actions[1].display.translationKey", equalTo("action_added_a_due_date"))
+                        .body("actions[1].display.entities", notNullValue())
+                        .body("actions[1].display.entities.card", notNullValue())
+                        .body("actions[1].display.entities.card.type", equalTo("card"))
+                        .body("actions[1].display.entities.card.id", equalTo(card.id()))
+                        .body("actions[1].display.entities.card.text", equalTo(card.title()))
+                        .body("actions[1].display.entities.card.due", equalTo("2023-04-04T10:10:12Z"))
+                        .body("actions[1].display.entities.date", notNullValue())
+                        .body("actions[1].display.entities.date.type", equalTo("date"))
+                        .body("actions[1].display.entities.date.date", equalTo("2023-04-04T10:10:12Z"))
+                        .body("actions[1].display.entities.memberCreator", notNullValue())
+                        .body("actions[1].display.entities.memberCreator.type", equalTo("member"))
+                        .body("actions[1].display.entities.memberCreator.id", equalTo(creator.id()))
+                        .body("actions[1].display.entities.memberCreator.text", equalTo(creator.name()));
+            }
         }
     }
 

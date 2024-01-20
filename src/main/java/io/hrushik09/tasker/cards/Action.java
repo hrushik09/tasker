@@ -22,10 +22,12 @@ public class Action {
     private String translationKey;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private CardAction cardAction;
-    @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
+    @OneToOne(cascade = {CascadeType.PERSIST})
     private ListAction listAction;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private MemberCreatorAction memberCreatorAction;
+    @OneToOne(cascade = {CascadeType.PERSIST})
+    private DateAction dateAction;
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -101,6 +103,14 @@ public class Action {
 
     public void setMemberCreatorAction(MemberCreatorAction memberCreatorAction) {
         this.memberCreatorAction = memberCreatorAction;
+    }
+
+    public DateAction getDateAction() {
+        return dateAction;
+    }
+
+    public void setDateAction(DateAction dateAction) {
+        this.dateAction = dateAction;
     }
 
     public Instant getCreatedAt() {

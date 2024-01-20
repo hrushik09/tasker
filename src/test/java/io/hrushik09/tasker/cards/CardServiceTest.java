@@ -24,6 +24,7 @@ import static io.hrushik09.tasker.cards.ActionDisplayEntitiesDTOBuilder.anAction
 import static io.hrushik09.tasker.cards.ActionResponseBuilder.anActionResponseBuilder;
 import static io.hrushik09.tasker.cards.CardActionDTOBuilder.aCardActionDTO;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
+import static io.hrushik09.tasker.cards.DateActionDTOBuilder.aDateActionDTOBuilder;
 import static io.hrushik09.tasker.cards.ListActionDTOBuilder.aListActionDTO;
 import static io.hrushik09.tasker.cards.MemberCreatorActionDTOBuilder.aMemberCreatorActionDTO;
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
@@ -399,6 +400,24 @@ class CardServiceTest {
             assertThat(captorValue.getTitle()).isEqualTo(title);
             assertThat(captorValue.getList().getId()).isEqualTo(listId);
         }
+
+        @Test
+        void shouldAddActionWhenAddingDue() {
+            Integer id = 12;
+            CardBuilder cardBuilder = aCard().withId(id);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            String dueStr = "2023-06-06T12:12:12Z";
+            CardBuilder updatedCardBuilder = cardBuilder.but().withDue(Instant.parse(dueStr));
+            when(cardRepository.save(any())).thenReturn(updatedCardBuilder.build());
+            Map<String, Object> fields = Map.of("due", dueStr);
+
+            cardService.update(new UpdateCardCommand(id, fields));
+
+            verify(actionService).saveAddDueAction(cardArgumentCaptor.capture());
+            Card captorValue = cardArgumentCaptor.getValue();
+            assertThat(captorValue.getId()).isEqualTo(id);
+            assertThat(captorValue.getDue()).isEqualTo(Instant.parse(dueStr));
+        }
     }
 
     @Nested
@@ -428,13 +447,13 @@ class CardServiceTest {
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
 
             assertThat(fetched.actions()).hasSize(1);
-            ActionResponse action = fetched.actions().getFirst();
-            assertThat(action.id()).isEqualTo(actionId);
-            assertThat(action.memberCreatorId()).isEqualTo(creatorId);
-            assertThat(action.type()).isEqualTo("createCard");
-            assertThat(action.happenedAt()).isEqualTo(happenedAt);
-            assertThat(action.display()).isNotNull();
-            ActionDisplayDTO display = action.display();
+            ActionResponse actionResponse = fetched.actions().getFirst();
+            assertThat(actionResponse.id()).isEqualTo(actionId);
+            assertThat(actionResponse.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(actionResponse.type()).isEqualTo("createCard");
+            assertThat(actionResponse.happenedAt()).isEqualTo(happenedAt);
+            assertThat(actionResponse.display()).isNotNull();
+            ActionDisplayDTO display = actionResponse.display();
             assertThat(display.translationKey()).isEqualTo("action_create_card");
             assertThat(display.entities()).isNotNull();
             ActionDisplayEntitiesDTO entities = display.entities();
@@ -447,6 +466,54 @@ class CardServiceTest {
             assertThat(entities.list().id()).isEqualTo(listId);
             assertThat(entities.list().text()).isEqualTo(listTitle);
             assertThat(entities.memberCreator()).isNotNull();
+            assertThat(entities.memberCreator().type()).isEqualTo("member");
+            assertThat(entities.memberCreator().id()).isEqualTo(creatorId);
+            assertThat(entities.memberCreator().text()).isEqualTo(creatorName);
+        }
+
+        @Test
+        void shouldFetchAddDueActionDetails() {
+            Integer creatorId = 65;
+            String creatorName = "User pqr";
+            Integer id = 9;
+            String title = "Create user page";
+            Instant due = Instant.parse("2023-07-06T23:56:56Z");
+            CardBuilder cardBuilder = aCard().withId(id);
+            when(cardRepository.findById(id)).thenReturn(Optional.of(cardBuilder.build()));
+            ActionResponseBuilder createAction = anActionResponseBuilder().withType("createCard");
+            Integer actionId = 97;
+            Instant happenedAt = Instant.parse("2023-06-06T01:45:45Z");
+            ActionResponseBuilder addDueAction = anActionResponseBuilder().withId(actionId).withMemberCreatorId(creatorId).withType("updateCard").withHappenedAt(happenedAt)
+                    .with(anActionDisplayDTOBuilder().withTranslationKey("action_added_a_due_date")
+                            .with(anActionDisplayEntitiesDTOBuilder()
+                                    .with(aCardActionDTO().withId(id).withText(title).withDue(due))
+                                    .with(aDateActionDTOBuilder().withDate(due))
+                                    .with(aMemberCreatorActionDTO().withId(creatorId).withText(creatorName))
+                            )
+                    );
+            when(actionService.fetchAllCardActions(id)).thenReturn(List.of(createAction.build(), addDueAction.build()));
+
+            CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
+
+            assertThat(fetched.actions()).hasSize(2);
+            ActionResponse actionResponse = fetched.actions().get(1);
+            assertThat(actionResponse.id()).isEqualTo(actionId);
+            assertThat(actionResponse.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(actionResponse.type()).isEqualTo("updateCard");
+            assertThat(actionResponse.happenedAt()).isEqualTo(happenedAt);
+            assertThat(actionResponse.display()).isNotNull();
+            ActionDisplayDTO display = actionResponse.display();
+            assertThat(display.translationKey()).isEqualTo("action_added_a_due_date");
+            assertThat(display.entities()).isNotNull();
+            ActionDisplayEntitiesDTO entities = display.entities();
+            assertThat(entities.card()).isNotNull();
+            assertThat(entities.card().type()).isEqualTo("card");
+            assertThat(entities.card().id()).isEqualTo(id);
+            assertThat(entities.card().text()).isEqualTo(title);
+            assertThat(entities.card().due()).isEqualTo(due);
+            assertThat(entities.date()).isNotNull();
+            assertThat(entities.date().type()).isEqualTo("date");
+            assertThat(entities.date().date()).isEqualTo(due);
             assertThat(entities.memberCreator().type()).isEqualTo("member");
             assertThat(entities.memberCreator().id()).isEqualTo(creatorId);
             assertThat(entities.memberCreator().text()).isEqualTo(creatorName);

@@ -15,6 +15,11 @@ public class ActionService {
         this.actionRepository = actionRepository;
     }
 
+    public List<ActionResponse> fetchAllCardActions(Integer cardId) {
+        List<Action> actions = actionRepository.findByCardId(cardId);
+        return actions.stream().map(ActionResponse::from).toList();
+    }
+
     public void saveCreateCardAction(Card card) {
         Action action = new Action();
         action.setCard(card);
@@ -38,11 +43,34 @@ public class ActionService {
         memberCreatorAction.setCreatorId(creatorId);
         memberCreatorAction.setText(card.getList().getBoard().getUser().getName());
         action.setMemberCreatorAction(memberCreatorAction);
+
         actionRepository.save(action);
     }
 
-    public List<ActionResponse> fetchAllCardActions(Integer cardId) {
-        List<Action> actions = actionRepository.findByCardId(cardId);
-        return actions.stream().map(ActionResponse::from).toList();
+    public void saveAddDueAction(Card card) {
+        Action action = new Action();
+        action.setCard(card);
+        Integer creatorId = card.getList().getBoard().getUser().getId();
+        action.setMemberCreatorId(creatorId);
+        action.setType("updateCard");
+        action.setHappenedAt(Instant.now());
+        action.setTranslationKey("action_added_a_due_date");
+        CardAction cardAction = new CardAction();
+        cardAction.setType("card");
+        cardAction.setCardId(card.getId());
+        cardAction.setText(card.getTitle());
+        cardAction.setDue(card.getDue());
+        action.setCardAction(cardAction);
+        DateAction dateAction = new DateAction();
+        dateAction.setType("date");
+        dateAction.setDueAt(card.getDue());
+        action.setDateAction(dateAction);
+        MemberCreatorAction memberCreatorAction = new MemberCreatorAction();
+        memberCreatorAction.setType("member");
+        memberCreatorAction.setCreatorId(creatorId);
+        memberCreatorAction.setText(card.getList().getBoard().getUser().getName());
+        action.setMemberCreatorAction(memberCreatorAction);
+
+        actionRepository.save(action);
     }
 }

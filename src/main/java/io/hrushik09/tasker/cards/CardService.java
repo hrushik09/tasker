@@ -52,21 +52,32 @@ public class CardService {
                 throw new InvalidFieldForUpdateCardException(key);
             }
             field.setAccessible(true);
-            if ("start".equals(key) || "due".equals(key)) {
-                Instant start = Instant.parse((String) value);
-                ReflectionUtils.setField(field, fetched, start);
-            } else if ("list".equals(key)) {
-                List newlist = listService.findById((Integer) value);
-                if (!newlist.getBoard().getId().equals(fetched.getList().getBoard().getId())) {
-                    throw new ListNotInGivenBoardException((Integer) value);
+            switch (key) {
+                case "start" -> {
+                    Instant start = Instant.parse((String) value);
+                    ReflectionUtils.setField(field, fetched, start);
                 }
-                fetched.setList(newlist);
-            } else {
-                ReflectionUtils.setField(field, fetched, value);
+                case "due" -> {
+                    Instant due = Instant.parse((String) value);
+                    ReflectionUtils.setField(field, fetched, due);
+                }
+                case "list" -> {
+                    List newlist = listService.findById((Integer) value);
+                    if (!newlist.getBoard().getId().equals(fetched.getList().getBoard().getId())) {
+                        throw new ListNotInGivenBoardException((Integer) value);
+                    }
+                    fetched.setList(newlist);
+                }
+                default -> ReflectionUtils.setField(field, fetched, value);
             }
             field.setAccessible(false);
         });
         Card updated = cardRepository.save(fetched);
+        fields.forEach((key, value) -> {
+            if ("due".equals(key)) {
+                actionService.saveAddDueAction(updated);
+            }
+        });
         return UpdateCardResponse.from(updated);
     }
 
