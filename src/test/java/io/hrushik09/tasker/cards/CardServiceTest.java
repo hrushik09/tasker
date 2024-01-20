@@ -447,13 +447,13 @@ class CardServiceTest {
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
 
             assertThat(fetched.actions()).hasSize(1);
-            ActionResponse action = fetched.actions().getFirst();
-            assertThat(action.id()).isEqualTo(actionId);
-            assertThat(action.memberCreatorId()).isEqualTo(creatorId);
-            assertThat(action.type()).isEqualTo("createCard");
-            assertThat(action.happenedAt()).isEqualTo(happenedAt);
-            assertThat(action.display()).isNotNull();
-            ActionDisplayDTO display = action.display();
+            ActionResponse actionResponse = fetched.actions().getFirst();
+            assertThat(actionResponse.id()).isEqualTo(actionId);
+            assertThat(actionResponse.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(actionResponse.type()).isEqualTo("createCard");
+            assertThat(actionResponse.happenedAt()).isEqualTo(happenedAt);
+            assertThat(actionResponse.display()).isNotNull();
+            ActionDisplayDTO display = actionResponse.display();
             assertThat(display.translationKey()).isEqualTo("action_create_card");
             assertThat(display.entities()).isNotNull();
             ActionDisplayEntitiesDTO entities = display.entities();
@@ -496,13 +496,13 @@ class CardServiceTest {
             CardMaxDetailsDTO fetched = cardService.fetchCardDetails(id);
 
             assertThat(fetched.actions()).hasSize(2);
-            ActionResponse action = fetched.actions().get(1);
-            assertThat(action.id()).isEqualTo(actionId);
-            assertThat(action.memberCreatorId()).isEqualTo(creatorId);
-            assertThat(action.type()).isEqualTo("updateCard");
-            assertThat(action.happenedAt()).isEqualTo(happenedAt);
-            assertThat(action.display()).isNotNull();
-            ActionDisplayDTO display = action.display();
+            ActionResponse actionResponse = fetched.actions().get(1);
+            assertThat(actionResponse.id()).isEqualTo(actionId);
+            assertThat(actionResponse.memberCreatorId()).isEqualTo(creatorId);
+            assertThat(actionResponse.type()).isEqualTo("updateCard");
+            assertThat(actionResponse.happenedAt()).isEqualTo(happenedAt);
+            assertThat(actionResponse.display()).isNotNull();
+            ActionDisplayDTO display = actionResponse.display();
             assertThat(display.translationKey()).isEqualTo("action_added_a_due_date");
             assertThat(display.entities()).isNotNull();
             ActionDisplayEntitiesDTO entities = display.entities();

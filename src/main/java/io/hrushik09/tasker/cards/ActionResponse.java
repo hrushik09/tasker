@@ -10,13 +10,25 @@ public record ActionResponse(
         ActionDisplayDTO display
 ) {
     public static ActionResponse from(Action action) {
+        DateActionDTO dateActionDTO;
+        if (action.getDateAction() != null) {
+            dateActionDTO = new DateActionDTO(action.getDateAction().getType(), action.getDateAction().getDueAt());
+        } else {
+            dateActionDTO = null;
+        }
+        Instant due;
+        if (action.getCardAction().getDue() != null) {
+            due = action.getCardAction().getDue();
+        } else {
+            due = null;
+        }
         return new ActionResponse(action.getId(), action.getMemberCreatorId(), action.getType(), action.getHappenedAt(),
                 new ActionDisplayDTO(action.getTranslationKey(),
                         new ActionDisplayEntitiesDTO(
-                                new CardActionDTO(action.getCardAction().getType(), action.getCardAction().getCardId(), action.getCardAction().getText(), Instant.MIN),
+                                new CardActionDTO(action.getCardAction().getType(), action.getCardAction().getCardId(), action.getCardAction().getText(), due),
                                 new ListActionDTO(action.getListAction().getType(), action.getListAction().getListId(), action.getListAction().getText()),
                                 new MemberCreatorActionDTO(action.getMemberCreatorAction().getType(), action.getMemberCreatorAction().getCreatorId(), action.getMemberCreatorAction().getText()),
-                                new DateActionDTO("temp", Instant.MIN))
+                                dateActionDTO)
                 )
         );
     }

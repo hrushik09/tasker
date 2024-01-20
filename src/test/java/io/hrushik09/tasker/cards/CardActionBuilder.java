@@ -7,6 +7,7 @@ public class CardActionBuilder {
     private String type = "card";
     private Integer cardId = 1;
     private String text = "Not important";
+    private Instant due = Instant.MIN;
     private Instant createdAt = Instant.parse("2023-04-04T02:02:02Z");
     private Instant updatedAt = Instant.parse("2023-04-04T03:02:02Z");
 
@@ -18,6 +19,7 @@ public class CardActionBuilder {
         this.type = copy.type;
         this.cardId = copy.cardId;
         this.text = copy.text;
+        this.due = copy.due;
         this.createdAt = copy.createdAt;
         this.updatedAt = copy.updatedAt;
     }
@@ -50,12 +52,18 @@ public class CardActionBuilder {
         return this;
     }
 
+    public CardActionBuilder withDue(Instant due) {
+        this.due = due;
+        return this;
+    }
+
     public CardAction build() {
         CardAction cardAction = new CardAction();
         cardAction.setId(id);
         cardAction.setType(type);
         cardAction.setCardId(cardId);
         cardAction.setText(text);
+        cardAction.setDue(due);
         cardAction.setCreatedAt(createdAt);
         cardAction.setUpdatedAt(updatedAt);
         return cardAction;

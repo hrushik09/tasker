@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import static io.hrushik09.tasker.cards.CardActionBuilder.aCardActionBuilder;
 import static io.hrushik09.tasker.cards.CardBuilder.aCard;
+import static io.hrushik09.tasker.cards.DateActionBuilder.aDateActionBuilder;
 import static io.hrushik09.tasker.cards.ListActionBuilder.aListActionBuilder;
 import static io.hrushik09.tasker.cards.MemberCreatorActionBuilder.aMemberCreatorActionBuilder;
 
@@ -17,6 +18,7 @@ public class ActionBuilder {
     private CardActionBuilder cardActionBuilder = aCardActionBuilder();
     private ListActionBuilder listActionBuilder = aListActionBuilder();
     private MemberCreatorActionBuilder memberCreatorActionBuilder = aMemberCreatorActionBuilder();
+    private DateActionBuilder dateActionBuilder = aDateActionBuilder();
     private Instant createdAt = Instant.parse("2023-01-01T00:01:01Z");
     private Instant updatedAt = Instant.parse("2023-01-01T00:01:01Z");
 
@@ -33,6 +35,7 @@ public class ActionBuilder {
         this.cardActionBuilder = copy.cardActionBuilder;
         this.listActionBuilder = copy.listActionBuilder;
         this.memberCreatorActionBuilder = copy.memberCreatorActionBuilder;
+        this.dateActionBuilder = copy.dateActionBuilder;
         this.createdAt = copy.createdAt;
         this.updatedAt = copy.updatedAt;
     }
@@ -90,6 +93,11 @@ public class ActionBuilder {
         return this;
     }
 
+    public ActionBuilder with(DateActionBuilder dateActionBuilder) {
+        this.dateActionBuilder = dateActionBuilder;
+        return this;
+    }
+
     public Action build() {
         Action action = new Action();
         action.setId(id);
@@ -101,6 +109,7 @@ public class ActionBuilder {
         action.setCardAction(cardActionBuilder.build());
         action.setListAction(listActionBuilder.build());
         action.setMemberCreatorAction(memberCreatorActionBuilder.build());
+        action.setDateAction(dateActionBuilder.build());
         action.setCreatedAt(createdAt);
         action.setUpdatedAt(updatedAt);
         return action;
