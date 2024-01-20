@@ -22,6 +22,7 @@ public class Action {
     private String translationKey;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private CardAction cardAction;
+    private DateAction dateAction;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
     private ListAction listAction;
     @OneToOne(cascade = {CascadeType.PERSIST}, optional = false)
@@ -85,6 +86,14 @@ public class Action {
 
     public void setCardAction(CardAction cardAction) {
         this.cardAction = cardAction;
+    }
+
+    public DateAction getDateAction() {
+        return dateAction;
+    }
+
+    public void setDateAction(DateAction dateAction) {
+        this.dateAction = dateAction;
     }
 
     public ListAction getListAction() {

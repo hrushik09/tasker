@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
@@ -25,6 +24,7 @@ import static io.hrushik09.tasker.cards.MemberCreatorActionBuilder.aMemberCreato
 import static io.hrushik09.tasker.lists.ListBuilder.aList;
 import static io.hrushik09.tasker.users.UserBuilder.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +58,7 @@ class ActionServiceTest {
 
             actionService.saveCreateCardAction(cardBuilder.build());
 
-            Mockito.verify(actionRepository).save(actionArgumentCaptor.capture());
+            verify(actionRepository).save(actionArgumentCaptor.capture());
             Action captorValue = actionArgumentCaptor.getValue();
             assertThat(captorValue.getCard().getId()).isEqualTo(cardId);
             assertThat(captorValue.getMemberCreatorId()).isEqualTo(creatorId);
@@ -73,6 +73,42 @@ class ActionServiceTest {
             assertThat(captorValue.getListAction().getType()).isEqualTo("list");
             assertThat(captorValue.getListAction().getListId()).isEqualTo(listId);
             assertThat(captorValue.getListAction().getText()).isEqualTo(listTitle);
+            assertThat(captorValue.getMemberCreatorAction()).isNotNull();
+            assertThat(captorValue.getMemberCreatorAction().getType()).isEqualTo("member");
+            assertThat(captorValue.getMemberCreatorAction().getCreatorId()).isEqualTo(creatorId);
+            assertThat(captorValue.getMemberCreatorAction().getText()).isEqualTo(creatorName);
+        }
+
+        @Test
+        void shouldAddDueAction() {
+            Integer creatorId = 98;
+            String creatorName = "User abc";
+            UserBuilder userBuilder = aUser().withId(creatorId).withName(creatorName);
+            BoardBuilder boardBuilder = aBoard().with(userBuilder);
+            ListBuilder listBuilder = aList().with(boardBuilder);
+            Integer cardId = 45;
+            String cardTitle = "This is a card title";
+            String dueStr = "2023-12-12T23:23:23Z";
+            CardBuilder cardBuilder = aCard().withId(cardId).withTitle(cardTitle).withDue(Instant.parse(dueStr))
+                    .with(listBuilder);
+
+            actionService.saveAddDueAction(cardBuilder.build());
+
+            verify(actionRepository).save(actionArgumentCaptor.capture());
+            Action captorValue = actionArgumentCaptor.getValue();
+            assertThat(captorValue.getCard().getId()).isEqualTo(cardId);
+            assertThat(captorValue.getMemberCreatorId()).isEqualTo(creatorId);
+            assertThat(captorValue.getType()).isEqualTo("updateCard");
+            assertThat(captorValue.getHappenedAt()).isNotNull();
+            assertThat(captorValue.getTranslationKey()).isEqualTo("action_added_a_due_date");
+            assertThat(captorValue.getCardAction()).isNotNull();
+            assertThat(captorValue.getCardAction().getType()).isEqualTo("card");
+            assertThat(captorValue.getCardAction().getCardId()).isEqualTo(cardId);
+            assertThat(captorValue.getCardAction().getText()).isEqualTo(cardTitle);
+            assertThat(captorValue.getCardAction().getDue()).isEqualTo(Instant.parse(dueStr));
+            assertThat(captorValue.getDateAction()).isNotNull();
+            assertThat(captorValue.getDateAction().getType()).isEqualTo("date");
+            assertThat(captorValue.getDateAction().getDueAt()).isEqualTo(Instant.parse(dueStr));
             assertThat(captorValue.getMemberCreatorAction()).isNotNull();
             assertThat(captorValue.getMemberCreatorAction().getType()).isEqualTo("member");
             assertThat(captorValue.getMemberCreatorAction().getCreatorId()).isEqualTo(creatorId);

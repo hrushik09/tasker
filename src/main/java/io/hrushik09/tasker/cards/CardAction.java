@@ -16,6 +16,8 @@ public class CardAction {
     private Integer cardId;
     @Column(nullable = false)
     private String text;
+    @Column
+    private Instant due;
     @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
     @Column(nullable = false, insertable = false, updatable = false)
@@ -51,6 +53,14 @@ public class CardAction {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Instant getDue() {
+        return due;
+    }
+
+    public void setDue(Instant due) {
+        this.due = due;
     }
 
     public Instant getCreatedAt() {
