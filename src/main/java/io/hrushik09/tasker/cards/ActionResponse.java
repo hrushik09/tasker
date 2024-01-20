@@ -22,11 +22,17 @@ public record ActionResponse(
         } else {
             due = null;
         }
+        ListActionDTO listActionDTO;
+        if (action.getListAction() != null) {
+            listActionDTO = new ListActionDTO(action.getListAction().getType(), action.getListAction().getListId(), action.getListAction().getText());
+        } else {
+            listActionDTO = null;
+        }
         return new ActionResponse(action.getId(), action.getMemberCreatorId(), action.getType(), action.getHappenedAt(),
                 new ActionDisplayDTO(action.getTranslationKey(),
                         new ActionDisplayEntitiesDTO(
                                 new CardActionDTO(action.getCardAction().getType(), action.getCardAction().getCardId(), action.getCardAction().getText(), due),
-                                new ListActionDTO(action.getListAction().getType(), action.getListAction().getListId(), action.getListAction().getText()),
+                                listActionDTO,
                                 new MemberCreatorActionDTO(action.getMemberCreatorAction().getType(), action.getMemberCreatorAction().getCreatorId(), action.getMemberCreatorAction().getText()),
                                 dateActionDTO)
                 )

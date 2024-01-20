@@ -1,12 +1,22 @@
 package io.hrushik09.tasker.cards;
 
+import jakarta.persistence.*;
+
 import java.time.Instant;
 
+@Entity
+@Table(name = "date_actions")
 public class DateAction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String type;
+    @Column(nullable = false)
     private Instant dueAt;
+    @Column(nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
+    @Column(nullable = false, insertable = false, updatable = false)
     private Instant updatedAt;
 
     public Integer getId() {
