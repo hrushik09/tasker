@@ -7,9 +7,7 @@
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
     <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <encoder class="ch.qos.logback.classic.encoder.JsonEncoder">
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
+        <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
         <file>${JSON_LOG_FILE}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${JSON_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}</fileNamePattern>
