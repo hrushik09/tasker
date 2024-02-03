@@ -1,6 +1,7 @@
 package io.hrushik09.tasker.aspect;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -14,10 +15,16 @@ public class LoggingAspect {
 
     @Before("io.hrushik09.tasker.aspect.PointcutDeclarations.forImportantClasses()")
     public void logMethodInvocationInfo(JoinPoint joinPoint) {
-        logger.debug("calling method: {} with", joinPoint.getSignature().toShortString());
+        logger.debug("invoking method: {} with", joinPoint.getSignature().toShortString());
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             logger.debug("  argument: {}", arg);
         }
+    }
+
+    @AfterReturning(pointcut = "io.hrushik09.tasker.aspect.PointcutDeclarations.forImportantClasses()", returning = "result")
+    public void logMethodResult(JoinPoint joinPoint, Object result) {
+        logger.debug("returning from method: {} with", joinPoint.getSignature().toShortString());
+        logger.debug("  result: {}", result);
     }
 }
