@@ -2,6 +2,7 @@ package io.hrushik09.tasker.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -26,5 +27,11 @@ public class LoggingAspect {
     public void logMethodResult(JoinPoint joinPoint, Object result) {
         logger.debug("returning from method: {} with", joinPoint.getSignature().toShortString());
         logger.debug("  result: {}", result);
+    }
+
+    @AfterThrowing(pointcut = "io.hrushik09.tasker.aspect.PointcutDeclarations.forImportantClasses()", throwing = "exception")
+    public void logExceptionInfo(JoinPoint joinPoint, Throwable exception) {
+        logger.error("error during method: {} with", joinPoint.getSignature().toShortString());
+        logger.error("  message: {}", exception.getMessage());
     }
 }
